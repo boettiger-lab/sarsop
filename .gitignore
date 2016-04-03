@@ -1,0 +1,14 @@
+.DS_Store
+.Rproj.user
+.Rhistory
+.RData
+*.o
+*.a
+*.so
+*.dll
+src/polgraph
+src/pomdpconvert
+src/pomdpeval
+src/pomdpsim
+src/pomdpsol
+inst/bin

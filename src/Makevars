@@ -1,0 +1,141 @@
+INSTDIR=../inst/bin
+
+PKG_CPPFLAGS=-Iappl-0.96 \
+	-Iappl-0.96/MathLib -Iappl-0.96/Algorithms -Iappl-0.96/Algorithms/HSVI \
+	-Iappl-0.96/Algorithms/SARSOP -Iappl-0.96/Models/MOMDP -Iappl-0.96/Models/MOMDP/CoLoc \
+	-Iappl-0.96/OfflineSolver -Iappl-0.96/Bounds -Iappl-0.96/Core -Iappl-0.96/Parser/Cassandra \
+	-Iappl-0.96/Parser/Cassandra/include -Iappl-0.96/Parser -Iappl-0.96/Parser/POMDPX \
+	-Iappl-0.96/Utils -Iappl-0.96/Simulator -Iappl-0.96/Evaluator -Iappl-0.96/Controller
+
+OBJS_APPL= \
+	appl-0.96/Models/MOMDP/BeliefTransitionMOMDP.o \
+	appl-0.96/Models/MOMDP/BeliefTransitionMOMDPLite.o \
+	appl-0.96/Models/MOMDP/BooleanVariable.o \
+	appl-0.96/Models/MOMDP/IVariable.o \
+	appl-0.96/Models/MOMDP/IVariableValue.o \
+	appl-0.96/Models/MOMDP/MOMDP.o \
+	appl-0.96/Models/MOMDP/MOMDPLite.o \
+	appl-0.96/Models/MOMDP/ObservationProbabilities.o \
+	appl-0.96/Models/MOMDP/Rewards.o \
+	appl-0.96/Models/MOMDP/StateTransitionX.o \
+	appl-0.96/Models/MOMDP/StateTransitionXXpY.o \
+	appl-0.96/Models/MOMDP/StateTransitionXY.o \
+	appl-0.96/Models/MOMDP/StateTransitionY.o \
+	appl-0.96/Models/MOMDP/Variable.o \
+	appl-0.96/Models/MOMDP/VariableCombined.o \
+	appl-0.96/Models/MOMDP/VariableRelation.o \
+	appl-0.96/Models/MOMDP/VariableValue.o \
+	appl-0.96/PolicyGraph/PolicyGraphGenerator.o \
+	appl-0.96/Evaluator/EvaluationEngine.o \
+	appl-0.96/Evaluator/EvaluatorSampleEngine.o \
+	appl-0.96/Simulator/SimulationEngine.o \
+	appl-0.96/MathLib/DenseVector.o \
+	appl-0.96/MathLib/MathLib.o \
+	appl-0.96/MathLib/SparseMatrix.o \
+	appl-0.96/MathLib/SparseVector.o \
+	appl-0.96/Algorithms/SARSOP/BinManager.o \
+	appl-0.96/Algorithms/SARSOP/BinManagerSet.o \
+	appl-0.96/Algorithms/SARSOP/Sample.o \
+	appl-0.96/Algorithms/SARSOP/SampleBP.o \
+	appl-0.96/Algorithms/SARSOP/SARSOP.o \
+	appl-0.96/Algorithms/SARSOP/SARSOPPrune.o \
+	appl-0.96/OfflineSolver/GlobalResource.o \
+	appl-0.96/OfflineSolver/solverUtils.o \
+	appl-0.96/Bounds/AlphaPlane.o \
+	appl-0.96/Bounds/AlphaPlanePool.o \
+	appl-0.96/Bounds/AlphaPlanePoolSet.o \
+	appl-0.96/Bounds/AlphaVectorPolicy.o \
+	appl-0.96/Bounds/BackupAlphaPlaneMOMDP.o \
+	appl-0.96/Bounds/BackupAlphaPlaneMOMDPLite.o \
+	appl-0.96/Bounds/BackupBeliefValuePairMOMDP.o \
+	appl-0.96/Bounds/BackupBeliefValuePairMOMDPLite.o \
+	appl-0.96/Bounds/BeliefValuePair.o \
+	appl-0.96/Bounds/BeliefValuePairPool.o \
+	appl-0.96/Bounds/BeliefValuePairPoolSet.o \
+	appl-0.96/Bounds/BlindLBInitializer.o \
+	appl-0.96/Bounds/FastInfUBInitializer.o \
+	appl-0.96/Bounds/FullObsUBInitializer.o \
+	appl-0.96/Bounds/PruneAlphaPlane.o \
+	appl-0.96/Bounds/PruneBeliefValuePair.o \
+	appl-0.96/Bounds/xml_parse_lib.o \
+	appl-0.96/Core/Actions.o \
+	appl-0.96/Core/VariableContainer.o \
+	appl-0.96/Core/Belief.o \
+	appl-0.96/Core/BeliefCache.o \
+	appl-0.96/Core/BeliefException.o \
+	appl-0.96/Core/BeliefForest.o \
+	appl-0.96/Core/BeliefTreeNode.o \
+	appl-0.96/Core/BeliefWithState.o \
+	appl-0.96/Core/MObject.o \
+	appl-0.96/Core/Observations.o \
+	appl-0.96/Core/States.o \
+	appl-0.96/Core/UniqueBeliefHeap.o \
+	appl-0.96/Parser/Cassandra/Parser.o \
+	appl-0.96/Parser/Cassandra/POMDP.o \
+	appl-0.96/Parser/Cassandra/pomdpCassandraWrapper.o \
+	appl-0.96/Parser/ParserSelector.o \
+	appl-0.96/Parser/POMDPX/FactoredPomdp.o \
+	appl-0.96/Parser/POMDPX/Function.o \
+	appl-0.96/Parser/POMDPX/ObsAct.o \
+	appl-0.96/Parser/POMDPX/PreCEntry.o \
+	appl-0.96/Parser/POMDPX/PreCMatrix.o \
+	appl-0.96/Parser/POMDPX/SparseEntry.o \
+	appl-0.96/Parser/POMDPX/SparseTable.o \
+	appl-0.96/Parser/POMDPX/State.o \
+	appl-0.96/Parser/POMDPX/StateObsAct.o \
+	appl-0.96/Parser/POMDPX/tinystr.o \
+	appl-0.96/Parser/POMDPX/tinyxml.o \
+	appl-0.96/Parser/POMDPX/tinyxmlerror.o \
+	appl-0.96/Parser/POMDPX/tinyxmlparser.o \
+	appl-0.96/Utils/InfoLog.o \
+	appl-0.96/Utils/md5.o \
+	appl-0.96/Utils/md5wrapper.o \
+	appl-0.96/Utils/CPMemUtils.o \
+	appl-0.96/Utils/StatsCollector.o \
+	appl-0.96/Utils/SimulationRewardCollector.o \
+	appl-0.96/Parser/Cassandra/include/pomdp_spec.tab.o \
+	appl-0.96/Parser/Cassandra/include/pomdp_spec.yy.o \
+	appl-0.96/miniposix/getopt.o \
+	appl-0.96/miniposix/getopt1.o \
+	appl-0.96/miniposix/getopt_init.o \
+	appl-0.96/Parser/Cassandra/decision-tree.o \
+	appl-0.96/Parser/Cassandra/imm-reward.o \
+	appl-0.96/Parser/Cassandra/mdpCassandra.o \
+	appl-0.96/Parser/Cassandra/parse_err.o \
+	appl-0.96/Parser/Cassandra/parse_hash.o \
+	appl-0.96/Parser/Cassandra/sparse-matrix.o \
+	appl-0.96/Controller/Controller.o
+
+$(SHLIB): clean executables
+
+executables: pomdpsol pomdpeval pomdpsim polgraph pomdpconvert
+
+libappl.a: $(OBJS_APPL)
+	mkdir -p $(INSTDIR)
+	$(AR) rcs libappl.a $(OBJS_APPL)
+
+pomdpsol: libappl.a appl-0.96/OfflineSolver/solver.o
+	$(CXX) $(CPPFLAGS) $(CXXLAGS) -o pomdpsol appl-0.96/OfflineSolver/solver.o -L. -lappl
+	cp -f pomdpsol $(INSTDIR)
+
+pomdpeval: libappl.a appl-0.96/Evaluator/Evaluator.o
+	$(CXX) $(CPPFLAGS) $(CXXLAGS) -o pomdpeval appl-0.96/Evaluator/Evaluator.o -L. -lappl
+	cp -f pomdpeval $(INSTDIR)
+
+pomdpsim: libappl.a appl-0.96/Simulator/Simulator.o
+	$(CXX) $(CPPFLAGS) $(CXXLAGS) -o pomdpsim appl-0.96/Simulator/Simulator.o -L. -lappl
+	cp -f pomdpsim $(INSTDIR)
+
+polgraph: libappl.a appl-0.96/PolicyGraph/PolicyGraph.o
+	$(CXX) $(CPPFLAGS) $(CXXLAGS) -o polgraph appl-0.96/PolicyGraph/PolicyGraph.o -L. -lappl
+	cp -f polgraph $(INSTDIR)
+
+pomdpconvert: libappl.a appl-0.96/PomdpConvertor/convertor.o
+	$(CXX) $(CPPFLAGS) $(CXXLAGS) -o pomdpconvert appl-0.96/PomdpConvertor/convertor.o -L. -lappl
+	cp -f pomdpconvert $(INSTDIR)
+
+clean:
+	rm -f libappl.a $(executables) $(OBJS_APPL)
+	rm -Rf $(INSTDIR)
+
+.PHONY: all clean executables
