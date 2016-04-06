@@ -12,3 +12,4 @@ src/pomdpeval
 src/pomdpsim
 src/pomdpsol
 inst/bin
+windows
