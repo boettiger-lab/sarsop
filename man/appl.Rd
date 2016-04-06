@@ -25,7 +25,6 @@ Wrappers for the APPL executables. The \code{pomdpsol} function solves a model
 file and returns the path to the output policy file.
 }
 \examples{
-setwd(tempdir())
 file.copy(system.file("models/example.pomdp", package = "appl"), "example.pomdp")
 policy <- pomdpsol("example.pomdp")
 readLines(policy)

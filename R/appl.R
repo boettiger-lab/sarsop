@@ -7,7 +7,6 @@
 #' @rdname appl
 #' @aliases appl SARSOP
 #' @examples
-#' setwd(tempdir())
 #' file.copy(system.file("models/example.pomdp", package = "appl"), "example.pomdp")
 #' policy <- pomdpsol("example.pomdp")
 #' readLines(policy)
