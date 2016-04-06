@@ -4,7 +4,12 @@
 #'
 #' @export
 #' @rdname appl
-pomdpsol <- function(args = "--help"){
+#' @example setwd(tempdir())
+#' file.copy(system.file("models/example.pomdp"), "example.pomdp")
+#' pomdpsol("pomdpsol")
+pomdpsol <- function(model, output = "outpub.policy", precision = 25, timeout = 10){
+  model <- normalizePath(model, mustWork = TRUE)
+  args <- paste(model, " --output=", output, " --precision=", precision, " --timeout=", timeout)
   exec_program("pomdpsol", args)
 }
 
