@@ -106,7 +106,7 @@ OBJS_APPL= \
 	appl-0.96/Parser/Cassandra/sparse-matrix.o \
 	appl-0.96/Controller/Controller.o
 
-$(SHLIB): clean executables
+$(SHLIB): executables
 
 executables: pomdpsol pomdpeval pomdpsim polgraph pomdpconvert
 

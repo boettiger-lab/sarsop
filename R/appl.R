@@ -1,16 +1,21 @@
 #' APPL wrappers
 #'
-#' Wrappers for the APPL executables
+#' Wrappers for the APPL executables. The \code{pomdpsol} function solves a model
+#' file and returns the path to the output policy file.
 #'
 #' @export
 #' @rdname appl
-#' @example setwd(tempdir())
-#' file.copy(system.file("models/example.pomdp"), "example.pomdp")
-#' pomdpsol("pomdpsol")
-pomdpsol <- function(model, output = "outpub.policy", precision = 25, timeout = 10){
+#' @aliases appl SARSOP
+#' @examples
+#' setwd(tempdir())
+#' file.copy(system.file("models/example.pomdp", package = "appl"), "example.pomdp")
+#' policy <- pomdpsol("example.pomdp")
+#' readLines(policy)
+pomdpsol <- function(model, output = tempfile(), precision = 25, timeout = 10){
   model <- normalizePath(model, mustWork = TRUE)
-  args <- paste(model, " --output=", output, " --precision=", precision, " --timeout=", timeout)
+  args <- paste(model, "--output", output, "--precision", precision, "--timeout", timeout)
   exec_program("pomdpsol", args)
+  return(output)
 }
 
 #' @export
