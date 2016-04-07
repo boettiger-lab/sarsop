@@ -12,21 +12,50 @@
 \usage{
 pomdpsol(model, output = tempfile(), precision = 25, timeout = 10)
 
-pomdpeval(args = "--help")
+polgraph(model, policy, output = tempfile(), max_depth = 3,
+  max_branches = 10, min_prob = 0.001)
 
-pomdpsim(args = "--help")
+pomdpsim(model, policy, output = tempfile(), steps = 100, simulations = 3)
 
-pomdpconvert(args = "--help")
+pomdpeval(model, policy, output = tempfile(), steps = 100,
+  simulations = 3)
 
-polgraph(args = "--help")
+pomdpconvert(model)
+}
+\arguments{
+\item{model}{file/path to the \code{pomdp} model file}
+
+\item{output}{file/path of the output policy file. This is also returned by the function.}
+
+\item{precision}{precision value}
+
+\item{timeout}{timeout in seconds}
+
+\item{policy}{file/path to the policy file}
+
+\item{max_depth}{the maximum horizon of the generated policy graph}
+
+\item{max_branches}{maximum number of branches to show in the policy graph}
+
+\item{min_prob}{the minimum probability threshold for a branch to be shown in the policy graph}
+
+\item{steps}{number of steps for each simulation run}
+
+\item{simulations}{as the number of simulation runs}
 }
 \description{
 Wrappers for the APPL executables. The \code{pomdpsol} function solves a model
 file and returns the path to the output policy file.
 }
 \examples{
-file.copy(system.file("models/example.pomdp", package = "appl"), "example.pomdp")
-policy <- pomdpsol("example.pomdp")
+setwd(tempdir())
+model <- system.file("models/example.pomdp", package = "appl")
+policy <- pomdpsol(model)
 readLines(policy)
+
+# Other tools
+evaluation <- pomdpeval(model, policy)
+graph <- polgraph(model, policy)
+simulations <- pomdpsim(model, policy)
 }
 
