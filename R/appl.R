@@ -80,5 +80,7 @@ exec_program <- function(program, args) {
   }
   binpath <- system.file("bin", package = "appl")
   path <- normalizePath(file.path(binpath, program), mustWork = TRUE)
-  system2(path, args)
+  res <- system2(path, args)
+  if(res != 0) stop("Call to ", program, " failed with error: ", res)
+  return(NULL)
 }
