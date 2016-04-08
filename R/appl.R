@@ -75,8 +75,10 @@ pomdpconvert <- function(model){
 }
 
 exec_program <- function(program, args) {
-  postfix <- ifelse(identical(.Platform$OS.type, "windows"), ".exe", "")
+  if(identical(.Platform$OS.type, "windows")){
+    program <- paste0(.Platform$r_arch, "/", program, ".exe")
+  }
   binpath <- system.file("bin", package = "appl")
-  path <- normalizePath(file.path(binpath, paste0(program, postfix)), mustWork = TRUE)
+  path <- normalizePath(file.path(binpath, program), mustWork = TRUE)
   system2(path, args)
 }
