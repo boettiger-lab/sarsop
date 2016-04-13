@@ -28,3 +28,5 @@ using MS Visual Studio:
 
  - http://web.stanford.edu/group/sisl/resources/appl-0.96-win-win32.zip
  - http://web.stanford.edu/group/sisl/resources/appl-0.96-win-x64.zip
+
+[![](http://ropensci.org/public_images/github_footer.png)](http://ropensci.org)
