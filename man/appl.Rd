@@ -10,17 +10,19 @@
 \alias{pomdpsol}
 \title{APPL wrappers}
 \usage{
-pomdpsol(model, output = tempfile(), precision = 25, timeout = 10)
+pomdpsol(model, output = tempfile(), precision = 25, timeout = 10,
+  stdout = "")
 
 polgraph(model, policy, output = tempfile(), max_depth = 3,
-  max_branches = 10, min_prob = 0.001)
+  max_branches = 10, min_prob = 0.001, stdout = "")
 
-pomdpsim(model, policy, output = tempfile(), steps = 100, simulations = 3)
+pomdpsim(model, policy, output = tempfile(), steps = 100, simulations = 3,
+  stdout = "")
 
 pomdpeval(model, policy, output = tempfile(), steps = 100,
-  simulations = 3)
+  simulations = 3, stdout = "")
 
-pomdpconvert(model)
+pomdpconvert(model, stdout = "")
 }
 \arguments{
 \item{model}{file/path to the \code{pomdp} model file}
@@ -30,6 +32,9 @@ pomdpconvert(model)
 \item{precision}{precision value}
 
 \item{timeout}{timeout in seconds}
+
+\item{stdout}{where output to ‘stdout’, see \code{\link{system2}}. Use \code{FALSE}
+to suppress output.}
 
 \item{policy}{file/path to the policy file}
 
