@@ -3,15 +3,18 @@
 Wrappers in R for the APPL toolkit for approximate POMDP planning.
 
 ```r
-# Example model file
-example <- system.file("models/example.pomdp", package = "appl")
-file.copy(example, "example.pomdp")
+# Example model
+setwd(tempdir())
+model <- system.file("models/example.pomdp", package = "appl")
 
-# Runs the solver
-policy <- pomdpsol("example.pomdp")
-
-# Output XML
+# Create Policy
+policy <- pomdpsol(model)
 readLines(policy)
+
+# Other tools
+evaluation <- pomdpeval(model, policy)
+graph <- polgraph(model, policy)
+simulations <- pomdpsim(model, policy)
 ```
 
 ## Notes
@@ -25,3 +28,5 @@ using MS Visual Studio:
 
  - http://web.stanford.edu/group/sisl/resources/appl-0.96-win-win32.zip
  - http://web.stanford.edu/group/sisl/resources/appl-0.96-win-x64.zip
+
+[![](http://ropensci.org/public_images/github_footer.png)](http://ropensci.org)
