@@ -9,7 +9,7 @@
 #' @return optimal value and corresponding policy
 #' @details Dimensions are given as number of states (n_s), number of observed states n_z, number of actions n_a
 #' @export
-pomdp <- function(T, O, R, GAMMA, initial = NULL){
+pomdp <- function(T, O, R, GAMMA, initial = NULL, mc.cores = getOption("mc.cores", 1L)){
 
   Num_s <- dim(O)[1]
   Num_z <- dim(O)[2]
@@ -28,7 +28,8 @@ pomdp <- function(T, O, R, GAMMA, initial = NULL){
   ## fixme: why 800?  this should probably be inside write_pomdp anyhow
   XX = paste0("a", 1:800)
 
-  for (i in 1:Num_z) {
+  ## PARALLELIZE THIS
+  output <- parallel::mclapply(1:Num_z, function(i){   #for (i in 1:Num_z) {
     belief = initial * t(O[, i, 1])
 
     ## Consider more robust normalization.  Check write-out precision in write_pomdp
@@ -37,21 +38,26 @@ pomdp <- function(T, O, R, GAMMA, initial = NULL){
 
     ## Why test this?  Better syntax would be: if(any(is.nan(beleif)))
     if(is.nan(sum(belief))){
-      value[i] = 0
-      policy[i] = 0
+      c(value = 0, policy = 0)
     } else {
 
+      infile <- tempfile("input", fileext = ".pomdp")
+      outfile <- tempfile("output", fileext = ".policy")
+
       ## function is basically just these three lines.  Consider arguments to pomdpsol being top-level arguments
-      appl::write_pomdp(T, O, R, GAMMA, belief, Num_s, Num_a, Num_z, actions, XX)
-      appl::pomdpsol("input.pomdp", "output.policy", precision = 1, timeout = 25, stdout = FALSE)
-      out = read_policy(belief, file = "output.policy")
+      write_pomdp(T, O, R, GAMMA, belief, Num_s, Num_a, Num_z, actions, XX, file = infile)
+      pomdpsol(infile, outfile, precision = 1, timeout = 25, stdout = FALSE)
+      out = read_policy(belief, file = outfile)
 
-      value[i] = out[[1]]
-      policy[i] = out[[2]]
+
+      c(value = out[[1]], policy = out[[2]])
     }
-  }
 
-  list(value, policy)
+
+  }, mc.cores = mc.cores)
+
+  list(value = sapply(output, `[[`, "value"),
+       policy = sapply(output, `[[`, "policy"))
 }
 
 

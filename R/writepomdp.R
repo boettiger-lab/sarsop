@@ -10,8 +10,9 @@
 # Num_z number of possible observations (compute from O_Aug)
 # string names for actions? states?
 # XX names for?
-write_pomdp <- function(P_Aug,O_Aug,R,gamma,b,Num_S,Num_a,Num_z, string,XX){
+write_pomdp <- function(P_Aug,O_Aug,R,gamma,b,Num_S,Num_a,Num_z, string,XX, file = "input.pomdp"){
 
+## FIXME adjust numerical precision of paste objects
 
   header <- paste0(
     '# Simple POMDP Model for test\n\n',
@@ -64,7 +65,7 @@ write_pomdp <- function(P_Aug,O_Aug,R,gamma,b,Num_S,Num_a,Num_z, string,XX){
 
   out <- paste0(header, transition, emission, reward)
 
-  writeLines(out, 'input.pomdp')
+  writeLines(out, file)
 
 
 }

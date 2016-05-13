@@ -1,0 +1,54 @@
+---
+title: "puzzle"
+output: html_document
+---
+
+
+```{r setup}
+states <- 0:150 # Vector of all possible states
+actions <- states   # Vector of actions: harvest
+
+## Deterministic skeleton of recruitment function (for transistion matrix)
+p <- c(6,0.05)
+f <- function(x, h){
+  A <- p[1]
+  B <- p[2]
+  s <- pmax(x-h, 0)
+  A * s/(1 + B * s)
+}
+
+## lognormal log-sd parameter
+sigma_g <- 0.1
+
+reward_fn <- function(x,h) {
+  pmin(x,h)
+}
+discount <- 0.95
+```
+
+
+Compare densities resulting from CDF and extended-pdf 
+probably different discretizations?
+
+
+
+```{r}
+n_s <- length(states)
+# Hmmmm...
+N <- plnorm(states[n_s], log(nextpop), sigma_g)
+x <- dlnorm(states, log(nextpop), sdlog = sigma_g)
+x <- x * N / sum(x)
+x[n_s] <- 1 - N + x[n_s]
+sum(x)
+y <- x
+
+fine_states <- seq(min(states), 20 * max(states), by = states[2]-states[1])
+N <- sum(dlnorm(fine_states, log(nextpop), sdlog = sigma_g))
+x <- dlnorm(states, log(nextpop), sdlog = sigma_g) / N
+x[n_s] <- max(1 - sum(x[-n_s]), 0)
+
+library(ggplot2)
+df = data.frame(s = seq_along(x), x = x, y = y)
+ggplot(df) + geom_line(aes(s,x)) + geom_line(aes(s,y), col='red')
+
+```
