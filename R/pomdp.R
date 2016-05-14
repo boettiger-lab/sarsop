@@ -8,8 +8,10 @@
 #' @param initial initial belief state, optional, defaults to uniform over states
 #' @return optimal value and corresponding policy
 #' @details Dimensions are given as number of states (n_s), number of observed states n_z, number of actions n_a
+#' @importFrom parallel mclapply
 #' @export
-pomdp <- function(T, O, R, GAMMA, initial = NULL, mc.cores = getOption("mc.cores", 1L)){
+pomdp <- function(T, O, R, GAMMA, initial = NULL, mc.cores = getOption("mc.cores", 1L),
+                  precision = 1, timeout = 25, stdout = FALSE, ...){
 
   Num_s <- dim(O)[1]
   Num_z <- dim(O)[2]
@@ -22,11 +24,6 @@ pomdp <- function(T, O, R, GAMMA, initial = NULL, mc.cores = getOption("mc.cores
   value = vector("numeric", length = Num_z)
   policy = vector("numeric", length = Num_z)
 
-  ## Consider moving into write_pomdp. No need to support semantically named actions(?)
-  actions = paste0("a", 1:Num_a)
-
-  ## fixme: why 800?  this should probably be inside write_pomdp anyhow
-  XX = paste0("a", 1:800)
 
   ## PARALLELIZE THIS
   output <- parallel::mclapply(1:Num_z, function(i){   #for (i in 1:Num_z) {
@@ -45,8 +42,8 @@ pomdp <- function(T, O, R, GAMMA, initial = NULL, mc.cores = getOption("mc.cores
       outfile <- tempfile("output", fileext = ".policy")
 
       ## function is basically just these three lines.  Consider arguments to pomdpsol being top-level arguments
-      write_pomdp(T, O, R, GAMMA, belief, Num_s, Num_a, Num_z, actions, XX, file = infile)
-      pomdpsol(infile, outfile, precision = 1, timeout = 25, stdout = FALSE)
+      write_pomdp(T, O, R, GAMMA, belief, Num_s, Num_a, Num_z, file = infile)
+      pomdpsol(infile, outfile, precision = precision, timeout = timeout, stdout = stdout)
       out = read_policy(belief, file = outfile)
 
 

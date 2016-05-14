@@ -1,10 +1,11 @@
 # dependent functions
-source("milad.R")
+source("inst/examples/milad.R")
+devtools::load_all()
 
 gdist = "ricker"
 Num_s = 30
-Num_a = 31
-Num_z = 32
+Num_a = 30
+Num_z = 30
 sigma_g = 0.1
 sigma_m = 0.1
 r = 1
@@ -25,9 +26,9 @@ R = create_R(Num_s,Num_a)
 
 options(mc.cores = parallel::detectCores())
 
-system.time( out <- pomdp(T,O, R, 0.95) )
+system.time( out0 <- pomdp(T,O, R, 0.95) )
 
-h <- out[[2]]
+h <- out0[[2]]
 x <- seq_along(h)
 plot(x, x - h)
 
@@ -35,12 +36,15 @@ plot(x, x - h)
 ## Milad states: 1:30, actions 0:30 (?)
 ## Milad transition, observation: no 'pile-on-boundary' in probabilty
 
+source("inst/examples/fisheries-ex.R")
 out1 <- pomdp(T, O, reward, 0.95)
 out2 <- pomdp(transition, O, reward, 0.95)
 out3 <- pomdp(transition, observation, reward, 0.95)
 
 
 library("ggplot2")
+
+x <- seq_along(out2[[2]])
 df <- data.frame(x, y = x - out[[2]], y1 = x- out1[[2]], y2 = x - out2[[2]], y3 = x - out3[[2]])
 ggplot(df, aes(x)) +
   geom_line(aes(y = y)) +

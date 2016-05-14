@@ -1,15 +1,23 @@
 library("MDPtoolbox")
+library("appl")
 
 ## MDP Problem definition
-states <- 1:30
+states <- 1:50
 actions <- states
-f <- function(x, h, r = 1, K = 25){
+f <- function(x, h, r = 1, K = 33){
   s <- pmax(x - h, 0)
   s * exp(r * (1 - s / K) )
 }
 sigma_g <- 0.1
 reward_fn <- function(x,h) pmin(x,h)
 discount <- 0.95
+
+## Exact / semi-analytic solution
+fun <- function(x) -f(x,0) + x / discount
+out <- optimize(f = fun, interval = c(min(states),max(states)))
+S_star <- round(out$minimum)
+exact_policy <- sapply(states, function(x) if(x < S_star) 0 else x - S_star)
+
 
 # Generate Matrices
 n_s <- length(states)
@@ -35,25 +43,12 @@ for (k in 1:n_s) {
   }
 }
 
-
 ## Numerical SDP Solution
 mdp <- MDPtoolbox::mdp_policy_iteration(transition, reward, discount)
 
-## Plot Solution
-plot(states, states - actions[mdp$policy], col="blue", lty=2)
 
 
-## Exact / semi-analytic solution
-fun <- function(x) - f(x,0) + x / discount
-out <- optimize(f = fun, interval = c(min(states),max(states)))
-S_star <- round(out$minimum)
-exact_policy <- sapply(states, function(x) if(x < S_star) 0 else x - S_star)
-
-lines(states, states - exact_policy, col = "red")
-testthat::expect_equal(actions[mdp$policy], exact_policy)
-
-
-## POMDP
+## POMDP problem
 sigma_m = 0.1
 observed_states <- states
 n_z = length(observed_states)
@@ -65,17 +60,29 @@ observation <- array(0, dim = c(n_s, n_z, n_a))
     } else {
       for (i in 1:n_s) {
         x <- dlnorm(observed_states, log(states[i]), sdlog = sigma_m)    # transition probability densities
-
         ## Normalize using CDF
         N <- plnorm(observed_states[n_s], log(states[i]), sigma_m)       # CDF accounts for prob density beyond boundary
         x <- x * N / sum(x)                                   # normalize densities to  = cdf(boundary)
         x[n_s] <- 1 - N + x[n_s]                              # pile remaining probability on boundary
         observation[i, , k] <- x                             # store as row of transition matrix
-
       }
     }
   }
 
-#pomdp(transition, observation, reward, discount)
+## Note: parallel doesn't error intelligably and cannot be interrupted gracefully either. Debug by running:
+#system.time(soln <- pomdp(transition, observation, reward, discount))
+
+system.time( soln <- pomdp(transition, observation, reward, discount, mc.cores = parallel::detectCores(), precision = "", timeout = "") )
+
+
+policies <- data.frame(states = states,
+                       exact = states - exact_policy,
+                       mdp = states - actions[mdp$policy],
+                       pomdp = states - soln$policy)
+
+library("tidyr")
+library("ggplot2")
+tidyr::gather(policies, soln, escapement, -states) %>%
+  ggplot2::ggplot(ggplot2::aes(states, escapement, col = soln)) + ggplot2::geom_point()
 
 

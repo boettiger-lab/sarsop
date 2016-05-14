@@ -4,7 +4,8 @@
 \alias{pomdp}
 \title{pomdp}
 \usage{
-pomdp(T, O, R, GAMMA, initial = NULL)
+pomdp(T, O, R, GAMMA, initial = NULL, mc.cores = getOption("mc.cores", 1L),
+  precision = 1, timeout = 25, stdout = FALSE, ...)
 }
 \arguments{
 \item{T}{Transition matrix, dimension n_s x n_s x n_a}
