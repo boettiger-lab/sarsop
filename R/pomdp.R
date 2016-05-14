@@ -6,12 +6,14 @@
 #' @param R Reward matrix, dimension n_s x n_a
 #' @param GAMMA the discount factor
 #' @param initial initial belief state, optional, defaults to uniform over states
+#' @param mc.cores number of cores needed for parallel runs.
+#' @param ... additional arguments to appl SARSOP algorithm, see \code{\link{appl}}.
 #' @return optimal value and corresponding policy
 #' @details Dimensions are given as number of states (n_s), number of observed states n_z, number of actions n_a
 #' @importFrom parallel mclapply
 #' @export
 pomdp <- function(T, O, R, GAMMA, initial = NULL, mc.cores = getOption("mc.cores", 1L),
-                  precision = 1, timeout = 25, stdout = FALSE, ...){
+                  stdout = FALSE, ...){
 
   Num_s <- dim(O)[1]
   Num_z <- dim(O)[2]
@@ -43,7 +45,7 @@ pomdp <- function(T, O, R, GAMMA, initial = NULL, mc.cores = getOption("mc.cores
 
       ## function is basically just these three lines.  Consider arguments to pomdpsol being top-level arguments
       write_pomdp(T, O, R, GAMMA, belief, Num_s, Num_a, Num_z, file = infile)
-      pomdpsol(infile, outfile, precision = precision, timeout = timeout, stdout = stdout)
+      pomdpsol(infile, outfile, stdout = stdout, ...)
       out = read_policy(belief, file = outfile)
 
 
