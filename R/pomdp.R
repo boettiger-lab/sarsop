@@ -27,7 +27,6 @@ pomdp <- function(T, O, R, GAMMA, initial = NULL, mc.cores = getOption("mc.cores
   policy = vector("numeric", length = Num_z)
 
 
-  ## PARALLELIZE THIS
   output <- parallel::mclapply(1:Num_z, function(i){   #for (i in 1:Num_z) {
     belief = initial * t(O[, i, 1])
 
@@ -35,8 +34,8 @@ pomdp <- function(T, O, R, GAMMA, initial = NULL, mc.cores = getOption("mc.cores
     belief = normalize(belief)
     belief = round(belief,4) / sum(round(belief,4))
 
-    ## Why test this?  Better syntax would be: if(any(is.nan(beleif)))
-    if(is.nan(sum(belief))){
+    if(any(is.nan(belief))){
+      # Belief has already converged
       c(value = 0, policy = 0)
     } else {
 

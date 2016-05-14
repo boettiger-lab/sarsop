@@ -2,9 +2,9 @@ library("MDPtoolbox")
 library("appl")
 
 ## MDP Problem definition
-states <- 1:50
+states <- 0:30
 actions <- states
-f <- function(x, h, r = 1, K = 33){
+f <- function(x, h, r = 1, K = 25){
   s <- pmax(x - h, 0)
   s * exp(r * (1 - s / K) )
 }
@@ -49,16 +49,20 @@ mdp <- MDPtoolbox::mdp_policy_iteration(transition, reward, discount)
 
 
 ## POMDP problem
-sigma_m = 0.1
+sigma_m = 0.5
 observed_states <- states
 n_z = length(observed_states)
 
 observation <- array(0, dim = c(n_s, n_z, n_a))
-  for (k in 1:n_a) {
-    if(sigma_m <= 0){
-      observation[, , k] <- diag(n_s)
-    } else {
-      for (i in 1:n_s) {
+for (k in 1:n_a) {
+  if(sigma_m <= 0){
+    observation[, , k] <- diag(n_s)
+  } else {
+    for (i in 1:n_s) {
+      if(states[i] <= 0){ ## cannot do dlnorm with mu = log(0) = -Inf.  Cannot solve if belief has already converged
+        x <- dlnorm(observed_states, -1, sigma_m)
+        observation[i, , k] <- x / sum(x)
+      } else {
         x <- dlnorm(observed_states, log(states[i]), sdlog = sigma_m)    # transition probability densities
         ## Normalize using CDF
         N <- plnorm(observed_states[n_s], log(states[i]), sigma_m)       # CDF accounts for prob density beyond boundary
@@ -68,11 +72,12 @@ observation <- array(0, dim = c(n_s, n_z, n_a))
       }
     }
   }
+}
 
 ## Note: parallel doesn't error intelligably and cannot be interrupted gracefully either. Debug by running:
-#system.time(soln <- pomdp(transition, observation, reward, discount))
+system.time(soln <- pomdp(transition, observation, reward, discount, stdout = TRUE))
 
-system.time( soln <- pomdp(transition, observation, reward, discount, mc.cores = parallel::detectCores(), precision = 1, memory = 1500) )
+#system.time( soln <- pomdp(transition, observation, reward, discount, mc.cores = parallel::detectCores(), precision = 1, memory = 1500) )
 
 
 policies <- data.frame(states = states,
