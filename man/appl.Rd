@@ -10,9 +10,9 @@
 \alias{pomdpsol}
 \title{APPL wrappers}
 \usage{
-pomdpsol(model, output = tempfile(), precision = 1, timeout = "",
-  fast = FALSE, randomization = FALSE, memory = "",
-  improvementConstant = "", timeInterval = "", stdout = "")
+pomdpsol(model, output = tempfile(), precision = 1, timeout = NULL,
+  fast = FALSE, randomization = FALSE, memory = NULL,
+  improvementConstant = NULL, timeInterval = NULL, stdout = "")
 
 polgraph(model, policy, output = tempfile(), max_depth = 3,
   max_branches = 10, min_prob = 0.001, stdout = "")

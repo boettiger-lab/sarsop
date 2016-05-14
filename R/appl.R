@@ -27,16 +27,18 @@
 #' evaluation <- pomdpeval(model, policy)
 #' graph <- polgraph(model, policy)
 #' simulations <- pomdpsim(model, policy)
-pomdpsol <- function(model, output = tempfile(), precision = 1, timeout = "",
-                     fast = FALSE, randomization = FALSE, memory = "",
-                     improvementConstant = "", timeInterval = "", stdout = ""){
+pomdpsol <- function(model, output = tempfile(), precision = 1, timeout = NULL,
+                     fast = FALSE, randomization = FALSE, memory = NULL,
+                     improvementConstant = NULL, timeInterval = NULL, stdout = ""){
   model <- normalizePath(model, mustWork = TRUE)
-  args <- paste(model, "--output", output, "--precision", precision, "--timeout", timeout, "--memory", memory,
-                "--policy-interval", timeInterval, "--trial-improvement-factor", improvementConstant)
-  if(randomization)
-    paste(args, "--randomization")
-  if(fast)
-    paste(args, "--fast")
+  args <- paste(model, "--output", output, "--precision", precision)
+
+  if(!is.null(timeout)) args <- paste(args, "--timeout", timeout)
+  if(!is.null(memory)) args <- paste(args, "--memory", memory)
+  if(!is.null(timeInterval)) args <- paste(args, "--policy-interval", timeInterval)
+  if(!is.null(improvementConstant)) paste(args, "--trial-improvement-factor", improvementConstant)
+  if(randomization) args <- paste(args, "--randomization")
+  if(fast) args <- paste(args, "--fast")
   exec_program("pomdpsol", args, stdout = stdout)
   return(output)
 }
