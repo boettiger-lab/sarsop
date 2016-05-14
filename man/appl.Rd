@@ -10,8 +10,9 @@
 \alias{pomdpsol}
 \title{APPL wrappers}
 \usage{
-pomdpsol(model, output = tempfile(), precision = 25, timeout = 10,
-  stdout = "")
+pomdpsol(model, output = tempfile(), precision = 1, timeout = "",
+  fast = FALSE, randomization = FALSE, memory = "",
+  improvementConstant = "", timeInterval = "", stdout = "")
 
 polgraph(model, policy, output = tempfile(), max_depth = 3,
   max_branches = 10, min_prob = 0.001, stdout = "")
@@ -29,9 +30,19 @@ pomdpconvert(model, stdout = "")
 
 \item{output}{file/path of the output policy file. This is also returned by the function.}
 
-\item{precision}{precision value}
+\item{precision}{targetPrecision. Set targetPrecision as the target precision in solution quality; run ends when target precision is reached. The target precision is 1 by default.}
 
-\item{timeout}{timeout in seconds}
+\item{timeout}{Use timeLimit as the timeout in seconds.  If running time exceeds the specified value, pomdpsol writes out a policy and terminates. There is no time limit by default.}
+
+\item{fast}{logical, default FALSE. use fast (but very picky) alternate parser for .pomdp files.}
+
+\item{randomization}{logical, default FALSE. Turn on randomization for the sampling algorithm.}
+
+\item{memory}{Use memoryLimit as the memory limit in MB. No memory limit by default.  If memory usage exceeds the specified value, pomdpsol writes out a policy and terminates. Set the value to be less than physical memory to avoid swapping.}
+
+\item{improvementConstant}{Use improvementConstant as the trial improvement factor in the sampling algorithm. At the default of 0.5, a trial terminates at a belief when the gap between its upper and lower bound is 0.5 of the current precision at the initial belief.}
+
+\item{timeInterval}{Use timeInterval as the time interval between two consecutive write-out of policy files. If this is not specified, pomdpsol only writes out a policy file upon termination.}
 
 \item{stdout}{where output to ‘stdout’, see \code{\link{system2}}. Use \code{FALSE}
 to suppress output.}

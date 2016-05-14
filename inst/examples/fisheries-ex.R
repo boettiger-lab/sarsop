@@ -72,7 +72,7 @@ observation <- array(0, dim = c(n_s, n_z, n_a))
 ## Note: parallel doesn't error intelligably and cannot be interrupted gracefully either. Debug by running:
 #system.time(soln <- pomdp(transition, observation, reward, discount))
 
-system.time( soln <- pomdp(transition, observation, reward, discount, mc.cores = parallel::detectCores(), precision = "", timeout = "") )
+system.time( soln <- pomdp(transition, observation, reward, discount, mc.cores = parallel::detectCores(), precision = 1, memory = 1500) )
 
 
 policies <- data.frame(states = states,
