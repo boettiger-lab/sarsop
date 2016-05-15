@@ -1,25 +1,43 @@
+---
+output:
+  html_document: 
+    keep_md: yes
+    variant: markdown_github
+---  
+
+
+```{r}
 library("MDPtoolbox")
 library("appl")
+```
+
 
 ## MDP Problem definition
-states <- 0:30
+
+```{r}
+states <- 0:50
 actions <- states
-f <- function(x, h, r = 1, K = 25){
+f <- function(x, h, r = 1, K = 33){
   s <- pmax(x - h, 0)
   s * exp(r * (1 - s / K) )
 }
-sigma_g <- 0.1
+sigma_g <- 0.2
 reward_fn <- function(x,h) pmin(x,h)
 discount <- 0.95
+```
 
 ## Exact / semi-analytic solution
+
+```{r}
 fun <- function(x) -f(x,0) + x / discount
 out <- optimize(f = fun, interval = c(min(states),max(states)))
 S_star <- round(out$minimum)
 exact_policy <- sapply(states, function(x) if(x < S_star) 0 else x - S_star)
-
+```
 
 # Generate Matrices
+
+```{r}
 n_s <- length(states)
 n_a <- length(actions)
 transition <- array(0, dim = c(n_s, n_s, n_a))
@@ -42,14 +60,19 @@ for (k in 1:n_s) {
     reward[k, i] <- reward_fn(states[k], actions[i])
   }
 }
+```
 
 ## Numerical SDP Solution
-mdp <- MDPtoolbox::mdp_policy_iteration(transition, reward, discount)
 
+```{r}
+mdp <- MDPtoolbox::mdp_policy_iteration(transition, reward, discount)
+```
 
 
 ## POMDP problem
-sigma_m = 0.5
+
+```{r}
+sigma_m = 0.2
 observed_states <- states
 n_z = length(observed_states)
 
@@ -73,12 +96,13 @@ for (k in 1:n_a) {
     }
   }
 }
+```
 
+
+```{r}
 ## Note: parallel doesn't error intelligably and cannot be interrupted gracefully either. Debug by running:
-system.time(soln <- pomdp(transition, observation, reward, discount, stdout = TRUE))
-
-#system.time( soln <- pomdp(transition, observation, reward, discount, mc.cores = parallel::detectCores(), precision = 1, memory = 1500) )
-
+#system.time(soln <- pomdp(transition, observation, reward, discount, stdout = TRUE))
+system.time( soln <- pomdp(transition, observation, reward, discount, mc.cores = parallel::detectCores(), precision = 1, memory = 1500) )
 
 policies <- data.frame(states = states,
                        exact = states - exact_policy,
@@ -89,5 +113,5 @@ library("tidyr")
 library("ggplot2")
 tidyr::gather(policies, soln, escapement, -states) %>%
   ggplot2::ggplot(ggplot2::aes(states, escapement, col = soln)) + ggplot2::geom_point()
-
+```
 

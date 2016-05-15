@@ -1,0 +1,39 @@
+Comparison of Milad matrices
+
+```{r}
+library("appl")
+source("inst/examples/milad.R")
+```
+
+```{r}
+gdist = "ricker"
+Num_s = 50
+Num_a = 50
+Num_z = 50
+sigma_g = 0.2
+sigma_m = 0.2
+r = 1
+K = 33
+C = 10
+noise_dist = "lognormal"
+discount = 0.95
+
+# Creates transition matrix
+T = create_T(Num_s,Num_a,sigma_g,gdist,r,C,K,noise_dist)
+# creates emission matrix
+O = create_O(Num_s,Num_a,Num_z,sigma_m,noise_dist)
+# creates reward function
+R = create_R(Num_s,Num_a)
+#R = create_R2(Num_s,Num_a,0.1)
+```
+
+
+```{r}
+system.time( out0 <- pomdp(T,O, R, discount, mc.cores = parallel::detectCores(), precision = 1, memory = 1500) )
+```
+
+```{r}
+h <- out0[[2]]
+x <- seq_along(h)
+plot(x, x - h)
+```
