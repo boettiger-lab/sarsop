@@ -2,7 +2,9 @@ Comparison of Milad matrices
 
 ```{r}
 library("appl")
-source("inst/examples/milad.R")
+source("milad.R")
+knitr::opts_chunk$set(cache = TRUE)
+
 ```
 
 ```{r}
@@ -37,3 +39,41 @@ h <- out0[[2]]
 x <- seq_along(h)
 plot(x, x - h)
 ```
+
+
+
+
+
+
+## Compare to exact:
+
+```{r}
+states <- 0:50
+actions <- states
+f <- function(x, h, r = 1, K = 33){
+  s <- pmax(x - h, 0)
+  s * exp(r * (1 - s / K) )
+}
+sigma_g <- 0.2
+reward_fn <- function(x,h) pmin(x,h)
+discount <- 0.95
+```
+
+## Semi-analytic solution
+
+```{r}
+fun <- function(x) -f(x,0) + x / discount
+out <- optimize(f = fun, interval = c(min(states),max(states)))
+S_star <- round(out$minimum)
+exact_policy <- sapply(states, function(x) if(x < S_star) 0 else x - S_star)
+```
+
+
+```{r}
+h <- out0[[2]]
+x <- seq_along(h)
+plot(x, x - h)
+
+points(states, states - exact_policy, col = 'red', pch = 3)
+```
+

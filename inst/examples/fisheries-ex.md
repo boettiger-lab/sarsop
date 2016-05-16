@@ -1,12 +1,7 @@
----
-output:
-  html_document: 
-    keep_md: yes
-    variant: markdown_github
----  
 
 
-```{r}
+
+```r
 library("MDPtoolbox")
 library("appl")
 knitr::opts_chunk$set(cache = TRUE)
@@ -15,7 +10,8 @@ knitr::opts_chunk$set(cache = TRUE)
 
 ## MDP Problem definition
 
-```{r}
+
+```r
 states <- 0:50
 actions <- states
 f <- function(x, h, r = 1, K = 33){
@@ -29,7 +25,8 @@ discount <- 0.95
 
 ## Exact / semi-analytic solution
 
-```{r}
+
+```r
 fun <- function(x) -f(x,0) + x / discount
 out <- optimize(f = fun, interval = c(min(states),max(states)))
 S_star <- round(out$minimum)
@@ -38,7 +35,8 @@ exact_policy <- sapply(states, function(x) if(x < S_star) 0 else x - S_star)
 
 # Generate Matrices
 
-```{r}
+
+```r
 n_s <- length(states)
 n_a <- length(actions)
 transition <- array(0, dim = c(n_s, n_s, n_a))
@@ -65,14 +63,28 @@ for (k in 1:n_s) {
 
 ## Numerical SDP Solution
 
-```{r}
+
+```r
 mdp <- MDPtoolbox::mdp_policy_iteration(transition, reward, discount)
+```
+
+```
+## Note: method with signature 'Matrix#matrix' chosen for function '-',
+##  target signature 'ddiMatrix#matrix'.
+##  "ddiMatrix#ANY" would also be valid
+```
+
+```
+## Note: method with signature 'ddiMatrix#dMatrix' chosen for function '-',
+##  target signature 'ddiMatrix#dtCMatrix'.
+##  "diagonalMatrix#triangularMatrix" would also be valid
 ```
 
 
 ## POMDP problem
 
-```{r}
+
+```r
 sigma_m = 0.2
 observed_states <- states
 n_z = length(observed_states)
@@ -100,11 +112,19 @@ for (k in 1:n_a) {
 ```
 
 
-```{r}
+
+```r
 ## Note: parallel doesn't error intelligably and cannot be interrupted gracefully either. Debug by running:
 #system.time(soln <- pomdp(transition, observation, reward, discount, stdout = TRUE))
 system.time( soln <- pomdp(transition, observation, reward, discount, mc.cores = parallel::detectCores(), precision = 1, memory = 1500) )
+```
 
+```
+##       user     system    elapsed 
+## 667487.073   1243.044  19681.422
+```
+
+```r
 policies <- data.frame(states = states,
                        exact = states - exact_policy,
                        mdp = states - actions[mdp$policy],
@@ -115,4 +135,6 @@ library("ggplot2")
 tidyr::gather(policies, soln, escapement, -states) %>%
   ggplot2::ggplot(ggplot2::aes(states, escapement, col = soln)) + ggplot2::geom_point()
 ```
+
+![](fisheries-ex_files/figure-html/unnamed-chunk-7-1.png)<!-- -->
 
