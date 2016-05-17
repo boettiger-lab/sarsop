@@ -16,9 +16,9 @@ knitr::opts_chunk$set(cache = TRUE)
 ## MDP Problem definition
 
 ```{r}
-states <- 0:20
+states <- 0:24
 actions <- states
-f <- function(x, h, r = 1, K = 15){
+f <- function(x, h, r = 1, K = 18){
   s <- pmax(x - h, 0)
   s * exp(r * (1 - s / K) )
 }
@@ -107,7 +107,7 @@ for (k in 1:n_a) {
 ```{r}
 ## Note: parallel doesn't error intelligably and cannot be interrupted gracefully either. Debug by running:
 #system.time(soln <- pomdp(transition, observation, reward, discount, stdout = TRUE))
-system.time( soln <- pomdp(transition, observation, reward, discount, mc.cores = parallel::detectCores(), precision = 20, memory = 1000) )
+system.time( soln <- pomdp(transition, observation, reward, discount, mc.cores = parallel::detectCores(), precision = 20) )
 
 policies <- data.frame(states = states,
                        exact = states - exact_policy,
