@@ -19,7 +19,7 @@ library("MDPtoolbox")
 
 ```r
 library("appl")
-knitr::opts_chunk$set(cache = TRUE)
+#knitr::opts_chunk$set(cache = TRUE)
 ```
 
 
@@ -27,7 +27,7 @@ knitr::opts_chunk$set(cache = TRUE)
 
 
 ```r
-states <- 0:24
+states <- 0:23
 actions <- states
 f <- function(x, h, r = 1, K = 18){
   s <- pmax(x - h, 0)
@@ -135,42 +135,41 @@ for (k in 1:n_a) {
 ```r
 ## Note: parallel doesn't error intelligably and cannot be interrupted gracefully either. Debug by running:
 #system.time(soln <- pomdp(transition, observation, reward, discount, stdout = TRUE))
-system.time( soln <- pomdp(transition, observation, reward, discount, mc.cores = parallel::detectCores(), precision = 20) )
+system.time( soln <- pomdp(transition, observation, reward, discount, mc.cores = parallel::detectCores(), precision = 15) )
 ```
 
 ```
 ##    user  system elapsed 
-##  27.771   1.169   5.768
+## 105.999   1.572  19.694
 ```
+
+
 
 ```r
 policies <- data.frame(states = states,
                        exact = states - exact_policy,
                        mdp = states - actions[mdp$policy],
                        pomdp = states - soln$policy)
+
+library("tidyr")
 ```
 
 ```
-## Warning in states - exact_policy: longer object length is not a multiple of
-## shorter object length
+## 
+## Attaching package: 'tidyr'
 ```
 
 ```
-## Warning in states - actions[mdp$policy]: longer object length is not a
-## multiple of shorter object length
-```
-
-```
-## Warning in states - soln$policy: longer object length is not a multiple of
-## shorter object length
+## The following object is masked from 'package:Matrix':
+## 
+##     expand
 ```
 
 ```r
-library("tidyr")
 library("ggplot2")
 tidyr::gather(policies, soln, escapement, -states) %>%
   ggplot2::ggplot(ggplot2::aes(states, escapement, col = soln)) + ggplot2::geom_point()
 ```
 
-![](fisheries-ex_files/figure-html/unnamed-chunk-7-1.png)<!-- -->
+![](fisheries-ex_files/figure-html/unnamed-chunk-8-1.png)<!-- -->
 
