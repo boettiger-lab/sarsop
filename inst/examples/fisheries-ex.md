@@ -135,12 +135,12 @@ for (k in 1:n_a) {
 ```r
 ## Note: parallel doesn't error intelligably and cannot be interrupted gracefully either. Debug by running:
 #system.time(soln <- pomdp(transition, observation, reward, discount, stdout = TRUE))
-system.time( soln <- pomdp(transition, observation, reward, discount, mc.cores = parallel::detectCores(), precision = 2.5) )
+system.time( soln <- pomdp(transition, observation, reward, discount, mc.cores = 4, precision = 1, memory = 3750) )
 ```
 
 ```
-##      user    system   elapsed 
-## 40407.388    16.408  8964.715
+##       user     system    elapsed 
+## 400851.461     67.518 144635.953
 ```
 
 
