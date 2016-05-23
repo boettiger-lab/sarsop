@@ -15,18 +15,18 @@
 #' @param memory Use memoryLimit as the memory limit in MB. No memory limit by default.  If memory usage exceeds the specified value, pomdpsol writes out a policy and terminates. Set the value to be less than physical memory to avoid swapping.
 #' @param improvementConstant Use improvementConstant as the trial improvement factor in the sampling algorithm. At the default of 0.5, a trial terminates at a belief when the gap between its upper and lower bound is 0.5 of the current precision at the initial belief.
 #' @param timeInterval Use timeInterval as the time interval between two consecutive write-out of policy files. If this is not specified, pomdpsol only writes out a policy file upon termination.
-#' @param stdout where output to ‘stdout’, see \code{\link{system2}}. Use \code{FALSE}
+#' @param stdout where output to 'stdout', see \code{\link{system2}}. Use \code{FALSE}
 #' to suppress output.
 #' @examples
 #' setwd(tempdir())
 #' model <- system.file("models/example.pomdp", package = "appl")
-#' policy <- pomdpsol(model)
+#' policy <- pomdpsol(model, timeout = 2, stdout = FALSE)
 #' readLines(policy)
 #'
 #' # Other tools
-#' evaluation <- pomdpeval(model, policy)
-#' graph <- polgraph(model, policy)
-#' simulations <- pomdpsim(model, policy)
+#' evaluation <- pomdpeval(model, policy, stdout = FALSE)
+#' graph <- polgraph(model, policy, stdout = FALSE)
+#' simulations <- pomdpsim(model, policy, stdout = FALSE)
 pomdpsol <- function(model, output = tempfile(), precision = 1, timeout = NULL,
                      fast = FALSE, randomization = FALSE, memory = NULL,
                      improvementConstant = NULL, timeInterval = NULL, stdout = ""){

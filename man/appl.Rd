@@ -44,7 +44,7 @@ pomdpconvert(model, stdout = "")
 
 \item{timeInterval}{Use timeInterval as the time interval between two consecutive write-out of policy files. If this is not specified, pomdpsol only writes out a policy file upon termination.}
 
-\item{stdout}{where output to ‘stdout’, see \code{\link{system2}}. Use \code{FALSE}
+\item{stdout}{where output to 'stdout', see \code{\link{system2}}. Use \code{FALSE}
 to suppress output.}
 
 \item{policy}{file/path to the policy file}
@@ -66,12 +66,12 @@ file and returns the path to the output policy file.
 \examples{
 setwd(tempdir())
 model <- system.file("models/example.pomdp", package = "appl")
-policy <- pomdpsol(model)
+policy <- pomdpsol(model, timeout = 2, stdout = FALSE)
 readLines(policy)
 
 # Other tools
-evaluation <- pomdpeval(model, policy)
-graph <- polgraph(model, policy)
-simulations <- pomdpsim(model, policy)
+evaluation <- pomdpeval(model, policy, stdout = FALSE)
+graph <- polgraph(model, policy, stdout = FALSE)
+simulations <- pomdpsim(model, policy, stdout = FALSE)
 }
 

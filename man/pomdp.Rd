@@ -20,6 +20,8 @@ pomdp(T, O, R, GAMMA, initial = NULL, mc.cores = getOption("mc.cores", 1L),
 
 \item{mc.cores}{number of cores needed for parallel runs.}
 
+\item{stdout}{display stdout from pomdp C++ routines? (Can overflow R, default FALSE)}
+
 \item{...}{additional arguments to appl SARSOP algorithm, see \code{\link{appl}}.}
 }
 \value{

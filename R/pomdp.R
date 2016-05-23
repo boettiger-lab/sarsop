@@ -8,6 +8,7 @@
 #' @param initial initial belief state, optional, defaults to uniform over states
 #' @param mc.cores number of cores needed for parallel runs.
 #' @param ... additional arguments to appl SARSOP algorithm, see \code{\link{appl}}.
+#' @param stdout display stdout from pomdp C++ routines? (Can overflow R, default FALSE)
 #' @return optimal value and corresponding policy
 #' @details Dimensions are given as number of states (n_s), number of observed states n_z, number of actions n_a
 #' @importFrom parallel mclapply
