@@ -5,7 +5,7 @@
 \title{pomdp}
 \usage{
 pomdp(T, O, R, GAMMA, initial = NULL, mc.cores = getOption("mc.cores", 1L),
-  precision = 1, timeout = 25, stdout = FALSE, ...)
+  stdout = FALSE, ...)
 }
 \arguments{
 \item{T}{Transition matrix, dimension n_s x n_s x n_a}
@@ -17,6 +17,10 @@ pomdp(T, O, R, GAMMA, initial = NULL, mc.cores = getOption("mc.cores", 1L),
 \item{GAMMA}{the discount factor}
 
 \item{initial}{initial belief state, optional, defaults to uniform over states}
+
+\item{mc.cores}{number of cores needed for parallel runs.}
+
+\item{...}{additional arguments to appl SARSOP algorithm, see \code{\link{appl}}.}
 }
 \value{
 optimal value and corresponding policy
