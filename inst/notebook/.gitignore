@@ -1,2 +1,5 @@
 fisheries-ex.html
 fisheries-ex_cache
+*.policy
+*.pomdp
+*.pomdpx

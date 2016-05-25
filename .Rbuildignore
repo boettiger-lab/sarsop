@@ -20,3 +20,4 @@ README.md
 ^windows
 ^inst/bin
 ^\.travis\.yml$
+^inst/notebook
