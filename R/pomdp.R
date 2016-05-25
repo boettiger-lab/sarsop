@@ -49,14 +49,17 @@ pomdp <- function(T, O, R, GAMMA, initial = NULL, mc.cores = getOption("mc.cores
       out = read_policy(belief, file = outfile)
 
 
-      c(value = out[[1]], policy = out[[2]])
+      c(value = out[[1]], policy = out[[2]], alpha = out[[3]], alpha_action = out[[4]])
     }
 
 
   }, mc.cores = mc.cores)
 
-  list(value = sapply(output, `[[`, "value"),
-       policy = sapply(output, `[[`, "policy"))
+  ## Re-arrange results
+  list(value  = sapply(output, `[[`, "value"),
+       policy = sapply(output, `[[`, "policy"),
+       alpha  = lapply(output, `[[`, "alpha"),
+       alpha_action = lapply(output, `[[`, "alpha_action"))
 }
 
 
