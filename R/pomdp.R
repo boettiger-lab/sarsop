@@ -37,7 +37,7 @@ pomdp <- function(T, O, R, GAMMA, initial = NULL, mc.cores = getOption("mc.cores
 
     if(any(is.nan(belief))){
       # Belief has already converged
-      c(value = 0, policy = 0)
+      list(value = 0, policy = 0, alpha = list(), alpha_action = list())
     } else {
 
       infile <- tempfile("input", fileext = ".pomdp")
@@ -48,12 +48,12 @@ pomdp <- function(T, O, R, GAMMA, initial = NULL, mc.cores = getOption("mc.cores
       pomdpsol(infile, outfile, stdout = stdout, ...)
       out = read_policy(belief, file = outfile)
 
-
-      c(value = out[[1]], policy = out[[2]], alpha = out[[3]], alpha_action = out[[4]])
+      list(value = out[[1]], policy = out[[2]], alpha = out[[3]], alpha_action = out[[4]])
     }
 
 
   }, mc.cores = mc.cores)
+
 
   ## Re-arrange results
   list(value  = sapply(output, `[[`, "value"),
