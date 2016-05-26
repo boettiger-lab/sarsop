@@ -16,5 +16,5 @@ read_policy = function(initial, file = 'output.policy'){
   ## Return policy of the vector which has the biggest inner product
   #alpha_action[which.max(a)]
 
-  output = list(max(a), alpha_action[which.max(a)], alpha, alpha_action)
+  list(max(a), alpha_action[which.max(a)], alpha, alpha_action)
 }
