@@ -135,12 +135,12 @@ for (k in 1:n_a) {
 ```r
 ## Note: parallel doesn't error intelligably and cannot be interrupted gracefully either. Debug by running:
 #system.time(soln <- pomdp(transition, observation, reward, discount, stdout = TRUE))
-system.time( soln <- pomdp(transition, observation, reward, discount, mc.cores = 8, precision = 10, memory = 2000) )
+system.time( soln <- pomdp(transition, observation, reward, discount, mc.cores = 4, precision = 5, memory = 3750) )
 ```
 
 ```
-##      user    system   elapsed 
-## 32361.562    37.690  5115.503
+##       user     system    elapsed 
+## 369487.879     95.727 128343.943
 ```
 
 
@@ -171,5 +171,5 @@ tidyr::gather(policies, soln, escapement, -states) %>%
   ggplot2::ggplot(ggplot2::aes(states, escapement, col = soln)) + ggplot2::geom_point()
 ```
 
-![](fisheries-ex_files/figure-html/unnamed-chunk-8-1.png)<!-- -->
+![](fisheries-ex_files/figure-html/unnamed-chunk-8-1.png)
 
