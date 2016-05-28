@@ -8,10 +8,15 @@
 # Num_S number of states (compute from P_Aug)
 # Num_a number of actions (compute from R matrix)
 # Num_z number of possible observations (compute from O_Aug)
-write_pomdp <- function(P_Aug,O_Aug,R,gamma,b,Num_S,Num_a,Num_z, file = "input.pomdpx"){
+write_pomdpx <- function(P, O, R, gamma, b = rep(1/dim(O)[1], dim(O)[1]), file = "input.pomdpx", digits = 4, digits2 = 10, format = "f"){
 
-    SS <- paste0("a", 1:Num_a)
-    XX <- paste0("a", 1:(Num_a+1)) # 1:800)
+
+    Num_S <- dim(O)[1]
+    Num_z <- dim(O)[2]
+    Num_a <- dim(O)[3]
+
+    SS <- paste0("a", 1:Num_S)
+    XX <- paste0("a", 1:Num_a) # 1:800)
 
     # Creates the description, Discount, and Varibale section of POMDPX file
     header <- paste0(
@@ -96,7 +101,7 @@ write_pomdp <- function(P_Aug,O_Aug,R,gamma,b,Num_S,Num_a,Num_z, file = "input.p
                                 '<Entry>\n',
                                 paste0('<Instance>',c,' - -</Instance>\n','<ProbTable>'))
       for(i in 1:dim(P)[1]){
-        transition_full <-paste0(transition_full, paste0(P[i,,ii], collapse= " "), "\n")
+        transition_full <-paste0(transition_full, paste0(formatC(normalize(P[i,,ii], digits = digits), format = format, digits = digits2), collapse= " "), "\n")
       }
       transition_full <- paste0(transition_full, '</ProbTable>\n</Entry>\n')
     }
@@ -125,7 +130,7 @@ write_pomdp <- function(P_Aug,O_Aug,R,gamma,b,Num_S,Num_a,Num_z, file = "input.p
                          '<Entry>\n',
                          paste0('<Instance>',c,' - -</Instance>\n','<ProbTable>'))
       for(i in 1:dim(P)[1]){
-        emission <-paste0(emission, paste0(O[i,,ii], collapse= " "), "\n")
+        emission <-paste0(emission, paste0(formatC(normalize(O[i,,ii], digits = digits), format = format, digits = digits2), collapse= " "), "\n")
       }
       emission <- paste0(emission, '</ProbTable>\n</Entry>\n')
 
@@ -182,9 +187,14 @@ write_pomdp <- function(P_Aug,O_Aug,R,gamma,b,Num_S,Num_a,Num_z, file = "input.p
 
 
 
-## Depricated non-xml based format
-write_pomdp_orig <- function(P_Aug,O_Aug,R,gamma,b,Num_S,Num_a,Num_z, file = "input.pomdp"){
 
+## Depricated non-xml based format
+write_pomdp <- function(P_Aug, O_Aug, R, gamma, b, file = "input.pomdp"){
+
+
+  Num_s <- dim(O)[1]
+  Num_z <- dim(O)[2]
+  Num_a <- dim(O)[3]
   string = paste0("a", 1:Num_a)
   XX = paste0("a", 1:(Num_a+1)) # 1:800)
 
