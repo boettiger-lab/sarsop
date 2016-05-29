@@ -39,8 +39,11 @@ pomdpsol <- function(model, output = tempfile(), precision = 1, timeout = NULL,
   if(!is.null(improvementConstant)) paste(args, "--trial-improvement-factor", improvementConstant)
   if(randomization) args <- paste(args, "--randomization")
   if(fast) args <- paste(args, "--fast")
-  exec_program("pomdpsol", args, stdout = stdout)
-  return(output)
+  res = exec_program("pomdpsol", args, stdout = stdout)
+  if(!is.null(res))
+    return(res)
+  else
+    return(output)
 }
 
 #' @export
@@ -98,6 +101,42 @@ exec_program <- function(program, args, stdout) {
   binpath <- system.file("bin", package = "appl")
   path <- normalizePath(file.path(binpath, program), mustWork = TRUE)
   res <- system2(path, args, stdout = stdout)
-  if(res != 0) stop("Call to ", program, " failed with error: ", res)
-  return(NULL)
+  if(res != 0 && stdout != TRUE) stop("Call to ", program, " failed with error: ", res)
+  if(stdout == TRUE)
+    return(res)
+  else
+    return(NULL)
+}
+
+parse_key_value <- function(key, txt){
+  i <- grep(key, txt)
+  value <- strsplit(txt[i], " : ")[[1]][2]
+  as.numeric(gsub( "(\\d+)[a-zA-Z\\s]", "\\1", value))
+  }
+
+
+parse_sarsop_messages <- function(txt){
+
+
+
+  load_time <- parse_key_value("loading time",txt) # in seconds
+  init_time <- parse_key_value("initialization time")
+
+  final_i <- grep("Time   |#Trial |#Backup |LBound    |UBound    |Precision  |#Alphas |#Beliefs", txt)[2] + 2
+  final <- as.numeric(strsplit(txt[final_i], "\\s+")[[1]])[-1]
+  names(final) <- c("Time", "#Trial", "#Backup", "LBound", "UBound", "Precision", "#Alphas", "#Beliefs")
+
+
+  n <- grep("SARSOP finishing", txt)
+  end_condition <- txt[n+1]
+
+
+  ## Timeout
+  #if(grepl("Preset timeout reached", end_condition))
+
+  ## Memory max
+
+  ## Precision reached
+
+  ## Other end condition
 }
