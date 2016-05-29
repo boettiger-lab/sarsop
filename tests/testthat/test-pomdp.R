@@ -1,16 +1,15 @@
 testthat::context("pomdp")
 
-
-
 testthat::test_that("pomdp functions generates a policy", {
 
   source(system.file("examples/fisheries-ex.R", package = "appl"))
 
-  write_pomdpx(transition, observation, reward, discount, digits = 4, digits2 = 10)
-  out = pomdpsol("input.pomdpx", "output.policy", precision = 10)
+  soln <- pomdp(transition, observation, reward, discount, precision = 10)
 
-  ## Note: parallel doesn't error intelligably and cannot be interrupted gracefully either. Debug by running:
-  system.time(soln <- pomdp(transition, observation, reward, discount, precision = 1, mc.cores = 1))
+  ## Deterministic Solution
+  out <- optimize(function(x) -f(x,0) + x / discount, c(min(states),max(states)))
+  S_star <- round(out$minimum)
+  exact_policy <- sapply(states, function(x) if(x < S_star) 0 else x - S_star)
 
   policies <- data.frame(states = states,
                          exact = states - exact_policy,

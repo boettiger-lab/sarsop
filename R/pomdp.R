@@ -43,7 +43,7 @@ pomdp <- function(T, O, R, GAMMA, initial = NULL, mc.cores = getOption("mc.cores
       outfile <- tempfile("output", fileext = ".policy")
 
       ## function is basically just these three lines.  Consider arguments to pomdpsol being top-level arguments
-      write_pomdpx(T, O, R, GAMMA, belief, file = infile, digits = digits)
+      write_pomdpx(T, O, R, GAMMA, belief, file = infile)
       pomdpsol(infile, outfile, stdout = stdout, ...)
       out = read_policy(belief, file = outfile)
 

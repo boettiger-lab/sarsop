@@ -15,7 +15,7 @@
 #' @param memory Use memoryLimit as the memory limit in MB. No memory limit by default.  If memory usage exceeds the specified value, pomdpsol writes out a policy and terminates. Set the value to be less than physical memory to avoid swapping.
 #' @param improvementConstant Use improvementConstant as the trial improvement factor in the sampling algorithm. At the default of 0.5, a trial terminates at a belief when the gap between its upper and lower bound is 0.5 of the current precision at the initial belief.
 #' @param timeInterval Use timeInterval as the time interval between two consecutive write-out of policy files. If this is not specified, pomdpsol only writes out a policy file upon termination.
-#' @param stdout where output to 'stdout', see \code{\link{system2}}. Use \code{FALSE}
+#' @param stderr where output to 'stderr', see \code{\link{system2}}. Use \code{FALSE}
 #' to suppress output.
 #' @examples
 #' setwd(tempdir())
@@ -29,7 +29,7 @@
 #' simulations <- pomdpsim(model, policy, stdout = FALSE)
 pomdpsol <- function(model, output = tempfile(), precision = 1, timeout = NULL,
                      fast = FALSE, randomization = FALSE, memory = NULL,
-                     improvementConstant = NULL, timeInterval = NULL, stdout = ""){
+                     improvementConstant = NULL, timeInterval = NULL, stderr = ""){
   model <- normalizePath(model, mustWork = TRUE)
   args <- paste(model, "--output", output, "--precision", precision)
 
@@ -39,11 +39,9 @@ pomdpsol <- function(model, output = tempfile(), precision = 1, timeout = NULL,
   if(!is.null(improvementConstant)) paste(args, "--trial-improvement-factor", improvementConstant)
   if(randomization) args <- paste(args, "--randomization")
   if(fast) args <- paste(args, "--fast")
-  res = exec_program("pomdpsol", args, stdout = stdout)
-  if(!is.null(res))
-    return(res)
-  else
-    return(output)
+  f <- tempfile()
+  exec_program("pomdpsol", args, stdout = f, stderr = stderr)
+  parse_sarsop_messages(readLines(f))
 }
 
 #' @export
@@ -94,49 +92,46 @@ pomdpconvert <- function(model, stdout = ""){
   return(model)
 }
 
-exec_program <- function(program, args, stdout) {
+exec_program <- function(program, args, stdout, stderr = "") {
   if(identical(.Platform$OS.type, "windows")){
     program <- paste0(.Platform$r_arch, "/", program, ".exe")
   }
   binpath <- system.file("bin", package = "appl")
   path <- normalizePath(file.path(binpath, program), mustWork = TRUE)
-  res <- system2(path, args, stdout = stdout)
-  if(res != 0 && stdout != TRUE) stop("Call to ", program, " failed with error: ", res)
-  if(stdout == TRUE)
-    return(res)
-  else
-    return(NULL)
+  res <- system2(path, args, stdout = stdout, stderr = stderr)
+  if(res != 0) stop("Call to ", program, " failed with error: ", res)
+  return(res)
 }
+
 
 parse_key_value <- function(key, txt){
   i <- grep(key, txt)
   value <- strsplit(txt[i], " : ")[[1]][2]
-  as.numeric(gsub( "(\\d+)[a-zA-Z\\s]", "\\1", value))
-  }
-
+  #as.numeric(gsub( "(\\d+)[a-zA-Z\\s]", "\\1", value))
+}
 
 parse_sarsop_messages <- function(txt){
-
-
-
-  load_time <- parse_key_value("loading time",txt) # in seconds
-  init_time <- parse_key_value("initialization time")
 
   final_i <- grep("Time   |#Trial |#Backup |LBound    |UBound    |Precision  |#Alphas |#Beliefs", txt)[2] + 2
   final <- as.numeric(strsplit(txt[final_i], "\\s+")[[1]])[-1]
   names(final) <- c("Time", "#Trial", "#Backup", "LBound", "UBound", "Precision", "#Alphas", "#Beliefs")
 
+  final_precision <- final[["Precision"]]
+  run_time <- final[["Time"]]
+
+  load_time <- parse_key_value("loading time",txt) # in seconds
+  init_time <- parse_key_value("initialization time", txt)
 
   n <- grep("SARSOP finishing", txt)
   end_condition <- txt[n+1]
 
+  target_precision_reached <- grepl("target precision reached", end_condition)
+  timeout_reached <- grepl("Preset timeout reached", end_condition)
+  memory_limit_reached <- is.null(end_condition)
 
-  ## Timeout
-  #if(grepl("Preset timeout reached", end_condition))
-
-  ## Memory max
-
-  ## Precision reached
-
-  ## Other end condition
+  c(load_time = load_time,
+    init_time = init_time,
+    run_time = run_time,
+    final_precision = final_precision,
+    end_condition = end_condition)
 }
