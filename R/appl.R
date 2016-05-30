@@ -18,10 +18,9 @@
 #' @param stderr where output to 'stderr', see \code{\link{system2}}. Use \code{FALSE}
 #' to suppress output.
 #' @examples
-#' setwd(tempdir())
 #' model <- system.file("models/example.pomdp", package = "appl")
-#' policy <- pomdpsol(model, timeout = 2, stdout = FALSE)
-#' readLines(policy)
+#' policy <- tempfile()
+#' pomdpsol(model, output = policy, timeout = 2)
 #'
 #' # Other tools
 #' evaluation <- pomdpeval(model, policy, stdout = FALSE)
@@ -50,6 +49,7 @@ pomdpsol <- function(model, output = tempfile(), precision = 1, timeout = NULL,
 #' @param max_depth the maximum horizon of the generated policy graph
 #' @param max_branches maximum number of branches to show in the policy graph
 #' @param min_prob the minimum probability threshold for a branch to be shown in the policy graph
+#' @param stdout where output to 'stdout', see \code{\link{system2}}. Use \code{FALSE}
 polgraph <- function(model, policy, output = tempfile(), max_depth = 3, max_branches = 10,
                      min_prob = 0.001, stdout = ""){
   model <- normalizePath(model, mustWork = TRUE)

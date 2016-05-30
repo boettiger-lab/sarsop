@@ -1,13 +1,15 @@
-## Generalize this for appl package
+# Write pomdpx
+#
+# @param P transition matrix
+# @param O observation matrix
+# @param R reward
+# @param gamma discount factor
+# @param initial belief
+# @param file pomdpx file to create
+# @param digits precision to round to before normalizing. Leave at 4 since sarsop seems unable to do more?
+# @param digits precision to write solution to. Leave at 10, since normalizing requires additional precision
+# @param format floating point format, because sarsop parser doesn't seem to know scientific notation
 
-# P_Aug Transition matrix
-# O_Aug Observation matrix
-# R Reward Matrix
-# gamma discount factor
-# b
-# Num_S number of states (compute from P_Aug)
-# Num_a number of actions (compute from R matrix)
-# Num_z number of possible observations (compute from O_Aug)
 write_pomdpx <- function(P, O, R, gamma, b = rep(1/dim(O)[1], dim(O)[1]), file = "input.pomdpx", digits = 4, digits2 = 10, format = "f"){
 
 
@@ -192,9 +194,9 @@ write_pomdpx <- function(P, O, R, gamma, b = rep(1/dim(O)[1], dim(O)[1]), file =
 write_pomdp <- function(P_Aug, O_Aug, R, gamma, b, file = "input.pomdp"){
 
 
-  Num_s <- dim(O)[1]
-  Num_z <- dim(O)[2]
-  Num_a <- dim(O)[3]
+  Num_S <- dim(O_Aug)[1]
+  Num_z <- dim(O_Aug)[2]
+  Num_a <- dim(O_Aug)[3]
   string = paste0("a", 1:Num_a)
   XX = paste0("a", 1:(Num_a+1)) # 1:800)
 

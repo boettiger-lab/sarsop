@@ -12,7 +12,7 @@
 \usage{
 pomdpsol(model, output = tempfile(), precision = 1, timeout = NULL,
   fast = FALSE, randomization = FALSE, memory = NULL,
-  improvementConstant = NULL, timeInterval = NULL, stdout = "")
+  improvementConstant = NULL, timeInterval = NULL, stderr = "")
 
 polgraph(model, policy, output = tempfile(), max_depth = 3,
   max_branches = 10, min_prob = 0.001, stdout = "")
@@ -44,7 +44,7 @@ pomdpconvert(model, stdout = "")
 
 \item{timeInterval}{Use timeInterval as the time interval between two consecutive write-out of policy files. If this is not specified, pomdpsol only writes out a policy file upon termination.}
 
-\item{stdout}{where output to 'stdout', see \code{\link{system2}}. Use \code{FALSE}
+\item{stderr}{where output to 'stderr', see \code{\link{system2}}. Use \code{FALSE}
 to suppress output.}
 
 \item{policy}{file/path to the policy file}
@@ -55,6 +55,8 @@ to suppress output.}
 
 \item{min_prob}{the minimum probability threshold for a branch to be shown in the policy graph}
 
+\item{stdout}{where output to 'stdout', see \code{\link{system2}}. Use \code{FALSE}}
+
 \item{steps}{number of steps for each simulation run}
 
 \item{simulations}{as the number of simulation runs}
@@ -64,10 +66,9 @@ Wrappers for the APPL executables. The \code{pomdpsol} function solves a model
 file and returns the path to the output policy file.
 }
 \examples{
-setwd(tempdir())
 model <- system.file("models/example.pomdp", package = "appl")
-policy <- pomdpsol(model, timeout = 2, stdout = FALSE)
-readLines(policy)
+policy <- tempfile()
+pomdpsol(model, output = policy, timeout = 2)
 
 # Other tools
 evaluation <- pomdpeval(model, policy, stdout = FALSE)
