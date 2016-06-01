@@ -1,9 +1,9 @@
 writepomdpx_MOMDP <- function(P_full,P_par,O,R,gamma,b_par,b_full){
   
-  Num_S = dim[O][1]
-  Num_z = dim[O][2]
-  Num_a = dim[O][3]
-  Num_fs = dim[O][4]
+  Num_S = size(O,1)
+  Num_z = size(O,2)
+  Num_a = size(O,3)
+  Num_fs = size(O,4)
   
   XX = paste0("a", 1:Num_a)
   S_par = paste0("ps", 1:Num_S)
@@ -43,7 +43,7 @@ writepomdpx_MOMDP <- function(P_full,P_par,O,R,gamma,b_par,b_full){
     '\n\n',
     '<ActionVar vname="action_control">',
     '\n',
-    paste0('<ValueEnum>', paste0(string, collapse= " "),'</ValueEnum>'),
+    paste0('<ValueEnum>', paste0(XX, collapse= " "),'</ValueEnum>'),
     '\n',
     '</ActionVar>',
     '\n\n',
