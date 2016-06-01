@@ -5,7 +5,7 @@
 \title{pomdp}
 \usage{
 pomdp(T, O, R, GAMMA, initial = NULL, mc.cores = getOption("mc.cores", 1L),
-  stdout = FALSE, ...)
+  ...)
 }
 \arguments{
 \item{T}{Transition matrix, dimension n_s x n_s x n_a}
@@ -20,8 +20,6 @@ pomdp(T, O, R, GAMMA, initial = NULL, mc.cores = getOption("mc.cores", 1L),
 
 \item{mc.cores}{number of cores needed for parallel runs.}
 
-\item{stdout}{display stdout from pomdp C++ routines? (Can overflow R, default FALSE)}
-
 \item{...}{additional arguments to appl SARSOP algorithm, see \code{\link{appl}}.}
 }
 \value{
@@ -32,5 +30,15 @@ pomdp
 }
 \details{
 Dimensions are given as number of states (n_s), number of observed states n_z, number of actions n_a
+}
+\examples{
+\dontrun{
+## May take > 5s
+## Use example code to generate matrices for pomdp problem:
+source(system.file("examples/fisheries-ex.R", package = "appl"))
+## Run the function:
+soln <- pomdp(transition, observation, reward, discount, precision = 10)
+}
+
 }
 

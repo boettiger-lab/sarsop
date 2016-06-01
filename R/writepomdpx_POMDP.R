@@ -1,9 +1,9 @@
 writepomdpx_POMDP <- function(P,O,R,gamma,b){
-  
+
   Num_S = dim[O][1]
   Num_z = dim[O][2]
   Num_a = dim[O][3]
-  
+
   XX = paste0("a", 1:Num_a)
   SS = paste0("a", 1:Num_S)
   # Creates the description, Discount, and Varibale section of POMDPX file
@@ -16,7 +16,7 @@ writepomdpx_POMDP <- function(P,O,R,gamma,b){
     '\n\n',
     '<Variable>',
     '\n\n')
-  
+
   # defining state variables
   header_s <- paste0(
     '<StateVar vnamePrev="ps_0" vnameCurr="ps_1" fullyObs="false">',
@@ -25,12 +25,12 @@ writepomdpx_POMDP <- function(P,O,R,gamma,b){
     '\n',
     '</StateVar>',
     '\n\n')
-  
-  
-  header_zar <- paste0(  
+
+
+  header_zar <- paste0(
     '<ObsVar vname="measurements">',
     '\n',
-    paste0('<NumValues>', size(O,2),'</NumValues>'),
+    paste0('<NumValues>', dim(O)[[2]],'</NumValues>'),
     '\n',
     '</ObsVar>',
     '\n\n',
@@ -43,7 +43,7 @@ writepomdpx_POMDP <- function(P,O,R,gamma,b){
     '<RewardVar vname="reward_agent" />',
     '\n',
     '</Variable>\n\n')
-  
+
   # Creates the initial beleif state section of POMDPX file
   header_b <- paste0(
     '<InitialStateBelief>',
@@ -70,7 +70,7 @@ writepomdpx_POMDP <- function(P,O,R,gamma,b){
     '\n\n',
     '</InitialStateBelief>',
     '\n\n')
-  
+
   # Creates the transition section of POMDPX file
   header_transition_full <- paste0(
     '<StateTransitionFunction>',
@@ -80,9 +80,9 @@ writepomdpx_POMDP <- function(P,O,R,gamma,b){
     '<Var>ps_1</Var>\n',
     '<Parent>action_control ps_0</Parent>\n',
     '<Parameter type="TBL">\n')
-  
+
   transition_full <- ""
-  
+
   for(ii in 1:Num_a){
     c = XX[ii]
     transition_full <- paste0(transition_full,
@@ -98,7 +98,7 @@ writepomdpx_POMDP <- function(P,O,R,gamma,b){
                             '</Parameter>\n',
                             '</CondProb>\n',
                             '</StateTransitionFunction>\n\n')
-  
+
   # Creates the emission section POMDPX file
   header_emission <- paste0(
     '<ObsFunction>',
@@ -108,11 +108,11 @@ writepomdpx_POMDP <- function(P,O,R,gamma,b){
     '<Var>measurements</Var>\n',
     '<Parent>action_control ps_1</Parent>\n',
     '<Parameter type="TBL">\n')
-  
+
   emission <- ""
-  
+
   for(ii in 1:Num_a){
-    
+
     c = XX[ii]
     emission <- paste0(emission,
                        '<Entry>\n',
@@ -121,17 +121,17 @@ writepomdpx_POMDP <- function(P,O,R,gamma,b){
       emission <-paste0(emission, paste0(O[i,,ii], collapse= " "), "\n")
     }
     emission <- paste0(emission, '</ProbTable>\n</Entry>\n')
-    
+
   }
   emission <- paste0(emission,
                      '\n',
                      '</Parameter>\n',
                      '</CondProb>\n',
                      '</ObsFunction>\n\n')
-  
-  
-  
-  
+
+
+
+
   # Creates the reward section POMDPX file
   header_reward <- paste0(
     '<RewardFunction>',
@@ -141,12 +141,12 @@ writepomdpx_POMDP <- function(P,O,R,gamma,b){
     '<Var>reward_agent</Var>\n',
     '<Parent>action_control ps_0</Parent>\n',
     '<Parameter type="TBL">\n')
-  
+
   reward <- ""
-  
+
   for(ii in 1:Num_a){
     for(iii in 1:Num_S){
-      
+
       c = XX[ii]
       cc_f = SS[iii]
       reward <- paste0(reward,
@@ -154,7 +154,7 @@ writepomdpx_POMDP <- function(P,O,R,gamma,b){
                        paste0('<Instance>',c,' ',cc_f,'</Instance>\n'))
       reward <-paste0(reward, '<ValueTable>',paste0(R[iii,ii], collapse= " "), "</ValueTable>\n")
       reward <- paste0(reward, '</Entry>\n')
-      
+
     }
   }
   reward <- paste0(reward,
@@ -163,14 +163,14 @@ writepomdpx_POMDP <- function(P,O,R,gamma,b){
                    '</Func>\n',
                    '</RewardFunction>\n\n',
                    '</pomdpx>')
-  
-  
+
+
   out <- paste0(header,header_s,header_zar,header_b,header_transition_full,transition_full,
                 header_emission,emission,header_reward,reward)
-  
+
   filename = paste0("input.pomdpx")
   writeLines(out, filename)
-  
- 
-  
+
+
+
 }

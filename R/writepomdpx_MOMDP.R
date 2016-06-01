@@ -1,14 +1,27 @@
 writepomdpx_MOMDP <- function(P_full,P_par,O,R,gamma,b_par,b_full){
+<<<<<<< HEAD
   
   Num_S = size(O,1)
   Num_z = size(O,2)
   Num_a = size(O,3)
   Num_fs = size(O,4)
   
+=======
+
+  Num_S = dim[O][1]
+  Num_z = dim[O][2]
+  Num_a = dim[O][3]
+  Num_fs = dim[O][4]
+
+
+>>>>>>> cd4b3f3e79eb418d4160d1eb55afc63b542b4046
   XX = paste0("a", 1:Num_a)
   S_par = paste0("ps", 1:Num_S)
   S_full = paste0("fs", 1:Num_fs)
-  
+
+  # FIXME check this
+  string = XX
+
   # Creates the description, Discount, and Varibale section of POMDPX file
   header <- paste0(
     '<?xml version="1.0" encoding="ISO-8859-1"?>\n\n',
@@ -19,7 +32,7 @@ writepomdpx_MOMDP <- function(P_full,P_par,O,R,gamma,b_par,b_full){
     '\n\n',
     '<Variable>',
     '\n\n')
-  
+
   header_s <- paste0(
     '<StateVar vnamePrev="fs_0" vnameCurr="fs_1" fullyObs="true">',
     '\n',
@@ -33,11 +46,11 @@ writepomdpx_MOMDP <- function(P_full,P_par,O,R,gamma,b_par,b_full){
     '\n',
     '</StateVar>',
     '\n\n')
-  
-  header_zar <- paste0(  
+
+  header_zar <- paste0(
     '<ObsVar vname="measurements">',
     '\n',
-    paste0('<NumValues>', size(O,2),'</NumValues>'),
+    paste0('<NumValues>', dim(O)[[2]],'</NumValues>'),
     '\n',
     '</ObsVar>',
     '\n\n',
@@ -50,9 +63,9 @@ writepomdpx_MOMDP <- function(P_full,P_par,O,R,gamma,b_par,b_full){
     '<RewardVar vname="reward_agent" />',
     '\n',
     '</Variable>')
-  
+
   # Creates the initial beleif state section of POMDPX file
-  
+
   header_b <- paste0(
     '<InitialStateBelief>',
     '\n',
@@ -98,9 +111,9 @@ writepomdpx_MOMDP <- function(P_full,P_par,O,R,gamma,b_par,b_full){
     '\n\n',
     '</InitialStateBelief>',
     '\n\n')
-  
+
   # Creates the transition of fully observable states section of POMDPX file
-  
+
   header_transition_full <- paste0(
     '<StateTransitionFunction>',
     '\n\n',
@@ -109,9 +122,9 @@ writepomdpx_MOMDP <- function(P_full,P_par,O,R,gamma,b_par,b_full){
     '<Var>fs_1</Var>',
     '<Parent>action_control fs_0</Parent>',
     '<Parameter type="TBL">')
-  
+
   transition_full <- ""
-  
+
   for(ii in 1:Num_a){
     c = XX[ii]
     transition_full <- paste0(transition_full,
@@ -126,7 +139,7 @@ writepomdpx_MOMDP <- function(P_full,P_par,O,R,gamma,b_par,b_full){
                             '\n',
                             '</Parameter>\n',
                             '</CondProb>\n\n')
-  
+
   # Creates the transition of partially observable states section of POMDPX file
   header_transition_par <- paste0(
     '<CondProb>',
@@ -134,9 +147,9 @@ writepomdpx_MOMDP <- function(P_full,P_par,O,R,gamma,b_par,b_full){
     '<Var>ps_1</Var>',
     '<Parent>action_control fs_0 ps_0</Parent>',
     '<Parameter type="TBL">')
-  
+
   transition_par <- ""
-  
+
   for(ii in 1:Num_a){
     for(iii in 1:length(S_full)){
       c = XX[ii]
@@ -155,7 +168,7 @@ writepomdpx_MOMDP <- function(P_full,P_par,O,R,gamma,b_par,b_full){
                            '</Parameter>\n',
                            '</CondProb>\n',
                            '</StateTransitionFunction>\n\n')
-  
+
   # Creates the emission section of POMDPX file
   header_emission <- paste0(
     '<ObsFunction>',
@@ -165,9 +178,9 @@ writepomdpx_MOMDP <- function(P_full,P_par,O,R,gamma,b_par,b_full){
     '<Var>measurements</Var>',
     '<Parent>action_control fs_1 ps_1</Parent>',
     '<Parameter type="TBL">')
-  
+
   emission <- ""
-  
+
   for(ii in 1:Num_a){
     for(iii in 1:length(S_full)){
       c = XX[ii]
@@ -186,11 +199,11 @@ writepomdpx_MOMDP <- function(P_full,P_par,O,R,gamma,b_par,b_full){
                      '</Parameter>\n',
                      '</CondProb>\n',
                      '</ObsFunction>\n\n')
-  
-  
-  
+
+
+
   # Creates the reward section of POMDPX file
-  
+
   header_reward <- paste0(
     '<RewardFunction>',
     '\n',
@@ -199,9 +212,9 @@ writepomdpx_MOMDP <- function(P_full,P_par,O,R,gamma,b_par,b_full){
     '<Var>reward_agent</Var>',
     '<Parent>action_control fs_0 ps_0</Parent>',
     '<Parameter type="TBL">')
-  
+
   reward <- ""
-  
+
   for(ii in 1:Num_a){
     for(iii in 1:length(S_full)){
       for(iiii in 1:length(S_par)){
@@ -222,13 +235,13 @@ writepomdpx_MOMDP <- function(P_full,P_par,O,R,gamma,b_par,b_full){
                    '</Func>\n',
                    '</RewardFunction>\n\n',
                    '</pomdpx>')
-  
-  
+
+
   out <- paste0(header,header_s,header_zar,header_b,header_transition_full,transition_full,
                 header_transition_par,transition_par,header_emission,emission,header_reward,reward)
-  
+
   writeLines(out, 'input.pomdpx')
-  
- 
-  
+
+
+
 }
