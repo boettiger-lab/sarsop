@@ -31,7 +31,7 @@ for(i in 1:n_fs){
       nextpop <- f(states[j],actions[k],r = 1,K_T[i])
       if(nextpop <= 0){
         transition_par[j,,k,i] <- c(1,rep(0, n_s - 1))
-        else if(sigma_g > 0){
+        } else if(sigma_g > 0){
           x <- dlnorm(states, log(nextpop), sdlog = sigma_g)    # transition probability densities
           N <- plnorm(states[n_s], log(nextpop), sigma_g)       # CDF accounts for prob density beyond boundary
           x <- x * N / sum(x)                                   # normalize densities to  = cdf(boundary)
@@ -40,7 +40,7 @@ for(i in 1:n_fs){
         } else{
           stop("sigma_g not > 0")
         }
-      }
+      
     }
   }
 }
