@@ -52,7 +52,7 @@ transition_full <- array(0,dim = c(n_fs,n_fs,n_a))
 states_full <- 1:n_fs
 for(i in 1:n_a){
   for(j in 1:n_fs){
-    x <- dlnorm(states_full,log(states_full[j], sdlog = sigma_g))
+    x <- dlnorm(states_full,log(states_full[j]), sdlog = sigma_g)
     N <- plnorm(states_full[n_fs], log(states_full[j]), sigma_g)
     x <- x * N / sum(x)
     x[n_fs] <- 1 - N + x[n_fs]

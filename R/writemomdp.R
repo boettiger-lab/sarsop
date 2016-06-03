@@ -12,7 +12,7 @@
 # @param digits precision to write solution to. Leave at 10, since normalizing requires additional precision
 # @param format floating point format, because sarsop parser doesn't seem to know scientific notation
 
-write_momdpx <- function(P_full, P_par, O, R, gamma, b_par = rep(1/dim(O)[1], dim(O)[1]), b_full,file = "input.pomdpx", digits = 4, digits2 = 10, format = "f"){
+write_momdpx <- function(P_full, P_par, O, R, gamma, b_full, b_par = rep(1/dim(O)[1], dim(O)[1]),file = "input.pomdpx", digits = 4, digits2 = 10, format = "f"){
   
   
   Num_S <- dim(O)[1]
