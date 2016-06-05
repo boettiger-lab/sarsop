@@ -52,10 +52,10 @@ pomdp <- function(T, O, R, GAMMA, initial = NULL, mc.cores = getOption("mc.cores
 
       ## function is basically just these three lines.  Consider arguments to pomdpsol being top-level arguments
       write_pomdpx(T, O, R, GAMMA, belief, file = infile)
-      pomdpsol(infile, outfile, ...)
+      diagnostics <- pomdpsol(infile, outfile, ...)
       out = read_policy(belief, file = outfile)
 
-      list(value = out[[1]], policy = out[[2]], alpha = out[[3]], alpha_action = out[[4]])
+      list(value = out[[1]], policy = out[[2]], alpha = out[[3]], alpha_action = out[[4]], diagnostics = diagnostics)
     }
 
 

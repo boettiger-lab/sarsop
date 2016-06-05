@@ -1,4 +1,8 @@
 
+Here we consider the Partially Observed Markov Decision Process
+
+
+First, we will load the libraries needed for this example.  The MDPtoolbox provides simple routines for solving 
 
 
 ```r
@@ -23,26 +27,39 @@ library("appl")
 ```
 
 
-## MDP Problem definition
+## Problem definition
+
+Our problem is defined by a state space, `states`, representing the true fish stock size (in arbitrary units), 
+and an action space, `actions` representing the number of fish that will be harvested (or attempted to harvest).  
+For simplicitly, we will permit any action from 0 harvest to the maximum possible state size.  
+
+A stock recruitment function, `f` describes the expected future state given the current state.  The true future
+state will be a stochastic draw with this mean.
+
+A reward function determines the value of taking action of harvesting `h` fish when stock size is `x` fish;
+for simplicity this example assumes a fixed price per unit harvest, with no cost on harvesting effort. 
+Future rewards are discounted.
 
 
 ```r
 states <- 0:47
 actions <- states
+
 f <- function(x, h, r = 1, K = 33){
   s <- pmax(x - h, 0)
   s * exp(r * (1 - s / K) )
 }
 
-sigma_g = 0.5
+sigma_g <- sqrt(log(1 + 0.5 / 6)) # Scale the log-standard-deviation to result in similar variance to a uniform distribution of width 0.5
 
-# Scale for lognormal
-sigma_g <- sqrt(log(1 + sigma_g / 6))
 reward_fn <- function(x,h) pmin(x,h)
 discount <- 0.95
 ```
 
 ## Exact / semi-analytic solution
+
+For comparison, we note that an exact solution to the deterministic or low-noise problem comes from Reed 1979, which proves that a constant escapement
+policy $S^*$ is optimal, with $\tfrac{df}{dx}|_{x = S^*} = 1/\gamma$ for discount $\gamma$,
 
 
 ```r
@@ -53,6 +70,10 @@ exact_policy <- sapply(states, function(x) if(x < S_star) 0 else x - S_star)
 ```
 
 # Generate Matrices
+
+When the state is observed without error, the problem is a Markov Decision Process (MDP) and can be solved by 
+stochastic dynamic programming (e.g. policy iteration) over the discrete state and action space. To do so, we need
+matrix representations of the above transition function and reward function:
 
 
 ```r
@@ -102,6 +123,11 @@ mdp <- MDPtoolbox::mdp_policy_iteration(transition, reward, discount)
 
 ## POMDP problem
 
+In the POMDP problem, the true state is unknown, but measured imperfectly.  We introduce
+an observation matrix to indicate the probabilty of observing a particular state $y$ given
+a true state $x$. In principle this could depend on the action taken as well, though for 
+simplicity we assume only a log-normal measurement error independent of the action chosen.
+
 
 ```r
 sigma_m <- sigma_g
@@ -131,16 +157,23 @@ for (k in 1:n_a) {
 ```
 
 
+With the transition matrix, observation matrix, reward matrix, and discount factor in hand, we have now fully specified the POMDP problem and are ready to solve.
+
+Note that unlike the MDP algorithm used above, this solution is approximate, and some care must be taken to ensure the solution has converged appropriately.  Here
+we set a desired precision limit, but also set a memory limit which will halt the algroithm early rather than permit any node to exceed this memory allocation.
+
+
+
 
 ```r
 ## Note: parallel doesn't error intelligably and cannot be interrupted gracefully either. Debug by running:
 #system.time(soln <- pomdp(transition, observation, reward, discount, stdout = TRUE))
-system.time( soln <- pomdp(transition, observation, reward, discount, mc.cores = 2, precision = 1, memory = 7750) )
+system.time( soln <- pomdp(transition, observation, reward, discount, mc.cores = 2, precision = 5, memory = 7750) )
 ```
 
 ```
-##       user     system    elapsed 
-## 175733.044     53.734 181859.132
+##      user    system   elapsed 
+## 65431.417    36.993 66793.525
 ```
 
 
