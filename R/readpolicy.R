@@ -1,3 +1,9 @@
+#' read_policy
+#'
+#'read_policy
+#' @param initial belief to compute dot product with alpha vectors.
+#' @param file path to file to read in policy
+#' @return a list of the max alpha and associated alpha action, as well as all alpha vectors and associated actions.
 #' @importFrom xml2 read_xml xml_find_all xml_contents xml_attr
 #' @export
 read_policy = function(initial, file = 'output.policy'){

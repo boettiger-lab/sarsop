@@ -21,3 +21,4 @@ README.md
 ^inst/bin
 ^\.travis\.yml$
 ^inst/notebook
+^inst/doc/*\.pdf

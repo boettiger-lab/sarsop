@@ -1,3 +1,8 @@
+#' write_pomdpx
+#'
+#' write the pompdp xml file
+#' @inheritParams pomdp
+#' @param b belief vector
 #' @export
 writepomdpx_POMDP <- function(P,O,R,gamma,b){
 

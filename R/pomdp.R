@@ -1,10 +1,10 @@
 #' pomdp
 #'
 #' pomdp
-#' @param T Transition matrix, dimension n_s x n_s x n_a
+#' @param P Transition matrix, dimension n_s x n_s x n_a
 #' @param O Observation matrix, dimension n_s x n_z x n_a
 #' @param R Reward matrix, dimension n_s x n_a
-#' @param GAMMA the discount factor
+#' @param gamma the discount factor
 #' @param initial initial belief state, optional, defaults to uniform over states
 #' @param mc.cores number of cores needed for parallel runs.
 #' @param ... additional arguments to appl SARSOP algorithm, see \code{\link{appl}}.
@@ -22,7 +22,7 @@
 
 #' }
 #'
-pomdp <- function(T, O, R, GAMMA, initial = NULL, mc.cores = getOption("mc.cores", 1L), ...){
+pomdp <- function(P, O, R, gamma, initial = NULL, mc.cores = getOption("mc.cores", 1L), ...){
 
   Num_s <- dim(O)[1]
   Num_z <- dim(O)[2]
@@ -51,7 +51,7 @@ pomdp <- function(T, O, R, GAMMA, initial = NULL, mc.cores = getOption("mc.cores
       outfile <- tempfile("output", fileext = ".policy")
 
       ## function is basically just these three lines.  Consider arguments to pomdpsol being top-level arguments
-      write_pomdpx(T, O, R, GAMMA, belief, file = infile)
+      write_pomdpx(P, O, R, gamma, belief, file = infile)
       diagnostics <- pomdpsol(infile, outfile, ...)
       out = read_policy(belief, file = outfile)
 

@@ -4,17 +4,17 @@
 \alias{pomdp}
 \title{pomdp}
 \usage{
-pomdp(T, O, R, GAMMA, initial = NULL, mc.cores = getOption("mc.cores", 1L),
+pomdp(P, O, R, gamma, initial = NULL, mc.cores = getOption("mc.cores", 1L),
   ...)
 }
 \arguments{
-\item{T}{Transition matrix, dimension n_s x n_s x n_a}
+\item{P}{Transition matrix, dimension n_s x n_s x n_a}
 
 \item{O}{Observation matrix, dimension n_s x n_z x n_a}
 
 \item{R}{Reward matrix, dimension n_s x n_a}
 
-\item{GAMMA}{the discount factor}
+\item{gamma}{the discount factor}
 
 \item{initial}{initial belief state, optional, defaults to uniform over states}
 
