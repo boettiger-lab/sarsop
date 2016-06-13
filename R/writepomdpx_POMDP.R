@@ -1,3 +1,4 @@
+#' @export
 writepomdpx_POMDP <- function(P,O,R,gamma,b){
 
   Num_S = dim(O)[1]

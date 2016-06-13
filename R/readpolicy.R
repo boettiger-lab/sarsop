@@ -1,4 +1,5 @@
 #' @importFrom xml2 read_xml xml_find_all xml_contents xml_attr
+#' @export
 read_policy = function(initial, file = 'output.policy'){
   ## Extract vectors from XML
   xml <- xml2::read_xml(file)
