@@ -1,5 +1,7 @@
 # APPL for R
 
+[![Build Status](https://travis-ci.org/cboettig/appl.svg?branch=master)](https://travis-ci.org/cboettig/appl)
+
 Wrappers in R for the APPL toolkit for approximate POMDP planning.
 
 ```r
