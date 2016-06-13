@@ -1,8 +1,8 @@
 writepomdpx_POMDP <- function(P,O,R,gamma,b){
 
-  Num_S = dim[O][1]
-  Num_z = dim[O][2]
-  Num_a = dim[O][3]
+  Num_S = dim(O)[1]
+  Num_z = dim(O)[2]
+  Num_a = dim(O)[3]
 
   XX = paste0("a", 1:Num_a)
   SS = paste0("a", 1:Num_S)
