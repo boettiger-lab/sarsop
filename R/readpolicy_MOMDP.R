@@ -1,4 +1,15 @@
-findpolicy_MOMDP = function(initial, fs, Num_fs, file = 'output.policy'){
+#' readpolicy_MOMDP
+#'
+#' @param initial belief to compute dot product with alpha vectors.
+#' @param fs the initial fully observable state
+#' @param Num_fs dimension of the fully observable state
+#' @param file path to file to read in policy
+#' @return a list of the max alpha and associated alpha action, as well as all alpha vectors and associated actions.
+#' @importFrom xml2 read_xml xml_find_all xml_contents xml_attr
+#' @export
+
+
+readpolicy_MOMDP = function(initial, fs, Num_fs, file = 'output.policy'){
 
   ## Extract vectors from XML
   xml <- xml2::read_xml(file)
