@@ -27,9 +27,9 @@ write_momdpx(P_full, P_par, O, R, gamma, b_full, b_par = rep(1/dim(O)[1],
 
 \item{digits}{precision to round to before normalizing. Leave at 4 since sarsop seems unable to do more?}
 
-\item{format}{floating point format, because sarsop parser doesn't seem to know scientific notation}
+\item{digits2}{precision to write solution to. Leave at 10, since normalizing requires additional precision}
 
-\item{digits}{precision to write solution to. Leave at 10, since normalizing requires additional precision}
+\item{format}{floating point format, because sarsop parser doesn't seem to know scientific notation}
 }
 \description{
 write_momdpx
