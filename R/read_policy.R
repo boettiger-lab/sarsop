@@ -1,4 +1,4 @@
-#' readpolicy_general
+#' read_policy
 #'
 #' @param initial belief to compute dot product with alpha vectors.
 #' @param fs the initial fully observable state; Only for the case MOMDP
@@ -8,7 +8,7 @@
 #' @importFrom xml2 read_xml xml_find_all xml_contents xml_attr
 #' @export
 
-readpolicy_general = function(initial, file = 'output.policy', fs, Num_fs){
+read_policy = function(initial, file = 'output.policy', fs, Num_fs){
   
   ## Extract vectors from XML
   xml <- xml2::read_xml(file)
