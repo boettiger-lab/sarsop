@@ -1,8 +1,8 @@
 #' readpolicy_general
 #'
 #' @param initial belief to compute dot product with alpha vectors.
-#' @param fs the initial fully observable state
-#' @param Num_fs dimension of the fully observable state
+#' @param fs the initial fully observable state; Only for the case MOMDP
+#' @param Num_fs dimension of the fully observable state; Only for the case MOMDP
 #' @param file path to file to read in policy
 #' @return a list of the max alpha and associated alpha action, as well as all alpha vectors and associated actions.
 #' @importFrom xml2 read_xml xml_find_all xml_contents xml_attr
@@ -23,7 +23,7 @@ readpolicy_general = function(initial, file = 'output.policy', fs, Num_fs){
   
   if(missing(fs) && missing(Num_fs)){
     a <- vapply(alpha, function(x) initial %*% matrix(x, ncol=1), double(1))
-    list(max(a), alpha_action[which.max(a)], alpha, alpha_action)
+    opt_value = max(a); opt_act = alpha_action[which.max(a)]
   } else{
     alpha_fs <- vapply(vectors, function(v) as.numeric(xml2::xml_attr(v, "obsValue")), double(1))
     alpha_v = vector('list',Num_fs)
@@ -40,7 +40,9 @@ readpolicy_general = function(initial, file = 'output.policy', fs, Num_fs){
     }
     ## Compute dot product with initial
     a <- vapply(alpha_v[[fs]], function(x) initial %*% matrix(x,ncol=1), double(1))
-    output = list(max(a),alpha_a[[fs]][which.max(a)],alpha_v,alpha_a)
+    opt_value = max(a); opt_act = alpha_a[[fs]][which.max(a)]
   }
  
+ output = list(opt_value,opt_act,alpha_v,alpha_a)
+
 }
