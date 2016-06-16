@@ -24,6 +24,7 @@ read_policy = function(initial, file = 'output.policy', fs, Num_fs){
   if(missing(fs) && missing(Num_fs)){
     a <- vapply(alpha, function(x) initial %*% matrix(x, ncol=1), double(1))
     opt_value = max(a); opt_act = alpha_action[which.max(a)]
+    alpha_v = alpha; alpha_a = alpha_action
   } else{
     alpha_fs <- vapply(vectors, function(v) as.numeric(xml2::xml_attr(v, "obsValue")), double(1))
     alpha_v = vector('list',Num_fs)
