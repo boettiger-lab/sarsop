@@ -9,7 +9,7 @@
 #' @param b_full initial fully observable state
 #' @param file pomdpx file to create
 #' @param digits precision to round to before normalizing. Leave at 4 since sarsop seems unable to do more?
-#' @param digits precision to write solution to. Leave at 10, since normalizing requires additional precision
+#' @param digits2 precision to write solution to. Leave at 10, since normalizing requires additional precision
 #' @param format floating point format, because sarsop parser doesn't seem to know scientific notation
 
 
