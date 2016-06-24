@@ -14,3 +14,4 @@ src/pomdpsol
 inst/bin
 *.RData
 inst/doc/*
+inst/doc

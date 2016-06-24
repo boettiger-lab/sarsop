@@ -12,4 +12,7 @@ License: MIT + file LICENSE
 URL: http://bigbird.comp.nus.edu.sg/pmwiki/farm/appl
 RoxygenNote: 5.0.1
 Imports: xml2
-Suggests: testthat, roxygen2
+Suggests: testthat, roxygen2,
+    knitr,
+    rmarkdown
+VignetteBuilder: knitr
