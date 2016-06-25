@@ -146,7 +146,7 @@ Note that unlike the MDP algorithm used above, this solution is approximate, and
 we set a desired precision limit, but also set a memory limit which will halt the algroithm early rather than permit any node to exceed this memory allocation.
 
 ```{r include = FALSE}
-knitr::opts_chunk$set(eval = run)
+knitr::opts_chunk$set(eval = eval)
 ```
 
 
