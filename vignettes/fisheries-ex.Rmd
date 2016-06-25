@@ -10,7 +10,8 @@ vignette: >
 ---
 
 ```{r include = FALSE}
-run <- !identical(Sys.getenv("TRAVIS"), "true") | identical(Sys.getenv("NOT_CRAN"), "true")
+Sys.setenv("NOT_CRAN" = "true")
+eval <- !identical(Sys.getenv("TRAVIS"), "true") & identical(Sys.getenv("NOT_CRAN"), "true")
 knitr::opts_chunk$set(cache = TRUE)
 ```
 
