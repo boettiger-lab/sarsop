@@ -9,6 +9,10 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
+```{r include = FALSE}
+run <- !identical(Sys.getenv("TRAVIS"), "true") | identical(Sys.getenv("NOT_CRAN"), "true")
+knitr::opts_chunk$set(cache = TRUE)
+```
 
 
 Here we compare the Markov Decision Process (MDP) solution of the classic optimal harvest problem in fisheries (Reed 1979) to the corresponding solution under measurment uncertainty, the Partially Observed Markov Decision Process (POMDP) problem.  The classic problem can be solved exactly for a discrete model using Stochastic Dynamic Programming.  Here we demonstrate a computationally efficient approximate solution using the point-based SARSOP algorithm for POMDP, implemented in C++ in by the [APPL]() software and provided here as an R package.  We will first set up the problem, then present the analytic solution to deterministic problem, followed by the MDP solution to the stochastic problem.  As Reed proved in 1979, these solutions are identical as long as the stochasticity is small enough for the population to meet the self-sustaining criterion.  We then introduce measurement uncertainty and illustrate the resulting POMDP solution, discussing some of issues the user should be aware of when utilizing these approximate algorithms. 
@@ -19,7 +23,6 @@ First, we will load the libraries needed for this example.  The `MDPtoolbox` pro
 ```{r}
 library("MDPtoolbox")
 library("appl")
-knitr::opts_chunk$set(cache = TRUE)
 ```
 
 
@@ -141,13 +144,16 @@ With the transition matrix, observation matrix, reward matrix, and discount fact
 Note that unlike the MDP algorithm used above, this solution is approximate, and some care must be taken to ensure the solution has converged appropriately.  Here
 we set a desired precision limit, but also set a memory limit which will halt the algroithm early rather than permit any node to exceed this memory allocation.
 
+```
+
+{r include = FALSE}
+knitr::opts_chunk$set(eval = run)
+```
 
 
 ```{r}
-## Note: parallel doesn't error intelligably and cannot be interrupted gracefully either. Debug by running:
-#system.time(soln <- pomdp(transition, observation, reward, discount, stdout = TRUE))
 system.time( soln <- pomdp(transition, observation, reward, discount, mc.cores = 2, precision = 5, memory = 7750) )
-
+soln
 ```
 
 
@@ -157,9 +163,8 @@ policies <- data.frame(states = states,
                        mdp = states - actions[mdp$policy],
                        pomdp = states - soln$policy)
 
-library("tidyr")
-library("ggplot2")
-tidyr::gather(policies, soln, escapement, -states) %>%
-  ggplot2::ggplot(ggplot2::aes(states, escapement, col = soln)) + ggplot2::geom_point()
+plot(states, exact, type = "l")
+points(states, mdp, col = 1)
+points(states, pomdp, col = 2, pch = 2)
 ```
 
