@@ -144,9 +144,7 @@ With the transition matrix, observation matrix, reward matrix, and discount fact
 Note that unlike the MDP algorithm used above, this solution is approximate, and some care must be taken to ensure the solution has converged appropriately.  Here
 we set a desired precision limit, but also set a memory limit which will halt the algroithm early rather than permit any node to exceed this memory allocation.
 
-```
-
-{r include = FALSE}
+```{r include = FALSE}
 knitr::opts_chunk$set(eval = run)
 ```
 
