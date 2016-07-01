@@ -17,6 +17,7 @@ ricker <- function(x, h, r = 1, K = 20){
 #' @param sigma_m log-sd for log-normal measurement y of state x
 #' @return list of transitition matrix, observation matrix, and reward matrix
 #' @details assumes log-normally distributed observation errors and process errors
+#' @importFrom stats dlnorm plnorm
 #' @export
 fisheries_matrices <- function(states = 0:23,
          actions = states,
