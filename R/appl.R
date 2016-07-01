@@ -107,7 +107,7 @@ exec_program <- function(program, args, stdout, stderr = "") {
 parse_key_value <- function(key, txt){
   i <- grep(key, txt)
   value <- strsplit(txt[i], " : ")[[1]][2]
-  #as.numeric(gsub( "(\\d+)[a-zA-Z\\s]", "\\1", value))
+  as.numeric(gsub( "(\\d+)[a-zA-Z\\s]", "\\1", value))
 }
 
 parse_sarsop_messages <- function(txt){
@@ -129,9 +129,9 @@ parse_sarsop_messages <- function(txt){
   timeout_reached <- grepl("Preset timeout reached", end_condition)
   memory_limit_reached <- is.null(end_condition)
 
-  c(load_time = load_time,
-    init_time = init_time,
-    run_time = run_time,
+  list(load_time_sec = load_time,
+    init_time_sec = init_time,
+    run_time_sec = run_time,
     final_precision = final_precision,
     end_condition = end_condition)
 }

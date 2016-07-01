@@ -44,7 +44,7 @@ pomdp <- function(P, O, R, gamma, initial = NULL, mc.cores = getOption("mc.cores
 
     if(any(is.nan(belief)) || sum(belief) == 0){
       # Belief has already converged
-      list(value = 0, policy = 0, alpha = list(), alpha_action = list())
+      list(value = 0, policy = 0, alpha = NULL, alpha_action = NULL, daignostics = NULL)
     } else {
 
       infile <- tempfile("input", fileext = ".pomdp")
@@ -62,13 +62,19 @@ pomdp <- function(P, O, R, gamma, initial = NULL, mc.cores = getOption("mc.cores
   }, mc.cores = mc.cores)
 
 
+
+
   ## Re-arrange results
+  alpha  = lapply(output, `[[`, "alpha")
+  alpha_action = lapply(output, `[[`, "alpha_action")
+
   list(value  = sapply(output, `[[`, "value"),
        policy = sapply(output, `[[`, "policy"),
-       alpha  = lapply(output, `[[`, "alpha"),
-       alpha_action = lapply(output, `[[`, "alpha_action"))
+       diagnostics = do.call(rbind, lapply(output, `[[`, "diagnostics")))
+
 }
 
+drop_null <- function(x) x[!vapply(x, is.null, logical(1))]
 
 
 
