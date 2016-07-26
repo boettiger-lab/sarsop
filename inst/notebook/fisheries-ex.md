@@ -23,7 +23,7 @@ library("MDPtoolbox")
 
 ```r
 library("appl")
-#knitr::opts_chunk$set(cache = TRUE)
+knitr::opts_chunk$set(cache = TRUE)
 ```
 
 
@@ -42,10 +42,10 @@ Future rewards are discounted.
 
 
 ```r
-states <- 0:47
+states <- 0:80
 actions <- states
 
-f <- function(x, h, r = 1, K = 33){
+f <- function(x, h, r = 1, K = 75){
   s <- pmax(x - h, 0)
   s * exp(r * (1 - s / K) )
 }
@@ -166,14 +166,12 @@ we set a desired precision limit, but also set a memory limit which will halt th
 
 
 ```r
-## Note: parallel doesn't error intelligably and cannot be interrupted gracefully either. Debug by running:
-#system.time(soln <- pomdp(transition, observation, reward, discount, stdout = TRUE))
-system.time( soln <- pomdp(transition, observation, reward, discount, mc.cores = 2, precision = 5, memory = 7750) )
+system.time( soln <- pomdp(transition, observation, reward, discount, mc.cores = 1, precision = 5, memory = 15750) )
 ```
 
 ```
-##      user    system   elapsed 
-## 65431.417    36.993 66793.525
+##       user     system    elapsed 
+## 104353.931    104.682 104480.655
 ```
 
 
@@ -204,5 +202,5 @@ tidyr::gather(policies, soln, escapement, -states) %>%
   ggplot2::ggplot(ggplot2::aes(states, escapement, col = soln)) + ggplot2::geom_point()
 ```
 
-![](fisheries-ex_files/figure-html/unnamed-chunk-8-1.png)
+![](fisheries-ex_files/figure-html/unnamed-chunk-8-1.png)<!-- -->
 
