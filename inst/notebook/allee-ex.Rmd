@@ -31,12 +31,12 @@ for simplicity this example assumes a fixed price per unit harvest, with no cost
 Future rewards are discounted.
 
 ```{r}
-states <- 0:20
+states <- 0:60
 actions <- states
 
-f <- function(x, h, r = 1, K = 15, C = 5){
+f <- function(x, h, r = 1, K = 50, C = 20){
   s <- pmax(x - h, 0)
-  s * exp(r * (1 - s / K) * (x  -C) / K)
+  s * exp(r * (1 - s / K) * (s - C) / K)
 }
 
 sigma_g <- sqrt(log(1 + 0.5 / 6)) # Scale the log-standard-deviation to result in similar variance to a uniform distribution of width 0.5
