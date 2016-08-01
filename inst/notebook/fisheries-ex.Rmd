@@ -13,6 +13,7 @@ First, we will load the libraries needed for this example.  The MDPtoolbox provi
 ```{r}
 library("MDPtoolbox")
 library("appl")
+library("printr")
 knitr::opts_chunk$set(cache = TRUE)
 ```
 
@@ -138,10 +139,11 @@ we set a desired precision limit, but also set a memory limit which will halt th
 
 
 ```{r}
-## Note: parallel doesn't error intelligably and cannot be interrupted gracefully either. Debug by running:
-#system.time(soln <- pomdp(transition, observation, reward, discount, stdout = TRUE))
-system.time( soln <- pomdp(transition, observation, reward, discount, mc.cores = 2, precision = 5, memory = 7750) )
+system.time( soln <- pomdp(transition, observation, reward, discount, mc.cores = 2, precision = 2, memory = 7750) )
+```
 
+```{r}
+soln
 ```
 
 
