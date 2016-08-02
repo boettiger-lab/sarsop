@@ -7,21 +7,6 @@ First, we will load the libraries needed for this example.  The MDPtoolbox provi
 
 ```r
 library("MDPtoolbox")
-```
-
-```
-## Loading required package: Matrix
-```
-
-```
-## Loading required package: linprog
-```
-
-```
-## Loading required package: lpSolve
-```
-
-```r
 library("appl")
 knitr::opts_chunk$set(cache = TRUE)
 ```
@@ -326,23 +311,16 @@ soln
 policies <- data.frame(states = states,
                        exact = states - exact_policy,
                        mdp = states - actions[mdp$policy],
-                       pomdp = states - soln$policy)
-
-library("tidyr")
+                       pomdp = states - actions[soln$policy])
 ```
 
 ```
-## 
-## Attaching package: 'tidyr'
-```
-
-```
-## The following object is masked from 'package:Matrix':
-## 
-##     expand
+## Warning in states - actions[soln$policy]: longer object length is not a
+## multiple of shorter object length
 ```
 
 ```r
+library("tidyr")
 library("ggplot2")
 tidyr::gather(policies, soln, escapement, -states) %>%
   ggplot2::ggplot(ggplot2::aes(states, escapement, col = soln)) + ggplot2::geom_point()
@@ -350,3 +328,27 @@ tidyr::gather(policies, soln, escapement, -states) %>%
 
 ![](allee-ex_files/figure-html/unnamed-chunk-8-1.png)<!-- -->
 
+
+Simulate replicates of a given policy under a given transition & observation matrix:
+
+
+```r
+sim_policy <- function(transition, utility, policy, x0, Tmax){
+  state <- action <- value <- observation <- numeric(Tmax)
+  time <- 1:(Tmax-1)
+  state[1] <- x0
+  for(t in time){
+
+    obs_prob <- transition[state[t], , action[t]]
+    observation[t] <- sample(1:n_z, 1, prob = obs_prob)
+    action[t] <- policy[obs_state[t]]
+    value[t] <- utility[state[t], action[t]] * discount^(t-1)
+    trans_prob <- transition[state[t], , action[t]]
+    state[t+1] <- sample(1:n_s, 1, prob = trans_prob)
+
+
+  }
+
+  data.frame(time, state, observation, action, value)
+}
+```

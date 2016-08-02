@@ -13,6 +13,9 @@ First, we will load the libraries needed for this example.  The MDPtoolbox provi
 ```{r}
 library("MDPtoolbox")
 library("appl")
+library("tidyr")
+library("ggplot2")
+library("purrr")
 knitr::opts_chunk$set(cache = TRUE)
 ```
 
@@ -33,17 +36,19 @@ Future rewards are discounted.
 ```{r}
 states <- 0:60
 actions <- states
+obs <- states
 
-f <- function(x, h, r = 1, K = 50, C = 20){
+f <- function(x, h, r = 1, K = 50, C = 15){
   s <- pmax(x - h, 0)
   s * exp(r * (1 - s / K) * (s - C) / K)
 }
 
-sigma_g <- sqrt(log(1 + 0.5 / 6)) # Scale the log-standard-deviation to result in similar variance to a uniform distribution of width 0.5
+sigma_g <- 0.05  # sqrt(log(1 + 0.1 / 6)) # Scale the log-standard-deviation to result in similar variance to a uniform distribution of width 0.1
 
 reward_fn <- function(x,h) pmin(x,h)
-discount <- 0.95
+discount <- 0.99
 ```
+
 
 ## Exact / semi-analytic solution
 
@@ -59,87 +64,25 @@ exact_policy <- sapply(states, function(x) if(x < S_star) 0 else x - S_star)
 
 # Generate Matrices
 
-When the state is observed without error, the problem is a Markov Decision Process (MDP) and can be solved by 
-stochastic dynamic programming (e.g. policy iteration) over the discrete state and action space. To do so, we need
-matrix representations of the above transition function and reward function:
-
 ```{r}
-n_s <- length(states)
-n_a <- length(actions)
-transition <- array(0, dim = c(n_s, n_s, n_a))
-reward <- array(0, dim = c(n_s, n_a))
-
-for (k in 1:n_s) {
-  for (i in 1:n_a) {
-    nextpop <- f(states[k], actions[i])
-    if(nextpop <= 0)
-      transition[k, , i] <- c(1, rep(0, n_s - 1))
-    else if(sigma_g > 0){
-      x <- dlnorm(states, log(nextpop), sdlog = sigma_g)    # transition probability densities
-      N <- plnorm(states[n_s], log(nextpop), sigma_g)       # CDF accounts for prob density beyond boundary
-      x <- x * N / sum(x)                                   # normalize densities to  = cdf(boundary)
-      x[n_s] <- 1 - N + x[n_s]                              # pile remaining probability on boundary
-      transition[k, , i] <- x                             # store as row of transition matrix
-    } else {
-     stop("sigma_g not > 0")
-    }
-    reward[k, i] <- reward_fn(states[k], actions[i])
-  }
-}
+matrices <- fisheries_matrices(states, actions, obs, reward_fn, f, sigma_g, sigma_m)
 ```
 
 ## Numerical SDP Solution
 
 ```{r}
-mdp <- MDPtoolbox::mdp_policy_iteration(transition, reward, discount)
+mdp <- MDPtoolbox::mdp_policy_iteration(matrices$transition, matrices$reward, discount)
 ```
-
-
-## POMDP problem
-
-In the POMDP problem, the true state is unknown, but measured imperfectly.  We introduce
-an observation matrix to indicate the probabilty of observing a particular state $y$ given
-a true state $x$. In principle this could depend on the action taken as well, though for 
-simplicity we assume only a log-normal measurement error independent of the action chosen.
-
-```{r}
-sigma_m <- sigma_g
-observed_states <- states
-n_z <- length(observed_states)
-
-observation <- array(0, dim = c(n_s, n_z, n_a))
-for (k in 1:n_a) {
-  if(sigma_m <= 0){
-    observation[, , k] <- diag(n_s)
-  } else {
-    for (i in 1:n_s) {
-      if(states[i] <= 0){ ## cannot do dlnorm with mu = log(0) = -Inf.  Cannot solve if belief has already converged
-        x <- dlnorm(observed_states, -1, sigma_m)
-        observation[i, , k] <- x / sum(x)
-      } else {
-        x <- dlnorm(observed_states, log(states[i]), sdlog = sigma_m)    # transition probability densities
-        ## Normalize using CDF
-        N <- plnorm(observed_states[n_s], log(states[i]), sigma_m)       # CDF accounts for prob density beyond boundary
-        x <- x * N / sum(x)                                   # normalize densities to  = cdf(boundary)
-        x[n_s] <- 1 - N + x[n_s]                              # pile remaining probability on boundary
-        observation[i, , k] <- x                             # store as row of transition matrix
-      }
-    }
-  }
-}
-```
-
-
-With the transition matrix, observation matrix, reward matrix, and discount factor in hand, we have now fully specified the POMDP problem and are ready to solve.
-
-Note that unlike the MDP algorithm used above, this solution is approximate, and some care must be taken to ensure the solution has converged appropriately.  Here
-we set a desired precision limit, but also set a memory limit which will halt the algroithm early rather than permit any node to exceed this memory allocation.
 
 
 
 ```{r}
-system.time( soln <- appl::pomdp(transition, observation, reward, discount, mc.cores = 2, precision = 2, memory = 7750) )
-soln
+system.time( soln <- appl::pomdp(matrices$transition, matrices$observation, matrices$reward, discount, 
+                                 mc.cores = 2, precision = 2, memory = 7750) )
+```
+
+```{r}
+knitr::kable(soln)
 ```
 
 
@@ -147,11 +90,27 @@ soln
 policies <- data.frame(states = states,
                        exact = states - exact_policy,
                        mdp = states - actions[mdp$policy],
-                       pomdp = states - soln$policy)
+                       pomdp = states - actions[soln$policy])
 
-library("tidyr")
-library("ggplot2")
+
 tidyr::gather(policies, soln, escapement, -states) %>%
   ggplot2::ggplot(ggplot2::aes(states, escapement, col = soln)) + ggplot2::geom_point()
 ```
 
+
+
+
+```{r}
+sim_df <- purrr::map_df(1:100, 
+                        function(n) 
+                          data.frame(sim = n, 
+                                     sim_pomdp(transition, observation, reward, 
+                                               discount, policy = soln$policy, 
+                                               x0 = states[round(n_s/2)], Tmax=20)))
+
+```
+
+
+```{r}
+ggplot(sim_df, aes(time, state, group = sim)) + geom_line()
+```

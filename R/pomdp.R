@@ -44,7 +44,7 @@ pomdp <- function(P, O, R, gamma, initial = NULL, mc.cores = getOption("mc.cores
 
     if(any(is.nan(belief)) || sum(belief) == 0){
       # Belief has already converged
-      list(value = 0, policy = 0, alpha = NULL, alpha_action = NULL, daignostics = NULL)
+      list(value = 0, policy = 1, alpha = NULL, alpha_action = NULL, daignostics = NULL)
     } else {
 
       infile <- tempfile("input", fileext = ".pomdp")
