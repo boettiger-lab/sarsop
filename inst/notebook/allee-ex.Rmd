@@ -44,6 +44,7 @@ f <- function(x, h, r = 1, K = 50, C = 15){
 }
 
 sigma_g <- 0.05  # sqrt(log(1 + 0.1 / 6)) # Scale the log-standard-deviation to result in similar variance to a uniform distribution of width 0.1
+sigma_m <- sigma_g
 
 reward_fn <- function(x,h) pmin(x,h)
 discount <- 0.99

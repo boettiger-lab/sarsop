@@ -139,7 +139,7 @@ we set a desired precision limit, but also set a memory limit which will halt th
 
 
 ```{r}
-system.time( soln <- pomdp(transition, observation, reward, discount, mc.cores = 2, precision = 2, memory = 7750) )
+system.time( soln <- pomdp(transition, observation, reward, discount, mc.cores = 1, precision = 5, memory = 3750) )
 ```
 
 ```{r}
@@ -151,7 +151,7 @@ soln
 policies <- data.frame(states = states,
                        exact = states - exact_policy,
                        mdp = states - actions[mdp$policy],
-                       pomdp = states - soln$policy)
+                       pomdp = states - actions[soln$policy])
 
 library("tidyr")
 library("ggplot2")
