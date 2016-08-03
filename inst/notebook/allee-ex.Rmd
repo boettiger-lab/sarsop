@@ -44,6 +44,7 @@ f <- function(x, h, r = 1, K = 50, C = 15){
 }
 
 sigma_g <- 0.05  # sqrt(log(1 + 0.1 / 6)) # Scale the log-standard-deviation to result in similar variance to a uniform distribution of width 0.1
+sigma_m <- sigma_g
 
 reward_fn <- function(x,h) pmin(x,h)
 discount <- 0.99
@@ -78,7 +79,7 @@ mdp <- MDPtoolbox::mdp_policy_iteration(matrices$transition, matrices$reward, di
 
 ```{r}
 system.time( soln <- appl::pomdp(matrices$transition, matrices$observation, matrices$reward, discount, 
-                                 mc.cores = 2, precision = 2, memory = 7750) )
+                                 mc.cores = 1, precision = 15, memory = 3750) )
 ```
 
 ```{r}
@@ -104,9 +105,9 @@ tidyr::gather(policies, soln, escapement, -states) %>%
 sim_df <- purrr::map_df(1:100, 
                         function(n) 
                           data.frame(sim = n, 
-                                     sim_pomdp(transition, observation, reward, 
+                                     sim_pomdp(matrices$transition, matrices$observation, matrices$reward, 
                                                discount, policy = soln$policy, 
-                                               x0 = states[round(n_s/2)], Tmax=20)))
+                                               x0 = round(length(states)/2), Tmax=20)))
 
 ```
 
