@@ -36,28 +36,11 @@ pomdp <- function(P, O, R, gamma, initial = NULL, mc.cores = getOption("mc.cores
   policy = vector("numeric", length = Num_z)
 
 
-  output <- parallel::mclapply(1:Num_z, function(i){   #for (i in 1:Num_z) {
-    belief = initial * t(O[, i, 1])
+  output <- parallel::mclapply(1:Num_z, function(i){
+    #belief <- initial * t(O[, i, 1])
 
-    ## Consider more robust normalization.  Check write-out precision in write_pomdp
-    belief = normalize(belief)
-
-    if(any(is.nan(belief)) || sum(belief) == 0){
-      # Belief has already converged
-      list(value = 0, policy = 1, alpha = NULL, alpha_action = NULL, daignostics = NULL)
-    } else {
-
-      infile <- tempfile("input", fileext = ".pomdp")
-      outfile <- tempfile("output", fileext = ".policy")
-
-      ## function is basically just these three lines.  Consider arguments to pomdpsol being top-level arguments
-      write_pomdpx(P, O, R, gamma, belief, file = infile)
-      diagnostics <- pomdpsol(infile, outfile, ...)
-      out = read_policy(belief, file = outfile)
-
-      list(value = out[[1]], policy = out[[2]], alpha = out[[3]], alpha_action = out[[4]], diagnostics = diagnostics)
-    }
-
+    belief <- O[, i, 1]
+    compute_alpha_vectors(P, O, R, gamma, belief, ...)
 
   }, mc.cores = mc.cores)
 
@@ -73,6 +56,33 @@ pomdp <- function(P, O, R, gamma, initial = NULL, mc.cores = getOption("mc.cores
        diagnostics = do.call(rbind, lapply(output, `[[`, "diagnostics")))
 
 }
+
+
+
+compute_alpha_vectors <- function(transition, observation, utility, discount, belief, ...){
+
+  ## Consider more robust normalization.  Check write-out precision in write_pomdp
+  belief = normalize(belief)
+
+  if(any(is.nan(belief)) || sum(belief) == 0){
+    # Belief has already converged
+    #warning("Belief has NaNs or sums to zero")
+    list(value = 0, policy = 1, alpha = NULL, alpha_action = NULL, daignostics = NULL)
+  } else {
+
+    infile <- tempfile("input", fileext = ".pomdp")
+    outfile <- tempfile("output", fileext = ".policy")
+    write_pomdpx(transition, observation, utility, discount, belief, file = infile)
+    diagnostics <- pomdpsol(infile, outfile, ...)
+    out <- read_policy(belief, file = outfile)
+
+    ## Consider messages / warnings based on diagnostics
+
+    list(value = out[[1]], policy = out[[2]], alpha = out[[3]], alpha_action = out[[4]], diagnostics = diagnostics)
+  }
+}
+
+
 
 drop_null <- function(x) x[!vapply(x, is.null, logical(1))]
 

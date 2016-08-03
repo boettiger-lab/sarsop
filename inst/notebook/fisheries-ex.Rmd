@@ -114,9 +114,8 @@ for (k in 1:n_a) {
     observation[, , k] <- diag(n_s)
   } else {
     for (i in 1:n_s) {
-      if(states[i] <= 0){ ## cannot do dlnorm with mu = log(0) = -Inf.  Cannot solve if belief has already converged
-        x <- dlnorm(observed_states, -1, sigma_m)
-        observation[i, , k] <- x / sum(x)
+      if(states[i] <= 0){ ## treat observed 0 as real 0, (dlnorm cannot have log-mu of 0)
+        observation[i, , k] <- c(1, rep(0, n_z - 1))
       } else {
         x <- dlnorm(observed_states, log(states[i]), sdlog = sigma_m)    # transition probability densities
         ## Normalize using CDF
