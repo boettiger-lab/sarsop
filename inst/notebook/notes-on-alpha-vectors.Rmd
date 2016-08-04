@@ -1,0 +1,100 @@
+---
+output:
+  html_document: 
+    keep_md: yes
+    variant: markdown_github
+---  
+
+
+
+```{r}
+library("MDPtoolbox")
+library("appl")
+library("tidyr")
+library("ggplot2")
+library("purrr")
+knitr::opts_chunk$set(cache = TRUE)
+```
+
+```{r}
+devtools::load_all()
+```
+
+Typical model setup:
+
+```{r}
+states <- 0:60
+actions <- states
+obs <- states
+
+f <- function(x, h, r = 1, K = 50){
+  s <- pmax(x - h, 0)
+  s * exp(r * (1 - s / K) )
+}
+
+sigma_g <- 0.2  
+sigma_m <- sigma_g
+
+reward_fn <- function(x,h) pmin(x,h)
+discount <- 0.95
+
+attach( fisheries_matrices(states, actions, obs, reward_fn, f, sigma_g, sigma_m) )
+```
+
+
+
+
+SARSOP computes only from attainable states, thus if the initial belief excludes most states, the calculation is much faster.
+Here we compare the alpha vectors calculated from an initial belief reflecting an observation 
+
+
+
+```{r}
+belief <- observation[,51,1]
+K <- compute_alpha_vectors(transition, observation, reward, discount, observation, belief, precision = 5)
+```
+
+```{r}
+unif <- compute_alpha_vectors(transition, observation, reward, discount, rep(1, n_s) / n_s, precision = 5)
+```
+
+
+```{r}
+alpha <- unname(as.data.frame(unif$alpha))
+alpha_action <- unif$alpha_action
+```
+
+The value of a state $x$ given belief $b(x)$ is given by $V(b) = \max_i \sum_{x \in X} b(x) \alpha_i(x)$
+
+ each $\alpha_i$ is represented as a column in `alpha` data frame, with each row the corresponding to a different
+ state $x$.  The number i \in 1...n where n is the number of piecewise linear segments being used to approximate the value function,
+ each segmenet associated to an action given by `alpha_action`; that is, the `j`th column of `alpha` corresponds to the action
+ given by `alpha_action[j]`.  
+
+```{r}
+V <- t(alpha) %*% observation[,,1] 
+value <- apply(V, 2, max)
+policy <- apply(V, 2, function(x) alpha_action[which.max(x)])
+```
+
+
+```{r}
+plot(seq_along(policy), seq_along(policy) - policy)
+```
+
+
+--------
+
+
+Compare to non-matrix solution at a single point
+
+```{r}
+belief <- O[,2,1]
+x2 <- vapply(alpha, function(x) belief %*% x, double(1))
+
+identical(V[,2], x2)
+
+value_2 <- max(x2)
+policy_2 <- alpha_action[which.max(x2)]
+```
+      
