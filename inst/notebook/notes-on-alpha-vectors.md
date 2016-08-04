@@ -1,37 +1,66 @@
----
-output:
-  html_document: 
-    keep_md: yes
-    variant: markdown_github
----  
 
 
 
-```{r}
+
+```r
 library("MDPtoolbox")
+```
+
+```
+## Loading required package: Matrix
+```
+
+```
+## Loading required package: linprog
+```
+
+```
+## Loading required package: lpSolve
+```
+
+```r
 library("appl")
 library("tidyr")
+```
+
+```
+## 
+## Attaching package: 'tidyr'
+```
+
+```
+## The following object is masked from 'package:Matrix':
+## 
+##     expand
+```
+
+```r
 library("ggplot2")
 library("purrr")
 knitr::opts_chunk$set(cache = TRUE)
 ```
 
-```{r}
+
+```r
 devtools::load_all()
+```
+
+```
+## Loading appl
 ```
 
 Typical model setup:
 
-```{r}
 
-n_s <- 40
+```r
+n_s <- 25
 precision <- 1
 
 states <- 0:(n_s-1)
 actions <- states
 obs <- states
 
-f <- function(x, h, r = 1, K = 35){
+f <- function(x, h, r = 1, K = 15){
   s <- pmax(x - h, 0)
   s * exp(r * (1 - s / K) )
 }
@@ -53,57 +82,75 @@ Here we compare the alpha vectors calculated from an initial belief reflecting a
 
 
 
-```{r}
+
+```r
 system.time(unif <- compute_alpha_vectors(m$transition, m$observation, m$reward, discount, rep(1, n_s) / n_s, precision = precision))
 ```
 
-
-```{r}
-belief <- m$observation[,n_s-4,1]
-system.time(K <- compute_alpha_vectors(m$transition, m$observation, m$reward, discount, belief, precision = precision))
+```
+##    user  system elapsed 
+## 734.624   1.296 736.169
 ```
 
 
-```{r}
+
+```r
+belief <- m$observation[,16,1]
+system.time(K <- compute_alpha_vectors(m$transition, m$observation, m$reward, discount, belief, precision = precision))
+```
+
+```
+##    user  system elapsed 
+## 363.496   0.648 364.231
+```
+
+
+
+```r
 system.time(notunif <- compute_alpha_vectors(m$transition, m$observation, m$reward, discount, 1:n_s / sum(1:n_s), precision = precision))
+```
+
+```
+##    user  system elapsed 
+## 434.732   0.612 435.387
 ```
 
 
 ## Examining alpha vectors
 
 
-```{r}
 
+```r
 optimal_policy <- function(A, O, state){
   alpha <- unname(as.data.frame(A$alpha))
   alpha_action <- A$alpha_action
   
   V <- t(alpha) %*% O 
   value <- apply(V, 2, max)
-  policy <- apply(V, 2, function(x) alpha_action[which.max(x)]) + 1 # C++ pomdpsol enumerates actions starting at 0
+  policy <- apply(V, 2, function(x) alpha_action[which.max(x)])
 
   data.frame(policy, value, state)  
 }
-
 ```
 
 
-```{r}
+
+```r
 list(unif, K, notunif) %>% 
   purrr::map2_df( c("unif", "K", "notunif"), 
                   function(x,prior) 
                    data.frame(prior, optimal_policy(x, m$observation[,,1], states))
                 )-> p
-                 
-
-                 
 ```
 
 
-```{r}
+
+```r
 ggplot(p, aes(state, state - policy, col=prior)) + 
-  geom_point(alpha = 0.5)
+  geom_line(alpha = 0.5, lwd=1)
 ```
+
+![](notes-on-alpha-vectors_files/figure-html/unnamed-chunk-9-1.png)<!-- -->
 
 
 The value of a state $x$ given belief $b(x)$ is given by $V(b) = \max_i \sum_{x \in X} b(x) \alpha_i(x)$
@@ -116,17 +163,23 @@ The value of a state $x$ given belief $b(x)$ is given by $V(b) = \max_i \sum_{x 
 
 Compare to old pomdp solution:
 
-```{r}
-system.time(soln <- pomdp(m$transition, m$observation, m$reward, discount, precision = precision))
+
+```r
+system.time(soln <- pomdp(m$transition, m$observation, m$reward, discount, precision = 10))
 ```
 
-```{r}
-old_method <- data.frame(prior = "old method", policy = soln$policy, value = soln$value, state = states)
-
-rbind(p, old_method) %>%
-  ggplot(aes(state, state - policy, col=prior)) + 
-  geom_point(alpha = 0.5)
 ```
+##    user  system elapsed 
+##  62.488   1.000  63.634
+```
+
+
+```r
+policy <- soln$policy
+plot(seq_along(policy), seq_along(policy) - policy)
+```
+
+![](notes-on-alpha-vectors_files/figure-html/unnamed-chunk-11-1.png)<!-- -->
 
 
 
@@ -135,8 +188,8 @@ rbind(p, old_method) %>%
 
 Compare to non-matrix solution at a single point
 
-```{r}
 
+```r
 A <- unif
 O <- m$observation[,,1]
 alpha <- unname(as.data.frame(A$alpha))
@@ -150,6 +203,13 @@ x2 <- vapply(alpha, function(x) belief %*% x, double(1))
 
 
 identical(V[,2], x2)
+```
+
+```
+## [1] TRUE
+```
+
+```r
 value_2 <- max(x2)
 policy_2 <- alpha_action[which.max(x2)]
 ```
