@@ -23,11 +23,15 @@ devtools::load_all()
 Typical model setup:
 
 ```{r}
-states <- 0:60
+
+n_s <- 25
+precision <- 1
+
+states <- 0:(n_s-1)
 actions <- states
 obs <- states
 
-f <- function(x, h, r = 1, K = 50){
+f <- function(x, h, r = 1, K = 15){
   s <- pmax(x - h, 0)
   s * exp(r * (1 - s / K) )
 }
@@ -38,7 +42,7 @@ sigma_m <- sigma_g
 reward_fn <- function(x,h) pmin(x,h)
 discount <- 0.95
 
-attach( fisheries_matrices(states, actions, obs, reward_fn, f, sigma_g, sigma_m) )
+m <- fisheries_matrices(states, actions, obs, reward_fn, f, sigma_g, sigma_m) 
 ```
 
 
@@ -50,19 +54,57 @@ Here we compare the alpha vectors calculated from an initial belief reflecting a
 
 
 ```{r}
-belief <- observation[,51,1]
-K <- compute_alpha_vectors(transition, observation, reward, discount, observation, belief, precision = 5)
-```
-
-```{r}
-unif <- compute_alpha_vectors(transition, observation, reward, discount, rep(1, n_s) / n_s, precision = 5)
+system.time(unif <- compute_alpha_vectors(m$transition, m$observation, m$reward, discount, rep(1, n_s) / n_s, precision = precision))
 ```
 
 
 ```{r}
-alpha <- unname(as.data.frame(unif$alpha))
-alpha_action <- unif$alpha_action
+belief <- m$observation[,16,1]
+system.time(K <- compute_alpha_vectors(m$transition, m$observation, m$reward, discount, belief, precision = precision))
 ```
+
+
+```{r}
+system.time(notunif <- compute_alpha_vectors(m$transition, m$observation, m$reward, discount, 1:n_s / sum(1:n_s), precision = precision))
+```
+
+
+## Examining alpha vectors
+
+
+```{r}
+
+optimal_policy <- function(A, O, state){
+  alpha <- unname(as.data.frame(A$alpha))
+  alpha_action <- A$alpha_action
+  
+  V <- t(alpha) %*% O 
+  value <- apply(V, 2, max)
+  policy <- apply(V, 2, function(x) alpha_action[which.max(x)])
+
+  data.frame(policy, value, state)  
+}
+
+```
+
+
+```{r}
+list(unif, K, notunif) %>% 
+  purrr::map2_df( c("unif", "K", "notunif"), 
+                  function(x,prior) 
+                   data.frame(prior, optimal_policy(x, m$observation[,,1], states))
+                )-> p
+                 
+
+                 
+```
+
+
+```{r}
+ggplot(p, aes(state, state - policy, col=prior)) + 
+  geom_line(alpha = 0.5, lwd=1)
+```
+
 
 The value of a state $x$ given belief $b(x)$ is given by $V(b) = \max_i \sum_{x \in X} b(x) \alpha_i(x)$
 
@@ -71,16 +113,18 @@ The value of a state $x$ given belief $b(x)$ is given by $V(b) = \max_i \sum_{x 
  each segmenet associated to an action given by `alpha_action`; that is, the `j`th column of `alpha` corresponds to the action
  given by `alpha_action[j]`.  
 
+
+Compare to old pomdp solution:
+
 ```{r}
-V <- t(alpha) %*% observation[,,1] 
-value <- apply(V, 2, max)
-policy <- apply(V, 2, function(x) alpha_action[which.max(x)])
+system.time(soln <- pomdp(m$transition, m$observation, m$reward, discount, precision = 10))
 ```
 
-
 ```{r}
+policy <- soln$policy
 plot(seq_along(policy), seq_along(policy) - policy)
 ```
+
 
 
 --------
@@ -89,11 +133,20 @@ plot(seq_along(policy), seq_along(policy) - policy)
 Compare to non-matrix solution at a single point
 
 ```{r}
-belief <- O[,2,1]
+
+A <- unif
+O <- m$observation[,,1]
+alpha <- unname(as.data.frame(A$alpha))
+alpha_action <- A$alpha_action
+V <- t(alpha) %*% O 
+
+## same as manual
+belief <- m$observation[,2,1]
 x2 <- vapply(alpha, function(x) belief %*% x, double(1))
 
-identical(V[,2], x2)
 
+
+identical(V[,2], x2)
 value_2 <- max(x2)
 policy_2 <- alpha_action[which.max(x2)]
 ```
