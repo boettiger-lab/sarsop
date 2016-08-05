@@ -13,7 +13,6 @@ First, we will load the libraries needed for this example.  The MDPtoolbox provi
 ```{r}
 library("MDPtoolbox")
 library("appl")
-library("printr")
 knitr::opts_chunk$set(cache = TRUE)
 ```
 
@@ -138,11 +137,7 @@ we set a desired precision limit, but also set a memory limit which will halt th
 
 
 ```{r}
-system.time( soln <- pomdp_solve(transition, observation, reward, discount, precision = 5, memory = 3750) )
-```
-
-```{r}
-soln
+system.time( soln <- pomdp_solve(transition, observation, reward, discount, precision = 1, memory = 15000) )
 ```
 
 
