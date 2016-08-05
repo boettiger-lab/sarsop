@@ -53,14 +53,14 @@ Typical model setup:
 
 
 ```r
-n_s <- 25
-precision <- 1
+n_s <- 40
+precision <- 10
 
 states <- 0:(n_s-1)
 actions <- states
 obs <- states
 
-f <- function(x, h, r = 1, K = 15){
+f <- function(x, h, r = 1, K = 35){
   s <- pmax(x - h, 0)
   s * exp(r * (1 - s / K) )
 }
@@ -89,19 +89,19 @@ system.time(unif <- compute_alpha_vectors(m$transition, m$observation, m$reward,
 
 ```
 ##    user  system elapsed 
-## 734.624   1.296 736.169
+##  42.340   0.168  42.660
 ```
 
 
 
 ```r
-belief <- m$observation[,16,1]
+belief <- m$observation[,n_s-4,1]
 system.time(K <- compute_alpha_vectors(m$transition, m$observation, m$reward, discount, belief, precision = precision))
 ```
 
 ```
 ##    user  system elapsed 
-## 363.496   0.648 364.231
+##  41.576   0.172  41.765
 ```
 
 
@@ -112,7 +112,7 @@ system.time(notunif <- compute_alpha_vectors(m$transition, m$observation, m$rewa
 
 ```
 ##    user  system elapsed 
-## 434.732   0.612 435.387
+##  48.696   0.248  48.991
 ```
 
 
@@ -127,7 +127,7 @@ optimal_policy <- function(A, O, state){
   
   V <- t(alpha) %*% O 
   value <- apply(V, 2, max)
-  policy <- apply(V, 2, function(x) alpha_action[which.max(x)])
+  policy <- apply(V, 2, function(x) alpha_action[which.max(x)]) + 1 # C++ pomdpsol enumerates actions starting at 0
 
   data.frame(policy, value, state)  
 }
@@ -147,7 +147,7 @@ list(unif, K, notunif) %>%
 
 ```r
 ggplot(p, aes(state, state - policy, col=prior)) + 
-  geom_line(alpha = 0.5, lwd=1)
+  geom_point(alpha = 0.5)
 ```
 
 ![](notes-on-alpha-vectors_files/figure-html/unnamed-chunk-9-1.png)<!-- -->
@@ -165,18 +165,21 @@ Compare to old pomdp solution:
 
 
 ```r
-system.time(soln <- pomdp(m$transition, m$observation, m$reward, discount, precision = 10))
+system.time(soln <- pomdp(m$transition, m$observation, m$reward, discount, precision = precision))
 ```
 
 ```
-##    user  system elapsed 
-##  62.488   1.000  63.634
+##     user   system  elapsed 
+## 1408.440    6.908 1416.118
 ```
 
 
 ```r
-policy <- soln$policy
-plot(seq_along(policy), seq_along(policy) - policy)
+old_method <- data.frame(prior = "old method", policy = soln$policy, value = soln$value, state = states)
+
+rbind(p, old_method) %>%
+  ggplot(aes(state, state - policy, col=prior)) + 
+  geom_point(alpha = 0.5)
 ```
 
 ![](notes-on-alpha-vectors_files/figure-html/unnamed-chunk-11-1.png)<!-- -->

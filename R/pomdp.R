@@ -65,8 +65,7 @@ compute_alpha_vectors <- function(transition, observation, utility, discount, be
   belief = normalize(belief)
 
   if(any(is.nan(belief)) || sum(belief) == 0){
-    # Belief has already converged
-    #warning("Belief has NaNs or sums to zero")
+    warning("Belief has NaNs or sums to zero")
     list(value = 0, policy = 1, alpha = NULL, alpha_action = NULL, daignostics = NULL)
   } else {
 

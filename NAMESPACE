@@ -3,6 +3,7 @@
 export(fisheries_matrices)
 export(polgraph)
 export(pomdp)
+export(pomdp_solve)
 export(pomdpconvert)
 export(pomdpeval)
 export(pomdpsim)
