@@ -25,7 +25,7 @@ Typical model setup:
 ```{r}
 
 n_s <- 40
-precision <- 10
+precision <- 5
 
 states <- 0:(n_s-1)
 actions <- states

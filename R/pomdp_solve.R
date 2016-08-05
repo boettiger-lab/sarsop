@@ -24,27 +24,7 @@
 #'
 pomdp_solve <- function(transition, observation, utility, discount, initial = rep(1, dim(observation)[[1]]) / dim(observation)[[1]], verbose = TRUE, ...){
 
-  ## Consider more robust normalization.  Check write-out precision in write_pomdp
-  initial = normalize(initial)
-
-  ## Consider checks to initial and to matrices to make sure they meet fundamental assumptions.
-
-    ## Compute alpha-vectors using SARSOP pomdp algorithm from APPL
-    infile <- tempfile("input", fileext = ".pomdp")
-    outfile <- tempfile("output", fileext = ".policy")
-    write_pomdpx(transition, observation, utility, discount, initial, file = infile)
-    status <- pomdpsol(infile, outfile, ...)
-
-
-    if(verbose){
-      message(paste("load time:", status[["load_time_sec"]],
-                    "sec, init time:", status[["init_time_sec"]],
-                    "sec, run time:", status[["run_time_sec"]],
-                    "sec, final precision:", status[["final_precision"]],
-                    "end_condition:", status[["end_condition"]]))
-    }
-
-    results <- read_policyx(file = outfile)
+    results <- run_pomdp(transition, observation, utility, discount, initial, verbose = TRUE, ...)
 
     ## Compute optimal policy based on alpha vectors, V(b) = max_i \sum_x b(x) alpha_i(x)
     V <- t(results$alpha) %*% observation[,,1]
@@ -55,11 +35,45 @@ pomdp_solve <- function(transition, observation, utility, discount, initial = re
     state <- 1:dim(observation)[[1]]
     data.frame(policy, value, state)
 
-
-
 }
 
 
+#' run_pomdp
+#'
+#' run_pomdp
+#' @param transition Transition matrix, dimension n_s x n_s x n_a
+#' @param observation Observation matrix, dimension n_s x n_z x n_a
+#' @param utility Utility/reward matrix, dimension n_s x n_a
+#' @param discount the discount factor
+#' @param initial initial belief state, optional, defaults to uniform over states
+#' @param verbose logical, should the function include a message with pomdp diagnostics (timings, final precision, end condition)
+#' @param ... additional arguments to appl SARSOP algorithm, see \code{\link{appl}}.
+#' @return alpha vectors and corresponding actions
+#' @export
+run_pomdp <- function(transition, observation, utility, discount, initial = rep(1, dim(observation)[[1]]) / dim(observation)[[1]], verbose = TRUE, ...){
+
+  ## Consider more robust normalization.  Check write-out precision in write_pomdp
+  initial = normalize(initial)
+
+  ## Consider checks to initial and to matrices to make sure they meet fundamental assumptions.
+
+  ## Compute alpha-vectors using SARSOP pomdp algorithm from APPL
+  infile <- tempfile("input", fileext = ".pomdp")
+  outfile <- tempfile("output", fileext = ".policy")
+  write_pomdpx(transition, observation, utility, discount, initial, file = infile)
+  status <- pomdpsol(infile, outfile, ...)
+
+  if(verbose){
+    message(paste("load time:", status[["load_time_sec"]],
+                  "sec, init time:", status[["init_time_sec"]],
+                  "sec, run time:", status[["run_time_sec"]],
+                  "sec, final precision:", status[["final_precision"]],
+                  "end_condition:", status[["end_condition"]]))
+  }
+
+  results <- read_policyx(file = outfile)
+  results
+}
 
 
 read_policyx = function(file = 'output.policy'){
@@ -74,7 +88,6 @@ read_policyx = function(file = 'output.policy'){
   # add 1 bc C++ pomdpsol enumerates actions starting at 0
   alpha_action <- vapply(vectors, function(v) as.numeric(xml2::xml_attr(v, "action")), double(1))  + 1
 
-  output = list(alpha = alpha, alpha_action = alpha_action)
-
+  list(alpha = alpha, alpha_action = alpha_action)
 }
 
