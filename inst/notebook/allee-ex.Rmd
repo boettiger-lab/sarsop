@@ -78,8 +78,8 @@ mdp <- MDPtoolbox::mdp_policy_iteration(matrices$transition, matrices$reward, di
 
 
 ```{r}
-system.time( soln <- appl::pomdp(matrices$transition, matrices$observation, matrices$reward, discount, 
-                                 mc.cores = 1, precision = 15, memory = 3750) )
+system.time( soln <- appl::pomdp_solve(matrices$transition, matrices$observation, matrices$reward, discount, 
+                                 precision = 5, memory = 3750) )
 ```
 
 ```{r}

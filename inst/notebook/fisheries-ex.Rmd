@@ -138,7 +138,7 @@ we set a desired precision limit, but also set a memory limit which will halt th
 
 
 ```{r}
-system.time( soln <- pomdp(transition, observation, reward, discount, mc.cores = 1, precision = 5, memory = 3750) )
+system.time( soln <- pomdp_solve(transition, observation, reward, discount, precision = 5, memory = 3750) )
 ```
 
 ```{r}
