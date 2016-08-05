@@ -1,5 +1,5 @@
-fisheries-ex.html
-fisheries-ex_cache
+*.html
+*_cache/*
 *.policy
 *.pomdp
 *.pomdpx

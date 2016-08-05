@@ -31,10 +31,10 @@ for simplicity this example assumes a fixed price per unit harvest, with no cost
 Future rewards are discounted.
 
 ```{r}
-states <- 0:80
+states <- 0:47
 actions <- states
 
-f <- function(x, h, r = 1, K = 75){
+f <- function(x, h, r = 1, K = 33){
   s <- pmax(x - h, 0)
   s * exp(r * (1 - s / K) )
 }
@@ -113,9 +113,8 @@ for (k in 1:n_a) {
     observation[, , k] <- diag(n_s)
   } else {
     for (i in 1:n_s) {
-      if(states[i] <= 0){ ## cannot do dlnorm with mu = log(0) = -Inf.  Cannot solve if belief has already converged
-        x <- dlnorm(observed_states, -1, sigma_m)
-        observation[i, , k] <- x / sum(x)
+      if(states[i] <= 0){ ## treat observed 0 as real 0, (dlnorm cannot have log-mu of 0)
+        observation[i, , k] <- c(1, rep(0, n_z - 1))
       } else {
         x <- dlnorm(observed_states, log(states[i]), sdlog = sigma_m)    # transition probability densities
         ## Normalize using CDF
@@ -138,7 +137,7 @@ we set a desired precision limit, but also set a memory limit which will halt th
 
 
 ```{r}
-system.time( soln <- pomdp(transition, observation, reward, discount, mc.cores = 1, precision = 5, memory = 15750) )
+system.time( soln <- pomdp_solve(transition, observation, reward, discount, precision = 1, memory = 15000) )
 ```
 
 
@@ -146,7 +145,7 @@ system.time( soln <- pomdp(transition, observation, reward, discount, mc.cores =
 policies <- data.frame(states = states,
                        exact = states - exact_policy,
                        mdp = states - actions[mdp$policy],
-                       pomdp = states - soln$policy)
+                       pomdp = states - actions[soln$policy])
 
 library("tidyr")
 library("ggplot2")
