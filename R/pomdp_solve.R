@@ -22,7 +22,7 @@
 
 #' }
 #'
-pomdp_solve <- function(transition, observation, utility, discount, belief = rep(1, dim(observation)[[1]]) / dim(observation)[[1]], verbose = TRUE, ...){
+pomdp_solve <- function(transition, observation, utility, discount, initial = rep(1, dim(observation)[[1]]) / dim(observation)[[1]], verbose = TRUE, ...){
 
   ## Consider more robust normalization.  Check write-out precision in write_pomdp
   belief = normalize(belief)
@@ -34,7 +34,7 @@ pomdp_solve <- function(transition, observation, utility, discount, belief = rep
     ## Compute alpha-vectors using SARSOP pomdp algorithm from APPL
     infile <- tempfile("input", fileext = ".pomdp")
     outfile <- tempfile("output", fileext = ".policy")
-    write_pomdpx(transition, observation, utility, discount, belief, file = infile)
+    write_pomdpx(transition, observation, utility, discount, initial, file = infile)
     status <- pomdpsol(infile, outfile, ...)
 
 

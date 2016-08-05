@@ -4,7 +4,7 @@
 \alias{pomdp_solve}
 \title{pomdp_solve}
 \usage{
-pomdp_solve(transition, observation, utility, discount, belief = rep(1,
+pomdp_solve(transition, observation, utility, discount, initial = rep(1,
   dim(observation)[[1]])/dim(observation)[[1]], verbose = TRUE, ...)
 }
 \arguments{
@@ -16,11 +16,11 @@ pomdp_solve(transition, observation, utility, discount, belief = rep(1,
 
 \item{discount}{the discount factor}
 
+\item{initial}{initial belief state, optional, defaults to uniform over states}
+
 \item{verbose}{logical, should the function include a message with pomdp diagnostics (timings, final precision, end condition)}
 
 \item{...}{additional arguments to appl SARSOP algorithm, see \code{\link{appl}}.}
-
-\item{initial}{initial belief state, optional, defaults to uniform over states}
 }
 \value{
 optimal value and corresponding policy
