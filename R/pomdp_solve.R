@@ -74,7 +74,7 @@ read_policyx = function(file = 'output.policy'){
   # add 1 bc C++ pomdpsol enumerates actions starting at 0
   alpha_action <- vapply(vectors, function(v) as.numeric(xml2::xml_attr(v, "action")), double(1))  + 1
 
-  output = list(alpha,alpha_action)
+  output = list(alpha = alpha, alpha_action = alpha_action)
 
 }
 
