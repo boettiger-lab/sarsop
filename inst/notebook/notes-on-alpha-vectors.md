@@ -54,7 +54,7 @@ Typical model setup:
 
 ```r
 n_s <- 40
-precision <- 10
+precision <- 5
 
 states <- 0:(n_s-1)
 actions <- states
@@ -89,7 +89,7 @@ system.time(unif <- compute_alpha_vectors(m$transition, m$observation, m$reward,
 
 ```
 ##    user  system elapsed 
-##  42.340   0.168  42.660
+##  67.245   0.188  67.463
 ```
 
 
@@ -101,7 +101,7 @@ system.time(K <- compute_alpha_vectors(m$transition, m$observation, m$reward, di
 
 ```
 ##    user  system elapsed 
-##  41.576   0.172  41.765
+##  65.478   0.262  65.760
 ```
 
 
@@ -112,7 +112,7 @@ system.time(notunif <- compute_alpha_vectors(m$transition, m$observation, m$rewa
 
 ```
 ##    user  system elapsed 
-##  48.696   0.248  48.991
+##  78.908   0.239  79.188
 ```
 
 
@@ -170,7 +170,7 @@ system.time(soln <- pomdp(m$transition, m$observation, m$reward, discount, preci
 
 ```
 ##     user   system  elapsed 
-## 1408.440    6.908 1416.118
+## 2669.866    8.410 2679.391
 ```
 
 
