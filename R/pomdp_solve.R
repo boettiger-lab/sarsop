@@ -25,11 +25,9 @@
 pomdp_solve <- function(transition, observation, utility, discount, initial = rep(1, dim(observation)[[1]]) / dim(observation)[[1]], verbose = TRUE, ...){
 
   ## Consider more robust normalization.  Check write-out precision in write_pomdp
-  belief = normalize(belief)
+  initial = normalize(initial)
 
-  if(any(is.nan(belief)) || sum(belief) == 0){
-    stop("Belief has NaNs or sums to zero")
-  } else {
+  ## Consider checks to initial and to matrices to make sure they meet fundamental assumptions.
 
     ## Compute alpha-vectors using SARSOP pomdp algorithm from APPL
     infile <- tempfile("input", fileext = ".pomdp")
@@ -58,7 +56,7 @@ pomdp_solve <- function(transition, observation, utility, discount, initial = re
     data.frame(policy, value, state)
 
 
-  }
+
 }
 
 
