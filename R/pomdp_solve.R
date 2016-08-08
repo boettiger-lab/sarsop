@@ -6,7 +6,7 @@
 #' @param observation Observation matrix, dimension n_s x n_z x n_a
 #' @param utility Utility/reward matrix, dimension n_s x n_a
 #' @param discount the discount factor
-#' @param initial initial belief state, optional, defaults to uniform over states
+#' @param state_prior initial belief state, optional, defaults to uniform over states
 #' @param verbose logical, should the function include a message with pomdp diagnostics (timings, final precision, end condition)
 #' @param ... additional arguments to appl SARSOP algorithm, see \code{\link{appl}}.
 #' @return optimal value and corresponding policy
@@ -22,25 +22,29 @@
 
 #' }
 #'
-pomdp_solve <- function(transition, observation, utility, discount, initial = rep(1, dim(observation)[[1]]) / dim(observation)[[1]], verbose = TRUE, ...){
+pomdp_solve <- function(transition, observation, utility, discount, states_prior = rep(1, dim(observation)[[1]]) / dim(observation)[[1]], verbose = TRUE, ...){
 
-    results <- run_pomdp(transition, observation, utility, discount, initial, verbose = TRUE, ...)
+    alpha <- run_pomdp(transition, observation, utility, discount, states_prior, verbose = TRUE, ...)
 
-    ## Compute optimal policy based on alpha vectors, V(b) = max_i \sum_x b(x) alpha_i(x)
-    V <- t(results$alpha) %*% observation[,,1]
-    value <- apply(V, 2, max)
-    policy <- apply(V, 2, function(x) results$alpha_action[which.max(x)])
+    belief <- vapply(1:n_obs, function(i){
+        b <- states_prior %*% t(transition[,,j]) * observation[,i,j]
+        b / sum(b)
+      }, numeric(n_states))
 
-    ## Note that policy is given as index numbers to the action vector, and state as index numbers to the states vector
-    state <- 1:dim(observation)[[1]]
-    data.frame(policy, value, state)
+    V <- t(belief) %*% alpha
+    value <- apply(V, 1, max)
+    policy <- apply(V, 1, function(x) which.max(x))
 
+    data.frame(policy, value, state = 1:n_states)
 }
 
 
 #' run_pomdp
 #'
-#' run_pomdp
+#' run_pomdp wraps the tasks of writing the pomdpx file defining the problem, running the pomdsol (SARSOP) algorithm in C++,
+#' and then reading the resulting policy file back into R.  The returned alpha vectors and alpha_action information is then
+#' transformed into a more generic, user-friendly repesentation as a matrix whose columns correspond to actions and rows to states.
+#' This function can thus be used at the heart of most pomdp applications.
 #' @param transition Transition matrix, dimension n_s x n_s x n_a
 #' @param observation Observation matrix, dimension n_s x n_z x n_a
 #' @param utility Utility/reward matrix, dimension n_s x n_a
@@ -48,7 +52,9 @@ pomdp_solve <- function(transition, observation, utility, discount, initial = re
 #' @param initial initial belief state, optional, defaults to uniform over states
 #' @param verbose logical, should the function include a message with pomdp diagnostics (timings, final precision, end condition)
 #' @param ... additional arguments to appl SARSOP algorithm, see \code{\link{appl}}.
-#' @return alpha vectors and corresponding actions
+#' @return a matrix of alpha vectors. Column index indicates action associated with the alpha vector, (1:n_actions),
+#'  rows indicate system state, x. Actions for which no alpha vector was found are included as all -Inf, since such actions are
+#'  not optimal regardless of belief, and thus have no corresponding alpha vectors in alpha_action list.
 #' @export
 run_pomdp <- function(transition, observation, utility, discount, initial = rep(1, dim(observation)[[1]]) / dim(observation)[[1]], verbose = TRUE, ...){
 
@@ -72,7 +78,8 @@ run_pomdp <- function(transition, observation, utility, discount, initial = rep(
   }
 
   results <- read_policyx(file = outfile)
-  results
+  regularize_alpha(resluts$alpha, results$alpha_action, n_a = dim(observation)[[3]])
+
 }
 
 
@@ -90,4 +97,27 @@ read_policyx = function(file = 'output.policy'){
 
   list(alpha = alpha, alpha_action = alpha_action)
 }
+
+
+## POMDP solver returns a data.frame whose columns are the alpha vectors.
+## The action corresponding to each vector is given by alpha_action[i].
+##
+## Each alpha vector is of length n_states,  but there is not one vector for each
+## action -- some actions are not represented, others may be repeated (depends on #
+## of piecewise linear segments used to approximate value)
+##
+## So we create a new data.frame whose i'th column is the alpha vector for the i'th action
+regularize_alpha <- function(alpha, alpha_action, n_a){
+  n_x <- dim(alpha)[[1]]
+  vapply(1:n_a, function(i){
+    j <- which(alpha_action == i)[1]
+    if(!is.na(j))
+      alpha[, j]
+    else
+      rep(-Inf, n_x)
+  }, numeric(n_x))
+}
+
+
+
 
