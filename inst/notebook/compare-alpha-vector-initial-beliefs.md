@@ -4,37 +4,8 @@
 
 ```r
 library("MDPtoolbox")
-```
-
-```
-## Loading required package: Matrix
-```
-
-```
-## Loading required package: linprog
-```
-
-```
-## Loading required package: lpSolve
-```
-
-```r
 library("appl")
 library("tidyr")
-```
-
-```
-## 
-## Attaching package: 'tidyr'
-```
-
-```
-## The following object is masked from 'package:Matrix':
-## 
-##     expand
-```
-
-```r
 library("ggplot2")
 library("purrr")
 knitr::opts_chunk$set(cache = TRUE)
@@ -80,12 +51,28 @@ system.time(unif <- pomdp_solve(m$transition, m$observation, m$reward, discount,
 ```
 
 ```
-## load time: 0.28 sec, init time: 2.65 sec, run time: 45.31 sec, final precision: 4.98029 end_condition:   target precision reached
+## load time: 0.28 sec, init time: 2.7 sec, run time: 44.85 sec, final precision: 4.98029 end_condition:   target precision reached
 ```
 
 ```
 ##    user  system elapsed 
-##  63.243   0.230  63.511
+##  62.768   0.174  62.960
+```
+
+
+
+```r
+belief <- m$observation[,2,1]
+system.time(low <- pomdp_solve(m$transition, m$observation, m$reward, discount, belief, precision = precision))
+```
+
+```
+## load time: 0.28 sec, init time: 2.68 sec, run time: 52.88 sec, final precision: 4.97377 end_condition:   target precision reached
+```
+
+```
+##    user  system elapsed 
+##  69.795   0.219  70.033
 ```
 
 
@@ -96,12 +83,12 @@ system.time(K <- pomdp_solve(m$transition, m$observation, m$reward, discount, be
 ```
 
 ```
-## load time: 0.3 sec, init time: 2.72 sec, run time: 47.62 sec, final precision: 4.96461 end_condition:   target precision reached
+## load time: 0.29 sec, init time: 2.78 sec, run time: 46.28 sec, final precision: 4.96461 end_condition:   target precision reached
 ```
 
 ```
 ##    user  system elapsed 
-##  64.614   0.202  64.841
+##  63.188   0.174  63.374
 ```
 
 
@@ -111,12 +98,12 @@ system.time(notunif <- pomdp_solve(m$transition, m$observation, m$reward, discou
 ```
 
 ```
-## load time: 0.27 sec, init time: 2.74 sec, run time: 54.59 sec, final precision: 4.97651 end_condition:   target precision reached
+## load time: 0.29 sec, init time: 2.92 sec, run time: 58.71 sec, final precision: 4.97651 end_condition:   target precision reached
 ```
 
 ```
 ##    user  system elapsed 
-##  71.452   0.210  71.728
+##  75.804   0.179  75.998
 ```
 
 
@@ -124,13 +111,14 @@ system.time(notunif <- pomdp_solve(m$transition, m$observation, m$reward, discou
 ```r
 p <- rbind(data.frame(prior = "unif", unif), 
            data.frame(prior = "K", K), 
-           data.frame(prior = "notunif", notunif))
+           data.frame(prior = "notunif", notunif),
+           data.frame(prior = "low", low))
 
-ggplot(p, aes(state, state - policy, col=prior)) + 
+ggplot(p, aes(states[state], states[state] - actions[policy], col=prior)) + 
   geom_point(alpha = 0.5)
 ```
 
-![](compare-alpha-vector-initial-beliefs_files/figure-html/unnamed-chunk-6-1.png)<!-- -->
+![](compare-alpha-vector-initial-beliefs_files/figure-html/unnamed-chunk-7-1.png)<!-- -->
 
 
 Compare to old pomdp solution:
@@ -142,7 +130,7 @@ system.time(soln <- pomdp(m$transition, m$observation, m$reward, discount, preci
 
 ```
 ##     user   system  elapsed 
-## 2707.088    8.881 2718.700
+## 2667.347    8.003 2676.287
 ```
 
 
@@ -154,5 +142,5 @@ rbind(p, old_method) %>%
   geom_point(alpha = 0.5)
 ```
 
-![](compare-alpha-vector-initial-beliefs_files/figure-html/unnamed-chunk-8-1.png)<!-- -->
+![](compare-alpha-vector-initial-beliefs_files/figure-html/unnamed-chunk-9-1.png)<!-- -->
 

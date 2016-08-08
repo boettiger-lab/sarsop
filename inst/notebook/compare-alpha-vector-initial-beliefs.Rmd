@@ -21,20 +21,21 @@ Typical model setup:
 
 ```{r}
 
-n_s <- 40
+n_s <- 48
 precision <- 5
 
-states <- 0:(n_s-1)
+states <- 0:47
 actions <- states
 obs <- states
 
-f <- function(x, h, r = 1, K = 35){
+f <- function(x, h, r = 1, K = 33){
   s <- pmax(x - h, 0)
   s * exp(r * (1 - s / K) )
 }
 
-sigma_g <- 0.2  
+sigma_g <- sqrt(log(1 + 0.5 / 6)) # Scale the log-standard-deviation to result in similar variance to a uniform distribution of width 0.5
 sigma_m <- sigma_g
+
 
 reward_fn <- function(x,h) pmin(x,h)
 discount <- 0.95
@@ -51,7 +52,13 @@ Here we compare the alpha vectors calculated from an initial belief reflecting a
 
 
 ```{r}
-system.time(unif <- pomdp_solve(m$transition, m$observation, m$reward, discount, rep(1, n_s) / n_s, precision = precision))
+system.time(unif <- pomdp_solve(m$transition, m$observation, m$reward, discount, precision = precision))
+```
+
+
+```{r}
+belief <- m$observation[,2,1]
+system.time(low <- pomdp_solve(m$transition, m$observation, m$reward, discount, belief, precision = precision))
 ```
 
 
@@ -70,9 +77,10 @@ system.time(notunif <- pomdp_solve(m$transition, m$observation, m$reward, discou
 
 p <- rbind(data.frame(prior = "unif", unif), 
            data.frame(prior = "K", K), 
-           data.frame(prior = "notunif", notunif))
+           data.frame(prior = "notunif", notunif),
+           data.frame(prior = "low", low))
 
-ggplot(p, aes(state, state - policy, col=prior)) + 
+ggplot(p, aes(states[state], states[state] - actions[policy], col=prior)) + 
   geom_point(alpha = 0.5)
 ```
 
