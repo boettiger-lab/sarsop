@@ -23,9 +23,14 @@ run_pomdp(transition, observation, utility, discount, initial = rep(1,
 \item{...}{additional arguments to appl SARSOP algorithm, see \code{\link{appl}}.}
 }
 \value{
-alpha vectors and corresponding actions
+a matrix of alpha vectors. Column index indicates action associated with the alpha vector, (1:n_actions),
+ rows indicate system state, x. Actions for which no alpha vector was found are included as all -Inf, since such actions are
+ not optimal regardless of belief, and thus have no corresponding alpha vectors in alpha_action list.
 }
 \description{
-run_pomdp
+run_pomdp wraps the tasks of writing the pomdpx file defining the problem, running the pomdsol (SARSOP) algorithm in C++,
+and then reading the resulting policy file back into R.  The returned alpha vectors and alpha_action information is then
+transformed into a more generic, user-friendly repesentation as a matrix whose columns correspond to actions and rows to states.
+This function can thus be used at the heart of most pomdp applications.
 }
 

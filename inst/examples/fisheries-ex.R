@@ -1,10 +1,10 @@
-states <- 0:23
+states <- 0:20
 actions <- states
 reward_fn <- function(x,h) pmin(x,h)
 discount <- 0.95
 
-# Re-scale a sigma = 0.5 for lognormal
-sigma_g <- sqrt(log(1 + 0.5 / 6))
+# Re-scale a sigma = 0.1 for lognormal
+sigma_g <- sqrt(log(1 + 0.1 / 6))
 sigma_m <- sigma_g
 f <- function(x, h, r = 1, K = 20){
   s <- pmax(x - h, 0)
@@ -45,9 +45,8 @@ for (k in 1:n_a) {
     observation[, , k] <- diag(n_s)
   } else {
     for (i in 1:n_s) {
-      if(states[i] <= 0){ ## cannot do dlnorm with mu = log(0) = -Inf.  Cannot solve if belief has already converged
-        x <- dlnorm(observed_states, -1, sigma_m)
-        observation[i, , k] <- x / sum(x)
+      if(states[i] <= 0){ ## observed zero is really zero
+        observation[i, , k] <- c(1, rep(0, n_z - 1))
       } else {
         x <- dlnorm(observed_states, log(states[i]), sdlog = sigma_m)    # transition probability densities
         ## Normalize using CDF

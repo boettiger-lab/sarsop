@@ -7,6 +7,7 @@
 #' @param utility Utility/reward matrix, dimension n_s x n_a
 #' @param discount the discount factor
 #' @param state_prior initial belief state, optional, defaults to uniform over states
+#' @param a_0 previous action. Belief in state depends not only on observation, but on prior belief of the state and subsequent action that had been taken.
 #' @param verbose logical, should the function include a message with pomdp diagnostics (timings, final precision, end condition)
 #' @param ... additional arguments to appl SARSOP algorithm, see \code{\link{appl}}.
 #' @return optimal value and corresponding policy
@@ -22,14 +23,22 @@
 
 #' }
 #'
-pomdp_solve <- function(transition, observation, utility, discount, states_prior = rep(1, dim(observation)[[1]]) / dim(observation)[[1]], verbose = TRUE, ...){
+pomdp_solve <- function(transition, observation, utility, discount, states_prior = rep(1, dim(observation)[[1]]) / dim(observation)[[1]], a_0 = 1, verbose = TRUE, ...){
+
+    n_states <- dim(observation)[[1]]
+    n_obs <- dim(observation)[[2]]
+    n_actions <- dim(observation)[[3]]
 
     alpha <- run_pomdp(transition, observation, utility, discount, states_prior, verbose = TRUE, ...)
 
-    belief <- vapply(1:n_obs, function(i){
-        b <- states_prior %*% t(transition[,,j]) * observation[,i,j]
-        b / sum(b)
-      }, numeric(n_states))
+
+    belief <- vapply(1:n_obs,
+             function(i){
+               b <- states_prior %*% t(transition[, , a_0]) * observation[, i, a_0]
+               b <- b / sum(b)
+             },
+             numeric(n_states))
+
 
     V <- t(belief) %*% alpha
     value <- apply(V, 1, max)
@@ -114,7 +123,7 @@ regularize_alpha <- function(alpha, alpha_action, n_a){
     if(!is.na(j))
       alpha[, j]
     else
-      rep(-Inf, n_x)
+      rep(0, n_x)
   }, numeric(n_x))
 }
 

@@ -4,8 +4,9 @@
 \alias{pomdp_solve}
 \title{pomdp_solve}
 \usage{
-pomdp_solve(transition, observation, utility, discount, initial = rep(1,
-  dim(observation)[[1]])/dim(observation)[[1]], verbose = TRUE, ...)
+pomdp_solve(transition, observation, utility, discount, states_prior = rep(1,
+  dim(observation)[[1]])/dim(observation)[[1]], a_0 = 1, verbose = TRUE,
+  ...)
 }
 \arguments{
 \item{transition}{Transition matrix, dimension n_s x n_s x n_a}
@@ -16,11 +17,13 @@ pomdp_solve(transition, observation, utility, discount, initial = rep(1,
 
 \item{discount}{the discount factor}
 
-\item{initial}{initial belief state, optional, defaults to uniform over states}
+\item{a_0}{previous action. Belief in state depends not only on observation, but on prior belief of the state and subsequent action that had been taken.}
 
 \item{verbose}{logical, should the function include a message with pomdp diagnostics (timings, final precision, end condition)}
 
 \item{...}{additional arguments to appl SARSOP algorithm, see \code{\link{appl}}.}
+
+\item{state_prior}{initial belief state, optional, defaults to uniform over states}
 }
 \value{
 optimal value and corresponding policy
