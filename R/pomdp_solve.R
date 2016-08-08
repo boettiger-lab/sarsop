@@ -78,7 +78,7 @@ run_pomdp <- function(transition, observation, utility, discount, initial = rep(
   }
 
   results <- read_policyx(file = outfile)
-  regularize_alpha(resluts$alpha, results$alpha_action, n_a = dim(observation)[[3]])
+  regularize_alpha(results$alpha, results$alpha_action, n_a = dim(observation)[[3]])
 
 }
 
