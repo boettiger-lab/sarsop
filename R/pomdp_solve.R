@@ -6,7 +6,7 @@
 #' @param observation Observation matrix, dimension n_s x n_z x n_a
 #' @param utility Utility/reward matrix, dimension n_s x n_a
 #' @param discount the discount factor
-#' @param state_prior initial belief state, optional, defaults to uniform over states
+#' @param states_prior initial belief state, optional, defaults to uniform over states
 #' @param a_0 previous action. Belief in state depends not only on observation, but on prior belief of the state and subsequent action that had been taken.
 #' @param verbose logical, should the function include a message with pomdp diagnostics (timings, final precision, end condition)
 #' @param ... additional arguments to appl SARSOP algorithm, see \code{\link{appl}}.
