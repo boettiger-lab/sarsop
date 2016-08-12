@@ -1,7 +1,7 @@
 Package: appl
 Type: Package
 Title: Approximate POMDP Planning Software
-Version: 0.2.1
+Version: 0.3.0
 Authors@R: c(
     person("Jeroen", "Ooms", email = "jeroen.ooms@stat.ucla.edu", role = c("cre", "aut")),
     person("Carl", "Boettiger", email = "cboettig@gmail.com", role = "aut"),
