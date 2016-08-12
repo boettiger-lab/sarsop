@@ -56,7 +56,7 @@ sarsop <- function(transition, observation, reward, discount,
                   n_states = dim(observation)[[1]],
                   n_obs = dim(observation)[[2]],
                   n_actions = dim(observation)[[3]],
-                  parameters = log_data)
+                  log_data = log_data)
 
   alpha
 }
