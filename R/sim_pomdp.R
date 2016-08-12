@@ -22,7 +22,8 @@
 #'
 #' }
 #'
-sim_pomdp <- function(transition, observation, reward, discount, state_prior = NULL,
+sim_pomdp <- function(transition, observation, reward, discount,
+                      state_prior = rep(1, dim(observation)[[1]]) / dim(observation)[[1]],
                       x0, a0 = 1, Tmax = 20,
                       alpha = NULL, ...){
 
@@ -44,6 +45,7 @@ sim_pomdp <- function(transition, observation, reward, discount, state_prior = N
 
     for(t in 2:Tmax){
       if(update_alpha) alpha <- sarsop(transition, observation, reward, discount, state_posterior[t,], ...)
+
       out <- compute_policy(alpha, transition, observation, reward, state_posterior[t,], action[t-1])
       obs[t] <- sample(1:n_obs, 1, prob = observation[state[t], , action[t-1]])
       action[t] <- out$policy[obs[t]]
