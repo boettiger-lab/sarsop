@@ -4,7 +4,7 @@
 \alias{sarsop}
 \title{sarsop}
 \usage{
-sarsop(transition, observation, utility, discount, state_prior = rep(1,
+sarsop(transition, observation, reward, discount, state_prior = rep(1,
   dim(observation)[[1]])/dim(observation)[[1]], verbose = TRUE, ...)
 }
 \arguments{
@@ -12,15 +12,15 @@ sarsop(transition, observation, utility, discount, state_prior = rep(1,
 
 \item{observation}{Observation matrix, dimension n_s x n_z x n_a}
 
-\item{utility}{Utility/reward matrix, dimension n_s x n_a}
+\item{reward}{reward matrix, dimension n_s x n_a}
 
 \item{discount}{the discount factor}
+
+\item{state_prior}{initial belief state, optional, defaults to uniform over states}
 
 \item{verbose}{logical, should the function include a message with pomdp diagnostics (timings, final precision, end condition)}
 
 \item{...}{additional arguments to \code{\link{appl}}.}
-
-\item{initial}{initial belief state, optional, defaults to uniform over states}
 }
 \value{
 a matrix of alpha vectors. Column index indicates action associated with the alpha vector, (1:n_actions),

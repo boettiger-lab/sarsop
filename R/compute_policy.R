@@ -1,6 +1,7 @@
 #' compute_policy
 #'
 #' @inheritParams sarsop
+#' @param alpha the matrix of alpha vectors returned by \code{\link{sarsop}}
 #' @param a_0 previous action. Belief in state depends not only on observation, but on prior belief of the state and subsequent action that had been taken.
 #' @return a data frame providing the optimal policy (choice of action) and corresponding value of the action for each possible belief state
 #' @export
@@ -12,7 +13,8 @@
 #' compute_policy(alpha, transition, observation, reward)
 #' }
 #'
-compute_policy <- function(alpha, transition, observation, reward, state_prior, a_0 = 1){
+compute_policy <- function(alpha, transition, observation, reward,
+                           state_prior =  rep(1, dim(observation)[[1]]) / dim(observation)[[1]], a_0 = 1){
 
   n_states <- dim(observation)[[1]]
   n_obs <- dim(observation)[[2]]
@@ -21,7 +23,8 @@ compute_policy <- function(alpha, transition, observation, reward, state_prior, 
   belief <- vapply(1:n_obs,
                    function(i){
                      b <- state_prior %*% t(transition[, , a_0]) * observation[, i, a_0]
-                     b <- b / sum(b)
+                     if(sum(b) == 0) numeric(n_states) ## observed state i is impossible
+                     else b / sum(b)
                    },
                    numeric(n_states))
 

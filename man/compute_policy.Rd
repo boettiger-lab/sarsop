@@ -4,12 +4,19 @@
 \alias{compute_policy}
 \title{compute_policy}
 \usage{
-compute_policy(alpha, transition, observation, reward, state_prior, a_0 = 1)
+compute_policy(alpha, transition, observation, reward, state_prior = rep(1,
+  dim(observation)[[1]])/dim(observation)[[1]], a_0 = 1)
 }
 \arguments{
+\item{alpha}{the matrix of alpha vectors returned by \code{\link{sarsop}}}
+
 \item{transition}{Transition matrix, dimension n_s x n_s x n_a}
 
 \item{observation}{Observation matrix, dimension n_s x n_z x n_a}
+
+\item{reward}{reward matrix, dimension n_s x n_a}
+
+\item{state_prior}{initial belief state, optional, defaults to uniform over states}
 
 \item{a_0}{previous action. Belief in state depends not only on observation, but on prior belief of the state and subsequent action that had been taken.}
 }

@@ -4,17 +4,20 @@
 \alias{sim_pomdp}
 \title{sim_pomdp}
 \usage{
-sim_pomdp(transition, observation, reward, discount, state_prior = NULL, x0,
-  a0 = 1, Tmax = 20, alpha = NULL, verbose = TRUE, mc.cores = 1L, ...)
+sim_pomdp(transition, observation, reward, discount, state_prior = rep(1,
+  dim(observation)[[1]])/dim(observation)[[1]], x0, a0 = 1, Tmax = 20,
+  alpha = NULL, ...)
 }
 \arguments{
 \item{transition}{Transition matrix, dimension n_s x n_s x n_a}
 
 \item{observation}{Observation matrix, dimension n_s x n_z x n_a}
 
-\item{reward}{Reward matrix, dimension n_s x n_a}
+\item{reward}{reward matrix, dimension n_s x n_a}
 
 \item{discount}{the discount factor}
+
+\item{state_prior}{initial belief state, optional, defaults to uniform over states}
 
 \item{x0}{initial state}
 
@@ -23,9 +26,9 @@ if the observation process is independent of the action taken)}
 
 \item{Tmax}{duration of simulation}
 
-\item{policy}{the policy to be simulated. Should be a vector of length n_s where
-the ith element gives the action (index of the action) for an observation of the ith state,
-(i.e. as returned by pomdp or appl functions)}
+\item{alpha}{the matrix of alpha vectors returned by \code{\link{sarsop}}}
+
+\item{...}{additional arguments to \code{\link{appl}}.}
 }
 \value{
 a data frame with columns for time, state, obs, action, and (discounted) value.
