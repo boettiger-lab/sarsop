@@ -4,7 +4,7 @@
 \alias{sarsop}
 \title{sarsop}
 \usage{
-sarsop(transition, observation, utility, discount, state_prior = rep(1,
+sarsop(transition, observation, reward, discount, state_prior = rep(1,
   dim(observation)[[1]])/dim(observation)[[1]], verbose = TRUE,
   log_dir = NULL, log_data = NULL, ...)
 }
@@ -12,6 +12,8 @@ sarsop(transition, observation, utility, discount, state_prior = rep(1,
 \item{transition}{Transition matrix, dimension n_s x n_s x n_a}
 
 \item{observation}{Observation matrix, dimension n_s x n_z x n_a}
+
+\item{reward}{reward matrix, dimension n_s x n_a}
 
 \item{discount}{the discount factor}
 
@@ -24,8 +26,6 @@ sarsop(transition, observation, utility, discount, state_prior = rep(1,
 \item{log_data}{a data.frame of additional columns to include in the log, such as model parameters}
 
 \item{...}{additional arguments to \code{\link{appl}}.}
-
-\item{reward}{reward matrix, dimension n_s x n_a}
 }
 \value{
 a matrix of alpha vectors. Column index indicates action associated with the alpha vector, (1:n_actions),

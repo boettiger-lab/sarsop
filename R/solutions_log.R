@@ -1,5 +1,6 @@
 
 #' @importFrom uuid UUIDgenerate
+#' @importFrom utils read.csv write.table
 solutions_log <- function(policyx, pomdpx = NULL, log_dir = ".",
                           metafile = paste0(log_dir, "/meta.csv"),
                           id = uuid::UUIDgenerate(), status,
@@ -11,7 +12,7 @@ solutions_log <- function(policyx, pomdpx = NULL, log_dir = ".",
     file.copy(pomdpx, paste0(log_dir, "/", id, ".pomdpx"))
 
   append <- file.exists(metafile)
-  write.table(data.frame(id, status, n_states, n_obs, n_actions, discount, date = Sys.time(), log_data),
+  utils::write.table(data.frame(id, status, n_states, n_obs, n_actions, discount, date = Sys.time(), log_data),
               file = metafile,
               append = append, sep = ", ", row.names = FALSE, col.names = !append)
 
@@ -20,5 +21,5 @@ solutions_log <- function(policyx, pomdpx = NULL, log_dir = ".",
 # parameters = data.frame(model = NA, r = NA, K = NA, C = NA)
 
 read_log <- function(parameters, log_dir = ".", metafile = paste0(log_dir, "/meta.csv")){
-  meta <- read.csv(metafile)
+  meta <- utils::read.csv(metafile)
 }

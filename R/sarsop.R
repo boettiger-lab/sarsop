@@ -25,7 +25,7 @@
 #' compute_policy(alpha, transition, observation, reward)
 #' }
 #'
-sarsop <- function(transition, observation, utility, discount,
+sarsop <- function(transition, observation, reward, discount,
                    state_prior = rep(1, dim(observation)[[1]]) / dim(observation)[[1]],
                    verbose = TRUE, log_dir = NULL, log_data = NULL, ...){
   ## Consider more robust normalization.  Check write-out precision in write_pomdp
