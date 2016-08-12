@@ -1,56 +1,6 @@
-
-#' pomdp_solve
+#' sarsop
 #'
-#' pomdp_solve
-#' @param transition Transition matrix, dimension n_s x n_s x n_a
-#' @param observation Observation matrix, dimension n_s x n_z x n_a
-#' @param utility Utility/reward matrix, dimension n_s x n_a
-#' @param discount the discount factor
-#' @param states_prior initial belief state, optional, defaults to uniform over states
-#' @param a_0 previous action. Belief in state depends not only on observation, but on prior belief of the state and subsequent action that had been taken.
-#' @param verbose logical, should the function include a message with pomdp diagnostics (timings, final precision, end condition)
-#' @param ... additional arguments to appl SARSOP algorithm, see \code{\link{appl}}.
-#' @return optimal value and corresponding policy
-#' @details Dimensions are given as number of states (n_s), number of observed states n_z, number of actions n_a
-#' @export
-#' @examples
-#' \dontrun{
-#' ## May take > 5s
-#' ## Use example code to generate matrices for pomdp problem:
-#' source(system.file("examples/fisheries-ex.R", package = "appl"))
-#' ## Run the function:
-#' soln <- pomdp_solve(transition, observation, reward, discount, precision = 10)
-
-#' }
-#'
-pomdp_solve <- function(transition, observation, utility, discount, states_prior = rep(1, dim(observation)[[1]]) / dim(observation)[[1]], a_0 = 1, verbose = TRUE, ...){
-
-    n_states <- dim(observation)[[1]]
-    n_obs <- dim(observation)[[2]]
-    n_actions <- dim(observation)[[3]]
-
-    alpha <- run_pomdp(transition, observation, utility, discount, states_prior, verbose = TRUE, ...)
-
-
-    belief <- vapply(1:n_obs,
-             function(i){
-               b <- states_prior %*% t(transition[, , a_0]) * observation[, i, a_0]
-               b <- b / sum(b)
-             },
-             numeric(n_states))
-
-
-    V <- t(belief) %*% alpha
-    value <- apply(V, 1, max)
-    policy <- apply(V, 1, function(x) which.max(x))
-
-    data.frame(policy, value, state = 1:n_states)
-}
-
-
-#' run_pomdp
-#'
-#' run_pomdp wraps the tasks of writing the pomdpx file defining the problem, running the pomdsol (SARSOP) algorithm in C++,
+#' sarsop wraps the tasks of writing the pomdpx file defining the problem, running the pomdsol (SARSOP) algorithm in C++,
 #' and then reading the resulting policy file back into R.  The returned alpha vectors and alpha_action information is then
 #' transformed into a more generic, user-friendly repesentation as a matrix whose columns correspond to actions and rows to states.
 #' This function can thus be used at the heart of most pomdp applications.
@@ -60,15 +10,23 @@ pomdp_solve <- function(transition, observation, utility, discount, states_prior
 #' @param discount the discount factor
 #' @param initial initial belief state, optional, defaults to uniform over states
 #' @param verbose logical, should the function include a message with pomdp diagnostics (timings, final precision, end condition)
-#' @param ... additional arguments to appl SARSOP algorithm, see \code{\link{appl}}.
+#' @param ... additional arguments to \code{\link{appl}}.
 #' @return a matrix of alpha vectors. Column index indicates action associated with the alpha vector, (1:n_actions),
 #'  rows indicate system state, x. Actions for which no alpha vector was found are included as all -Inf, since such actions are
 #'  not optimal regardless of belief, and thus have no corresponding alpha vectors in alpha_action list.
 #' @export
-run_pomdp <- function(transition, observation, utility, discount, initial = rep(1, dim(observation)[[1]]) / dim(observation)[[1]], verbose = TRUE, ...){
+#' @examples
+#' \dontrun{ ## Takes > 5s
+#' ## Use example code to generate matrices for pomdp problem:
+#' source(system.file("examples/fisheries-ex.R", package = "appl"))
+#' alpha <- sarsop(transition, observation, reward, discount, precision = 10)
+#' compute_policy(alpha, transition, observation, reward)
+#' }
+#'
+sarsop <- function(transition, observation, utility, discount, state_prior = rep(1, dim(observation)[[1]]) / dim(observation)[[1]], verbose = TRUE, ...){
 
   ## Consider more robust normalization.  Check write-out precision in write_pomdp
-  initial = normalize(initial)
+  initial = normalize(state_prior)
 
   ## Consider checks to initial and to matrices to make sure they meet fundamental assumptions.
 
