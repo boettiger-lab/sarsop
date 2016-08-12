@@ -11,6 +11,8 @@
 #' @param state_prior initial belief state, optional, defaults to uniform over states
 #' @param verbose logical, should the function include a message with pomdp diagnostics (timings, final precision, end condition)
 #' @param ... additional arguments to \code{\link{appl}}.
+#' @param log_dir if a directory is given, pomdpx and policyx files will be saved here, along with a metadata file
+#' @param log_data a data.frame of additional columns to include in the log, such as model parameters
 #' @return a matrix of alpha vectors. Column index indicates action associated with the alpha vector, (1:n_actions),
 #'  rows indicate system state, x. Actions for which no alpha vector was found are included as all -Inf, since such actions are
 #'  not optimal regardless of belief, and thus have no corresponding alpha vectors in alpha_action list.
@@ -25,7 +27,7 @@
 #'
 sarsop <- function(transition, observation, utility, discount,
                    state_prior = rep(1, dim(observation)[[1]]) / dim(observation)[[1]],
-                   verbose = TRUE, ...){
+                   verbose = TRUE, log_dir = NULL, log_data = NULL, ...){
   ## Consider more robust normalization.  Check write-out precision in write_pomdp
   initial = normalize(state_prior)
 
@@ -46,8 +48,17 @@ sarsop <- function(transition, observation, utility, discount,
   }
 
   results <- read_policyx(file = outfile)
-  regularize_alpha(results$alpha, results$alpha_action, n_a = dim(observation)[[3]])
+  alpha <- regularize_alpha(results$alpha, results$alpha_action, n_a = dim(observation)[[3]])
 
+  if(!is.null(log_dir))
+    solutions_log(outfile, infile, log_dir = log_dir,
+                  id = uuid::UUIDgenerate(), status = status,
+                  n_states = dim(observation)[[1]],
+                  n_obs = dim(observation)[[2]],
+                  n_actions = dim(observation)[[3]],
+                  parameters = log_data)
+
+  alpha
 }
 
 
