@@ -3,14 +3,15 @@
 solutions_log <- function(policyx, pomdpx = NULL, log_dir = ".",
                           metafile = paste0(log_dir, "/meta.csv"),
                           id = uuid::UUIDgenerate(), status,
-                          n_states, n_obs, n_actions, parameters = NULL){
+                          n_states, n_obs, n_actions, discount,
+                          log_data = NULL){
 
   file.copy(policyx, paste0(log_dir, "/", id, ".policyx"))
   if(!is.null(pomdpx))
     file.copy(pomdpx, paste0(log_dir, "/", id, ".pomdpx"))
 
   append <- file.exists(metafile)
-  write.table(data.frame(id, status, n_states, n_obs, n_actions, parameters),
+  write.table(data.frame(id, status, n_states, n_obs, n_actions, discount, log_data),
               file = metafile,
               append = append, sep = ", ", row.names = FALSE, col.names = !append)
 
