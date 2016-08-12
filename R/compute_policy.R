@@ -22,7 +22,7 @@ compute_policy <- function(alpha, transition, observation, reward,
 
   belief <- vapply(1:n_obs,
                    function(i){
-                     b <- state_prior %*% t(transition[, , a_0]) * observation[, i, a_0]
+                     b <- state_prior %*% transition[, , a_0] * observation[, i, a_0]
                      if(sum(b) == 0) numeric(n_states) ## observed state i is impossible
                      else b / sum(b)
                    },
