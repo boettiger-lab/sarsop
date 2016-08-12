@@ -44,6 +44,8 @@ sim_pomdp <- function(transition, observation, reward, discount, state_prior = N
     if(is.null(alpha)){
       if(verbose) message("alpha not provided, recomputing them from SARSOP algorithm at each time step. This can be very slow!")
       update_alpha <- TRUE
+    } else {
+      update_alpha <- FALSE
     }
 
     for(t in 2:Tmax){
