@@ -30,7 +30,15 @@ solutions_log <- function(policyx, pomdpx = NULL, log_dir = ".",
 #' @return a list of alpha vectors matching the query, and a data.frame with the rows of the matching metadata.
 #' @export
 #'
-#' @examples
+#' @examples \dontrun{
+#'
+#' source(system.file("examples/fisheries-ex.R", package = "appl"))
+#' log = tempfile()
+#' alpha <- sarsop(transition, observation, reward, discount, precision = 10,
+#'                 log_dir = log, log_data = log_data)
+#' alphas_from_log(parameters = data.frame(model = "ricker", r = 0.1), log_dir = log)
+#'
+#' }
 alphas_from_log <- function(parameters, log_dir = ".", metafile = paste0(log_dir, "/meta.csv")){
   #meta <- readr::read_csv(metafile)
   meta <- utils::read.csv(metafile)
@@ -50,4 +58,4 @@ alphas_from_log <- function(parameters, log_dir = ".", metafile = paste0(log_dir
   list(alphas = alphas, meta = meta)
 }
 
-# parameters = data.frame(model = "ricker", r = 0.1)
+#

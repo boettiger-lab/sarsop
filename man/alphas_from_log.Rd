@@ -20,4 +20,15 @@ a list of alpha vectors matching the query, and a data.frame with the rows of th
 \description{
 alphas_from_log
 }
+\examples{
+\dontrun{
+
+source(system.file("examples/fisheries-ex.R", package = "appl"))
+log = tempfile()
+alpha <- sarsop(transition, observation, reward, discount, precision = 10,
+                log_dir = log, log_data = log_data)
+alphas_from_log(parameters = data.frame(model = "ricker", r = 0.1), log_dir = log)
+
+}
+}
 
