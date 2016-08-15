@@ -128,6 +128,8 @@ parse_sarsop_messages <- function(txt){
   target_precision_reached <- grepl("target precision reached", end_condition)
   timeout_reached <- grepl("Preset timeout reached", end_condition)
   memory_limit_reached <- is.null(end_condition)
+  if(length(end_condition) == 0)
+    end_condition <- NA
 
   list(load_time_sec = load_time,
     init_time_sec = init_time,
