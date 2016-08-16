@@ -16,4 +16,7 @@ log_data <- data.frame(model = "ricker", r = 0.1, K = 20, C = NA, sigma_g = 0.1,
 alpha <- sarsop(transition, observation, reward, discount, precision = 10,
                 log_dir = log, log_data = log_data)
 
-alphas_from_log(parameters = data.frame(model = "ricker", r = 0.1), log_dir = log)
+meta <- meta_from_log(parameters = data.frame(model = "ricker", r = 0.1), log_dir = log)
+alphas <- alphas_from_log(meta, log_dir = log)
+fs <- f_from_log(meta)
+models <- models_from_log(meta)

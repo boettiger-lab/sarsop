@@ -2,7 +2,10 @@
 
 export(alphas_from_log)
 export(compute_policy)
+export(f_from_log)
 export(fisheries_matrices)
+export(meta_from_log)
+export(models_from_log)
 export(polgraph)
 export(pomdp)
 export(pomdpconvert)
