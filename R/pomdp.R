@@ -1,5 +1,3 @@
-######### All functions are deprecated
-
 
 #' pomdp
 #'

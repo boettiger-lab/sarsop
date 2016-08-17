@@ -1,47 +1,69 @@
-## Theoretically the observation can depend on the action.  So to initialize we must either specify an initial
-## action, and then use it to make an observation of the state, or we must specify an intial observed state.
-## Note that in our fisheries example (and many others), observation process is independent of the action
-##  and any action could have been chosen.
-
 #' sim_pomdp
 #'
-#' sim_pomdp
-#' @param transition Transition matrix, dimension n_s x n_s x n_a
-#' @param observation Observation matrix, dimension n_s x n_z x n_a
-#' @param reward Reward matrix, dimension n_s x n_a
-#' @param discount the discount factor
-#' @param policy the policy to be simulated. Should be a vector of length n_s where
-#'  the ith element gives the action (index of the action) for an observation of the ith state,
-#'  (i.e. as returned by pomdp or appl functions)
+#' @inheritParams sarsop
+#' @inheritParams compute_policy
 #' @param x0 initial state
-#' @param Tmax duration of simulation
 #' @param a0 initial action (default is action 1, e.g. can be arbitrary
 #' if the observation process is independent of the action taken)
+#' @param Tmax duration of simulation
 #' @details simulation assumes the following order of updating: For system in state[t] at
 #' time t, an observation of the system obs[t] is made, and then action[t] is based on that
 #' observation and the given policy, returning (discounted) reward[t].
 #' @return a data frame with columns for time, state, obs, action, and (discounted) value.
 #' @export
-sim_pomdp <- function(transition, observation, reward, discount, policy, x0, Tmax, a0 = 1){
-  state <- action <- value <- obs <- numeric(Tmax+1)
-  n_s <- dim(transition)[1]
-  n_z <- dim(observation)[2]
-  state[1] <- x0
-  state[2] <- x0
-  action[1] <- a0
-  # assume observation is based on the action of the previous year, if it does depend on action
+#' @examples
+#' \dontrun{ ## Takes > 5s
+#' ## Use example code to generate matrices for pomdp problem:
+#' source(system.file("examples/fisheries-ex.R", package = "appl"))
+#' alpha <- sarsop(transition, observation, reward, discount, precision = 10)
+#' sim <- sim_pomdp(transition, observation, reward, discount,
+#'                      x0 = 5, Tmax = 20, alpha = alpha)
 
-  for(t in 2:(Tmax+1)){
-    obs_prob <- observation[state[t], , action[t-1]]
-    obs[t] <- sample(1:n_z, 1, prob = obs_prob)
-    action[t] <- policy[obs[t]]
-    value[t] <- reward[state[t], action[t]] * discount^(t-1)
-    trans_prob <- transition[state[t], , action[t]]
-    state[t+1] <- sample(1:n_s, 1, prob = trans_prob)
+#'
+#' }
+#'
+sim_pomdp <- function(transition, observation, reward, discount,
+                      state_prior = rep(1, dim(observation)[[1]]) / dim(observation)[[1]],
+                      x0, a0 = 1, Tmax = 20,
+                      alpha = NULL, ...){
 
+    n_states <- dim(observation)[1]
+    n_obs <- dim(observation)[2]
+    value <- obs <- action <- state <- numeric(Tmax+1)
+    state_posterior <- array(NA, dim = c(Tmax+1, n_states))
+    if(is.null(state_prior))  state_prior <- rep(1, n_states) / n_states
+    state[2] <- x0
+    action[1] <- a0  # only relevant if action influences observation process
+    state_posterior[2,] <- state_prior
 
+    if(is.null(alpha)){
+      message("alpha not provided, recomputing them from SARSOP algorithm at each time step. This can be very slow!")
+      update_alpha <- TRUE
+    } else {
+      update_alpha <- FALSE
+    }
+
+    for(t in 2:Tmax){
+      if(update_alpha) alpha <- sarsop(transition, observation, reward, discount, state_posterior[t,], ...)
+
+      out <- compute_policy(alpha, transition, observation, reward, state_posterior[t,], action[t-1])
+      obs[t] <- sample(1:n_obs, 1, prob = observation[state[t], , action[t-1]])
+      action[t] <- out$policy[obs[t]]
+      value[t] <- reward[state[t], action[t]] * discount^(t-1)
+      state[t+1] <- sample(1:n_states, 1, prob = transition[state[t], , action[t]])
+      state_posterior[t+1,] <- update_belief(state_posterior[t,], transition, observation, obs[t], action[t-1])
+    }
+    df <- data.frame(time = 0:Tmax, state, obs, action, value)[2:Tmax,]
+    list(df = df, state_posterior = state_posterior[2:(Tmax+1),])
   }
 
-  df <- data.frame(time = 0:Tmax, state = state[1:(Tmax+1)], obs, action, value)
-  df[2:(Tmax+1),] ## ignore year 0, which is just a reference year so obs[1] can be made
-}
+
+  update_belief <- function(state_prior, transition, observation, z0, a0){
+    belief <-
+      vapply(1:length(state_prior), function(i){
+            state_prior %*% transition[, i, a0] * observation[i, z0, a0]
+      }, numeric(1))
+    belief / sum(belief)
+  }
+
+

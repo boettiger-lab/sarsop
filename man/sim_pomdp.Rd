@@ -4,27 +4,31 @@
 \alias{sim_pomdp}
 \title{sim_pomdp}
 \usage{
-sim_pomdp(transition, observation, reward, discount, policy, x0, Tmax, a0 = 1)
+sim_pomdp(transition, observation, reward, discount, state_prior = rep(1,
+  dim(observation)[[1]])/dim(observation)[[1]], x0, a0 = 1, Tmax = 20,
+  alpha = NULL, ...)
 }
 \arguments{
 \item{transition}{Transition matrix, dimension n_s x n_s x n_a}
 
 \item{observation}{Observation matrix, dimension n_s x n_z x n_a}
 
-\item{reward}{Reward matrix, dimension n_s x n_a}
+\item{reward}{reward matrix, dimension n_s x n_a}
 
 \item{discount}{the discount factor}
 
-\item{policy}{the policy to be simulated. Should be a vector of length n_s where
-the ith element gives the action (index of the action) for an observation of the ith state,
-(i.e. as returned by pomdp or appl functions)}
+\item{state_prior}{initial belief state, optional, defaults to uniform over states}
 
 \item{x0}{initial state}
 
-\item{Tmax}{duration of simulation}
-
 \item{a0}{initial action (default is action 1, e.g. can be arbitrary
 if the observation process is independent of the action taken)}
+
+\item{Tmax}{duration of simulation}
+
+\item{alpha}{the matrix of alpha vectors returned by \code{\link{sarsop}}}
+
+\item{...}{additional arguments to \code{\link{appl}}.}
 }
 \value{
 a data frame with columns for time, state, obs, action, and (discounted) value.
@@ -36,5 +40,16 @@ sim_pomdp
 simulation assumes the following order of updating: For system in state[t] at
 time t, an observation of the system obs[t] is made, and then action[t] is based on that
 observation and the given policy, returning (discounted) reward[t].
+}
+\examples{
+\dontrun{ ## Takes > 5s
+## Use example code to generate matrices for pomdp problem:
+source(system.file("examples/fisheries-ex.R", package = "appl"))
+alpha <- sarsop(transition, observation, reward, discount, precision = 10)
+sim <- sim_pomdp(transition, observation, reward, discount,
+                     x0 = 5, Tmax = 20, alpha = alpha)
+
+}
+
 }
 

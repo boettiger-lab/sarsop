@@ -13,6 +13,9 @@ vignette: >
 ```{r include = FALSE}
 Sys.setenv("NOT_CRAN" = "true")
 eval <- !identical(Sys.getenv("TRAVIS"), "true") & identical(Sys.getenv("NOT_CRAN"), "true")
+
+knitr::opts_chunk$set(eval = FALSE)
+
 ```
 
 

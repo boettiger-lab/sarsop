@@ -1,4 +1,4 @@
-ricker <- function(x, h, r = 1, K = 20){
+ricker <- function(x, h, r = .1, K = 20){
   s <- pmax(x - h, 0)
   s * exp(r * (1 - s / K) )
 }
@@ -24,7 +24,7 @@ fisheries_matrices <- function(states = 0:23,
          observed_states = states,
          reward_fn = function(x,a) pmin(x,a),
          f = ricker,
-         sigma_g = 0.3,
+         sigma_g = 0.1,
          sigma_m = sigma_g){
 
   ## Transition and Reward Matrices

@@ -6,7 +6,7 @@
 \usage{
 fisheries_matrices(states = 0:23, actions = states,
   observed_states = states, reward_fn = function(x, a) pmin(x, a),
-  f = ricker, sigma_g = 0.3, sigma_m = sigma_g)
+  f = ricker, sigma_g = 0.1, sigma_m = sigma_g)
 }
 \arguments{
 \item{states}{sequence of possible states}
