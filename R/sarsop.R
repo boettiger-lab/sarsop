@@ -47,8 +47,10 @@ sarsop <- function(transition, observation, reward, discount,
                   "end_condition:", status[["end_condition"]]))
   }
 
-  results <- read_policyx(file = outfile)
-  alpha <- regularize_alpha(results$alpha, results$alpha_action, n_a = dim(observation)[[3]])
+  alpha <- read_policyx(file = outfile)
+  ##alpha <- regularize_alpha(results$alpha, results$alpha_action, n_a = dim(observation)[[3]])
+
+
 
   if(!is.null(log_dir))
     solutions_log(outfile, infile, log_dir = log_dir,
@@ -69,13 +71,14 @@ read_policyx = function(file = 'output.policy'){
   vectors <- xml2::xml_find_all(xml, "//Vector")
   get_vector <- function(v) as.numeric(strsplit(as.character(xml2::xml_contents(v)), " ")[[1]])
 
+  n_states <- length(get_vector(vectors[[1]]))
   ## Return alpha vectors as a data.frame, n_rows = number of states, n_columns = number of alpha vectors (piecewise linear segments)
-  alpha <- unname(as.data.frame(lapply(vectors, get_vector)))
+  alpha <-vapply(vectors, get_vector, numeric(n_states))
 
   # add 1 bc C++ pomdpsol enumerates actions starting at 0
   alpha_action <- vapply(vectors, function(v) as.numeric(xml2::xml_attr(v, "action")), double(1))  + 1
 
-  list(alpha = alpha, alpha_action = alpha_action)
+  list(vectors = alpha, action = alpha_action)
 }
 
 
@@ -90,11 +93,16 @@ read_policyx = function(file = 'output.policy'){
 regularize_alpha <- function(alpha, alpha_action, n_a){
   n_x <- dim(alpha)[[1]]
   vapply(1:n_a, function(i){
-    j <- which(alpha_action == i)[1]
-    if(!is.na(j))
-      alpha[, j]
-    else
+    j <- which(alpha_action == i)
+    if(length(j) > 0){
+      if(length(j) > 1){
+        apply(alpha[, j], 1, max)
+      } else {
+        alpha[,j]
+      }
+    } else {
       rep(0, n_x)
+    }
   }, numeric(n_x))
 }
 

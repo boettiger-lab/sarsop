@@ -20,6 +20,7 @@ compute_policy <- function(alpha, transition, observation, reward,
   n_obs <- dim(observation)[[2]]
   n_actions <- dim(observation)[[3]]
 
+  ## n_states x n_obs array
   belief <- vapply(1:n_obs,
                    function(i){
                      b <- state_prior %*% transition[, , a_0] * observation[, i, a_0]
@@ -28,8 +29,12 @@ compute_policy <- function(alpha, transition, observation, reward,
                    },
                    numeric(n_states))
 
-  V <- t(belief) %*% alpha
-  value <- apply(V, 1, max)
-  policy <- apply(V, 1, function(x) which.max(x))
+  # Sum over alpha vectors
+  A <- t(belief) %*% alpha$vectors
+
+  ## Determine value and policy
+  value <- apply(A, 1, max)
+  policy <- apply(A, 1, function(x) alpha$action[which.max(x)])
+
   data.frame(policy, value, state = 1:n_obs)
 }

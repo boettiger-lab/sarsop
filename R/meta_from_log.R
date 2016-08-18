@@ -51,9 +51,7 @@ meta_from_log <- function(parameters, log_dir = ".", metafile = paste0(log_dir, 
 alphas_from_log <- function(meta, log_dir = "."){
   lapply(1:dim(meta)[[1]], function(i){
     id <- meta[i,"id"]
-    n_a <- meta[i,"n_actions"]
-    results <- read_policyx(file = paste0(log_dir, "/", id, ".policyx"))
-    regularize_alpha(results$alpha, results$alpha_action, n_a)
+    read_policyx(file = paste0(log_dir, "/", id, ".policyx"))
   })
 }
 
