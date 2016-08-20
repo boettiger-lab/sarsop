@@ -19,18 +19,13 @@ compare_pomdp(transition, observation, reward, discount, obs, action,
 
 \item{obs}{a given sequence of observations}
 
+\item{action}{the corresponding sequence of actions}
+
 \item{state_prior}{initial belief state, optional, defaults to uniform over states}
 
 \item{alpha}{the matrix of alpha vectors returned by \code{\link{sarsop}}}
 
 \item{...}{additional arguments to \code{\link{appl}}.}
-
-\item{x0}{initial state}
-
-\item{a0}{initial action (default is action 1, e.g. can be arbitrary
-if the observation process is independent of the action taken)}
-
-\item{actions}{the corresponding sequence of actions}
 }
 \value{
 a list, containing: a data frame with columns for time, obs, action, and optimal action,
@@ -44,8 +39,9 @@ compare_pomdp
 ## Use example code to generate matrices for pomdp problem:
 source(system.file("examples/fisheries-ex.R", package = "appl"))
 alpha <- sarsop(transition, observation, reward, discount, precision = 10)
-sim <- sim_pomdp(transition, observation, reward, discount, obs = rnorm(15, 21), action = rep(1, 21),
-                     x0 = 5, alpha = alpha)
+sim <- compare_pomdp(transition, observation, reward, discount,
+                     obs = rnorm(21, 15, .1), action = rep(1, 21),
+                     alpha = alpha)
 
 }
 

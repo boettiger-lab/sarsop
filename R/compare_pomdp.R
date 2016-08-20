@@ -2,11 +2,8 @@
 #'
 #' @inheritParams sarsop
 #' @inheritParams compute_policy
-#' @param x0 initial state
-#' @param a0 initial action (default is action 1, e.g. can be arbitrary
-#' if the observation process is independent of the action taken)
 #' @param obs a given sequence of observations
-#' @param actions the corresponding sequence of actions
+#' @param action the corresponding sequence of actions
 #' @return a list, containing: a data frame with columns for time, obs, action, and optimal action,
 #' and an array containing the posterior belief distribution at each time t
 #' @export
@@ -15,7 +12,8 @@
 #' ## Use example code to generate matrices for pomdp problem:
 #' source(system.file("examples/fisheries-ex.R", package = "appl"))
 #' alpha <- sarsop(transition, observation, reward, discount, precision = 10)
-#' sim <- compare_pomdp(transition, observation, reward, discount, obs = rnorm(21, 15, .1), action = rep(1, 21),
+#' sim <- compare_pomdp(transition, observation, reward, discount,
+#'                      obs = rnorm(21, 15, .1), action = rep(1, 21),
 #'                      alpha = alpha)
 
 #'
