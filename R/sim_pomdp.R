@@ -29,11 +29,12 @@ sim_pomdp <- function(transition, observation, reward, discount,
 
     n_states <- dim(observation)[1]
     n_obs <- dim(observation)[2]
+
     value <- obs <- action <- state <- numeric(Tmax+1)
     state_posterior <- array(NA, dim = c(Tmax+1, n_states))
     if(is.null(state_prior))  state_prior <- rep(1, n_states) / n_states
     state[2] <- x0
-    action[1] <- a0  # only relevant if action influences observation process
+    action[1] <- a0
     state_posterior[2,] <- state_prior
 
     if(is.null(alpha)){

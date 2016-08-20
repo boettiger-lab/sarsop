@@ -68,44 +68,17 @@ sarsop <- function(transition, observation, reward, discount,
 read_policyx = function(file = 'output.policy'){
 
   xml <- xml2::read_xml(file)
-  vectors <- xml2::xml_find_all(xml, "//Vector")
+  xml_vectors <- xml2::xml_find_all(xml, "//Vector")
   get_vector <- function(v) as.numeric(strsplit(as.character(xml2::xml_contents(v)), " ")[[1]])
+  get_action <- function(v) as.numeric(xml2::xml_attr(v, "action"))
 
-  n_states <- length(get_vector(vectors[[1]]))
-  ## Return alpha vectors as a data.frame, n_rows = number of states, n_columns = number of alpha vectors (piecewise linear segments)
-  alpha <-vapply(vectors, get_vector, numeric(n_states))
+  n_states <- length(get_vector(xml_vectors[[1]]))
+  ## Return alpha vectors as an array, n_rows = number of states, n_columns = number of alpha vectors (piecewise linear segments)
+  alpha <-vapply(xml_vectors, get_vector, numeric(n_states))
 
   # add 1 bc C++ pomdpsol enumerates actions starting at 0
-  alpha_action <- vapply(vectors, function(v) as.numeric(xml2::xml_attr(v, "action")), double(1))  + 1
+  alpha_action <- vapply(xml_vectors, get_action, double(1))  + 1
 
   list(vectors = alpha, action = alpha_action)
 }
-
-
-## POMDP solver returns a data.frame whose columns are the alpha vectors.
-## The action corresponding to each vector is given by alpha_action[i].
-##
-## Each alpha vector is of length n_states,  but there is not one vector for each
-## action -- some actions are not represented, others may be repeated (depends on #
-## of piecewise linear segments used to approximate value)
-##
-## So we create a new data.frame whose i'th column is the alpha vector for the i'th action
-regularize_alpha <- function(alpha, alpha_action, n_a){
-  n_x <- dim(alpha)[[1]]
-  vapply(1:n_a, function(i){
-    j <- which(alpha_action == i)
-    if(length(j) > 0){
-      if(length(j) > 1){
-        apply(alpha[, j], 1, max)
-      } else {
-        alpha[,j]
-      }
-    } else {
-      rep(0, n_x)
-    }
-  }, numeric(n_x))
-}
-
-
-
 
