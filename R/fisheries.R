@@ -39,14 +39,18 @@ fisheries_matrices <- function(states = 0:23,
   for (k in 1:n_s) {
     for (i in 1:n_a) {
       nextpop <- f(states[k], actions[i])
-      if(nextpop <= 0)
+      if(nextpop <= 0){
         transition[k, , i] <- c(1, rep(0, n_s - 1))
-      else if(sigma_g > 0){
+      } else if(sigma_g > 0){
         x <- dlnorm(states, log(nextpop), sdlog = sigma_g)    # transition probability densities
-        N <- plnorm(states[n_s], log(nextpop), sigma_g)       # CDF accounts for prob density beyond boundary
-        x <- x * N / sum(x)                                   # normalize densities to  = cdf(boundary)
-        x[n_s] <- 1 - N + x[n_s]                              # pile remaining probability on boundary
-        transition[k, , i] <- x                             # store as row of transition matrix
+        if(sum(x) == 0){ ## nextpop is computationally zero
+          transition[k, , i] <- c(1, rep(0, n_s - 1))
+        } else {
+          N <- plnorm(states[n_s], log(nextpop), sigma_g)       # CDF accounts for prob density beyond boundary
+          x <- x * N / sum(x)                                   # normalize densities to  = cdf(boundary)
+          x[n_s] <- 1 - N + x[n_s]                              # pile remaining probability on boundary
+          transition[k, , i] <- x                             # store as row of transition matrix
+        }
       } else {
         stop("sigma_g not > 0")
       }
