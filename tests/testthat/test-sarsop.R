@@ -26,10 +26,18 @@ sim <- sim_pomdp(m$transition, m$observation, m$reward, discount,
 
 ## Check logging works
 log <- tempdir()
-log_data <- data.frame(model = "ricker", r = r, K = K, C = NA, sigma_g = sigma_g, sigma_m = sigma_m)
+
+id <- uuid::UUIDgenerate()
+id
+
+log_data <- data.frame(id = id, model = "ricker", r = r, K = K, C = NA, sigma_g = sigma_g, sigma_m = sigma_m)
 alpha <- sarsop(m$transition, m$observation, m$reward, discount, precision = .1,
                 log_dir = log, log_data = log_data)
 
+## Query by id, making sure we get the model results we just ran
+meta <- meta_from_log(parameters = data.frame(id = id), log_dir = log)[1,]
+
+## Query by parameter values, getting all results from library that match the desired conditions
 meta <- meta_from_log(parameters = data.frame(model = "ricker", r = r), log_dir = log)[1,]
 
 ## Note, these return a list since meta may have multiple models
