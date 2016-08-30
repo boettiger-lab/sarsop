@@ -89,7 +89,7 @@ models_from_log <- function(meta, reward_fn = function(x,h) pmin(x,h)){
                        actions = 0:(meta[i,"n_actions"]-1),
                        observed_states = 0:(meta[i,"n_obs"]-1),
                        reward_fn = reward_fn,
-                       f = f_from_log(meta)[[1]],
+                       f = f_from_log(meta)[[i]],
                        sigma_g = meta[i,"sigma_g"],
                        sigma_m = meta[i,"sigma_m"])
   })
