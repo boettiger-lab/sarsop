@@ -85,9 +85,9 @@ alphas_from_log <- function(meta, log_dir = "."){
 
 models_from_log <- function(meta, reward_fn = function(x,h) pmin(x,h)){
   lapply(1:dim(meta)[[1]], function(i){
-    fisheries_matrices(states = 1:meta[i,"n_states"],
-                       actions = 1:meta[i,"n_actions"],
-                       observed_states = 1:meta[i,"n_obs"],
+    fisheries_matrices(states = 0:(meta[i,"n_states"]-1),
+                       actions = 0:(meta[i,"n_actions"]-1),
+                       observed_states = 0:(meta[i,"n_obs"]-1),
                        reward_fn = reward_fn,
                        f = f_from_log(meta)[[1]],
                        sigma_g = meta[i,"sigma_g"],
