@@ -85,9 +85,27 @@ alphas_from_log <- function(meta, log_dir = "."){
 
 models_from_log <- function(meta, reward_fn = function(x,h) pmin(x,h)){
   lapply(1:dim(meta)[[1]], function(i){
-    fisheries_matrices(states = 0:(meta[i,"n_states"]-1),
-                       actions = 0:(meta[i,"n_actions"]-1),
-                       observed_states = 0:(meta[i,"n_obs"]-1),
+
+    n_states <- meta[i,"n_states"]
+    min_state <- meta[i, "min_state"]
+    max_state <- meta[i, "max_state"]
+    n_actions <- meta[i,"n_actions"]
+    min_action <- meta[i, "min_action"]
+    max_action <- meta[i, "max_action"]
+    n_obs <- meta[i,"n_obs"]
+    min_obs <- meta[i, "min_obs"]
+    max_obs <- meta[i, "max_obs"]
+
+    if(is.null(min_state)) min_state <- 0
+    if(is.null(max_state)) max_state <- n_states - 1
+    if(is.null(min_action)) min_action <- 0
+    if(is.null(max_action)) max_action <- n_actions - 1
+    if(is.null(min_obs)) min_obs <- 0
+    if(is.null(max_obs)) max_obs <- n_obs - 1
+
+    fisheries_matrices(states = seq(min_state, max_state, length.out = n_states),
+                       actions = seq(min_action, max_action, length.out = n_actions),
+                       observed_states = seq(min_obs, max_obs, length.out = n_obs),
                        reward_fn = reward_fn,
                        f = f_from_log(meta)[[i]],
                        sigma_g = meta[i,"sigma_g"],
