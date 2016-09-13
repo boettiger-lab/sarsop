@@ -152,7 +152,7 @@ allen <- function(r, K, C)
 #' }
 f_from_log <- function(meta){
   lapply(1:dim(meta)[[1]], function(i){
-    switch(meta[i,"model"],
+    switch(as.character(meta[i,"model"]),
            ricker = ricker(as.numeric(meta[i,"r"]), as.numeric(meta[i,"K"])),
            allen = allen(as.numeric(meta[i,"r"]), as.numeric(meta[i,"K"]), as.numeric(meta[i, "C"]))
     )
