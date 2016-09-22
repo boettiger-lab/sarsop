@@ -35,10 +35,11 @@ sarsop <- function(transition, observation, reward, discount,
   ## Consider checks to initial and to matrices to make sure they meet fundamental assumptions.
 
   ## Compute alpha-vectors using SARSOP pomdp algorithm from APPL
-  infile <- tempfile("input", fileext = ".pomdp")
-  outfile <- tempfile("output", fileext = ".policy")
+  infile <- tempfile("input", fileext = ".pomdpx")
+  outfile <- tempfile("output", fileext = ".policyx")
+  stdout <- tempfile("run", fileext = ".log")
   write_pomdpx(transition, observation, reward, discount, initial, file = infile)
-  status <- pomdpsol(infile, outfile, ...)
+  status <- pomdpsol(infile, outfile, stdout = stdout, ...)
 
   if(verbose){
     message(paste("load time:", status[["load_time_sec"]],
@@ -54,7 +55,9 @@ sarsop <- function(transition, observation, reward, discount,
 
 
   if(!is.null(log_dir))
-    solutions_log(outfile, infile, log_dir = log_dir,
+    solutions_log(outfile,
+                  infile,
+                  log_dir = log_dir,
                   status = status,
                   n_states = dim(observation)[[1]],
                   n_obs = dim(observation)[[2]],
