@@ -57,6 +57,7 @@ sarsop <- function(transition, observation, reward, discount,
   if(!is.null(log_dir))
     solutions_log(outfile,
                   infile,
+                  stdout = stdout,
                   log_dir = log_dir,
                   status = status,
                   n_states = dim(observation)[[1]],
