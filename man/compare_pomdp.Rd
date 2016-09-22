@@ -32,7 +32,7 @@ a list, containing: a data frame with columns for time, obs, action, and optimal
 and an array containing the posterior belief distribution at each time t
 }
 \description{
-compare_pomdp
+Compare the pomdp solution to historical data
 }
 \examples{
 \dontrun{ ## Takes > 5s

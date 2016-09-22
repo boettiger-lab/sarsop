@@ -1,5 +1,6 @@
 #' compare_pomdp
 #'
+#' Compare the pomdp solution to historical data
 #' @inheritParams sarsop
 #' @inheritParams compute_policy
 #' @param obs a given sequence of observations

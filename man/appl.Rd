@@ -10,9 +10,10 @@
 \alias{pomdpsol}
 \title{APPL wrappers}
 \usage{
-pomdpsol(model, output = tempfile(), precision = 1, timeout = NULL,
+pomdpsol(model, output = tempfile(), precision = 0.001, timeout = NULL,
   fast = FALSE, randomization = FALSE, memory = NULL,
-  improvementConstant = NULL, timeInterval = NULL, stderr = "")
+  improvementConstant = NULL, timeInterval = NULL, stdout = tempfile(),
+  stderr = "")
 
 polgraph(model, policy, output = tempfile(), max_depth = 3,
   max_branches = 10, min_prob = 0.001, stdout = "")
@@ -30,7 +31,7 @@ pomdpconvert(model, stdout = "")
 
 \item{output}{file/path of the output policy file. This is also returned by the function.}
 
-\item{precision}{targetPrecision. Set targetPrecision as the target precision in solution quality; run ends when target precision is reached. The target precision is 1 by default.}
+\item{precision}{targetPrecision. Set targetPrecision as the target precision in solution quality; run ends when target precision is reached. The target precision is 1e-3 by default.}
 
 \item{timeout}{Use timeLimit as the timeout in seconds.  If running time exceeds the specified value, pomdpsol writes out a policy and terminates. There is no time limit by default.}
 
@@ -44,6 +45,8 @@ pomdpconvert(model, stdout = "")
 
 \item{timeInterval}{Use timeInterval as the time interval between two consecutive write-out of policy files. If this is not specified, pomdpsol only writes out a policy file upon termination.}
 
+\item{stdout}{a filename where pomdp run statistics will be stored}
+
 \item{stderr}{where output to 'stderr', see \code{\link{system2}}. Use \code{FALSE}
 to suppress output.}
 
@@ -54,8 +57,6 @@ to suppress output.}
 \item{max_branches}{maximum number of branches to show in the policy graph}
 
 \item{min_prob}{the minimum probability threshold for a branch to be shown in the policy graph}
-
-\item{stdout}{where output to 'stdout', see \code{\link{system2}}. Use \code{FALSE}}
 
 \item{steps}{number of steps for each simulation run}
 
