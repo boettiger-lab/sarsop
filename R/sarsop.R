@@ -32,12 +32,20 @@ sarsop <- function(transition, observation, reward, discount,
   ## Consider more robust normalization.  Check write-out precision in write_pomdp
   initial = normalize(state_prior)
 
-  ## Consider checks to initial and to matrices to make sure they meet fundamental assumptions.
+  ## Use ID given in log_data, if provided
+  if(is.null(log_data) | is.null(log_data$id)){
+    id <- gsub("/", "", tempfile("", tmpdir = ""))
+  } else {
+    id <- log_data$id
+    log_data$id <- NULL
+  }
+
 
   ## Compute alpha-vectors using SARSOP pomdp algorithm from APPL
-  infile <- tempfile("input", fileext = ".pomdpx")
-  outfile <- tempfile("output", fileext = ".policyx")
-  stdout <- tempfile("run", fileext = ".log")
+
+  infile <- paste0(log_dir, "/", id,  ".pomdpx")
+  outfile <-  paste0(log_dir, "/", id,  ".policyx")
+  stdout <-  paste0(log_dir, "/", id,  ".log")
   write_pomdpx(transition, observation, reward, discount, initial, file = infile)
   status <- pomdpsol(infile, outfile, stdout = stdout, ...)
 
@@ -50,15 +58,9 @@ sarsop <- function(transition, observation, reward, discount,
   }
 
   alpha <- read_policyx(file = outfile)
-  ##alpha <- regularize_alpha(results$alpha, results$alpha_action, n_a = dim(observation)[[3]])
-
-
 
   if(!is.null(log_dir))
-    solutions_log(outfile,
-                  infile,
-                  stdout = stdout,
-                  log_dir = log_dir,
+    solutions_log(metafile = paste0("log_dir", "/meta.csv"),
                   status = status,
                   n_states = dim(observation)[[1]],
                   n_obs = dim(observation)[[2]],
