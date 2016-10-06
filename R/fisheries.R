@@ -75,8 +75,8 @@ prob <- function(states, mu, sigma, noise = "lognormal"){
     x <- dlnorm(states, log(mu), sdlog = sigma)
     N <- plnorm(states[n_s], log(mu), sigma)
   } else if(noise == "uniform"){
-    x <- dunif(states, mu + sigma, mu - sigma)
-    N <- punif(states[n_s], mu + sigma, mu - sigma)
+    x <- dunif(states, mu * (1+ sigma), mu * (1 - sigma))
+    N <- punif(states[n_s], mu * (1+ sigma), mu * (1 - sigma))
   }
   if(sum(x) == 0){  ## nextpop is computationally zero, would create NAs
     x <- c(1, rep(0, n_s - 1))
