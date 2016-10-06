@@ -6,7 +6,7 @@
 \usage{
 fisheries_matrices(states = 0:23, actions = states,
   observed_states = states, reward_fn = function(x, a) pmin(x, a),
-  f = ricker, sigma_g = 0.1, sigma_m = sigma_g, type = c("lognormal",
+  f = ricker, sigma_g = 0.1, sigma_m = sigma_g, noise = c("lognormal",
   "uniform"))
 }
 \arguments{
@@ -24,7 +24,7 @@ fisheries_matrices(states = 0:23, actions = states,
 
 \item{sigma_m}{log-sd for log-normal measurement y of state x, or half-width of of uniform}
 
-\item{type}{distribution for noise, "lognormal" or "uniform"}
+\item{noise}{distribution for noise, "lognormal" or "uniform"}
 }
 \value{
 list of transitition matrix, observation matrix, and reward matrix

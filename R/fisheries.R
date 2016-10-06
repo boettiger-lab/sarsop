@@ -15,7 +15,7 @@ ricker <- function(x, h, r = .1, K = 20){
 #' @param f transition function of state x and action a.
 #' @param sigma_g log-sd for log-normal shock to f or half-width of uniform shock
 #' @param sigma_m log-sd for log-normal measurement y of state x, or half-width of of uniform
-#' @param type distribution for noise, "lognormal" or "uniform"
+#' @param noise distribution for noise, "lognormal" or "uniform"
 #' @return list of transitition matrix, observation matrix, and reward matrix
 #' @details assumes log-normally distributed observation errors and process errors
 #' @importFrom stats dlnorm plnorm dunif punif
@@ -27,9 +27,9 @@ fisheries_matrices <- function(states = 0:23,
          f = ricker,
          sigma_g = 0.1,
          sigma_m = sigma_g,
-         type = c("lognormal", "uniform")){
+         noise = c("lognormal", "uniform")){
 
-  type <- match.arg(type)
+  noise <- match.arg(noise)
   ## Transition and Reward Matrices
   n_s <- length(states)
   n_a <- length(actions)
@@ -69,12 +69,12 @@ fisheries_matrices <- function(states = 0:23,
   list(transition = transition, observation = observation, reward = reward)
 }
 
-prob <- function(states, mu, sigma, type = "lognormal"){
+prob <- function(states, mu, sigma, noise = "lognormal"){
   n_s <- length(states)
-  if(type == "lognormal"){
+  if(noise == "lognormal"){
     x <- dlnorm(states, log(mu), sdlog = sigma)
     N <- plnorm(states[n_s], log(mu), sigma)
-  } else if(type == "uniform"){
+  } else if(noise == "uniform"){
     x <- dunif(states, mu + sigma, mu - sigma)
     N <- punif(states[n_s], mu + sigma, mu - sigma)
   }
