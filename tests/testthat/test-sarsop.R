@@ -27,7 +27,7 @@ sim <- sim_pomdp(m$transition, m$observation, m$reward, discount,
 ## Check logging works
 log <- tempdir()
 
-id <- uuid::UUIDgenerate()
+id <- "uuid"
 id
 
 log_data <- data.frame(id = id, model = "ricker", r = r, K = K, C = NA, sigma_g = sigma_g, sigma_m = sigma_m)

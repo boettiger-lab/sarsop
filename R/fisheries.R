@@ -13,11 +13,12 @@ ricker <- function(x, h, r = .1, K = 20){
 #' @param observed_states sequence of possible observations
 #' @param reward_fn function of x and a that gives reward for tacking action a when state is x
 #' @param f transition function of state x and action a.
-#' @param sigma_g log-sd for log-normal shock to f
-#' @param sigma_m log-sd for log-normal measurement y of state x
+#' @param sigma_g half-width of uniform shock or equivalent variance for log-normal
+#' @param sigma_m half-width of uniform shock or equivalent variance for log-normal
+#' @param noise distribution for noise, "lognormal" or "uniform"
 #' @return list of transitition matrix, observation matrix, and reward matrix
 #' @details assumes log-normally distributed observation errors and process errors
-#' @importFrom stats dlnorm plnorm
+#' @importFrom stats dlnorm plnorm dunif punif
 #' @export
 fisheries_matrices <- function(states = 0:23,
          actions = states,
@@ -25,8 +26,10 @@ fisheries_matrices <- function(states = 0:23,
          reward_fn = function(x,a) pmin(x,a),
          f = ricker,
          sigma_g = 0.1,
-         sigma_m = sigma_g){
+         sigma_m = sigma_g,
+         noise = c("lognormal", "uniform")){
 
+  noise <- match.arg(noise)
   ## Transition and Reward Matrices
   n_s <- length(states)
   n_a <- length(actions)
@@ -42,15 +45,7 @@ fisheries_matrices <- function(states = 0:23,
       if(nextpop <= 0){
         transition[k, , i] <- c(1, rep(0, n_s - 1))
       } else if(sigma_g > 0){
-        x <- dlnorm(states, log(nextpop), sdlog = sigma_g)    # transition probability densities
-        if(sum(x) == 0){ ## nextpop is computationally zero
-          transition[k, , i] <- c(1, rep(0, n_s - 1))
-        } else {
-          N <- plnorm(states[n_s], log(nextpop), sigma_g)       # CDF accounts for prob density beyond boundary
-          x <- x * N / sum(x)                                   # normalize densities to  = cdf(boundary)
-          x[n_s] <- 1 - N + x[n_s]                              # pile remaining probability on boundary
-          transition[k, , i] <- x                             # store as row of transition matrix
-        }
+        transition[k, , i] <- prob(states, nextpop, sigma_g)
       } else {
         stop("sigma_g not > 0")
       }
@@ -66,15 +61,30 @@ fisheries_matrices <- function(states = 0:23,
         if(states[i] <= 0){ ## treat observed 0 as real 0, (dlnorm cannot have log-mu of 0)
         observation[i, , k] <- c(1, rep(0, n_z - 1))
         } else {
-          x <- dlnorm(observed_states, log(states[i]), sdlog = sigma_m)    # transition probability densities
-          ## Normalize using CDF
-          N <- plnorm(observed_states[n_s], log(states[i]), sigma_m)       # CDF accounts for prob density beyond boundary
-          x <- x * N / sum(x)                                   # normalize densities to  = cdf(boundary)
-          x[n_s] <- 1 - N + x[n_s]                              # pile remaining probability on boundary
-          observation[i, , k] <- x                             # store as row of transition matrix
+          observation[i, , k] <- prob(observed_states, states[i], sigma_m)
         }
       }
     }
   }
   list(transition = transition, observation = observation, reward = reward)
+}
+
+prob <- function(states, mu, sigma, noise = "lognormal"){
+  n_s <- length(states)
+  if(noise == "lognormal"){
+    meanlog <- log( mu^2 / sqrt(sigma^2/3 + mu^2) )
+    sdlog <- log(1 + sigma^2/3 / mu^2)
+    x <- dlnorm(states, meanlog, sdlog)
+    N <- plnorm(states[n_s], meanlog, sdlog)
+  } else if(noise == "uniform"){
+    x <- dunif(states, mu * (1 + sigma), mu * (1 - sigma))
+    N <- punif(states[n_s], mu * (1+ sigma), mu * (1 - sigma))
+  }
+  if(sum(x) == 0){  ## nextpop is computationally zero, would create NAs
+    x <- c(1, rep(0, n_s - 1))
+  } else { ## Normalize
+    x <- x * N / sum(x)         # normalize densities to  = cdf(boundary)
+    x[n_s] <- 1 - N + x[n_s]    # pile remaining probability on boundary
+  }
+  x
 }
