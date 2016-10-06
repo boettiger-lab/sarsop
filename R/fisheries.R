@@ -13,8 +13,8 @@ ricker <- function(x, h, r = .1, K = 20){
 #' @param observed_states sequence of possible observations
 #' @param reward_fn function of x and a that gives reward for tacking action a when state is x
 #' @param f transition function of state x and action a.
-#' @param sigma_g log-sd for log-normal shock to f or half-width of uniform shock
-#' @param sigma_m log-sd for log-normal measurement y of state x, or half-width of of uniform
+#' @param sigma_g half-width of uniform shock or equivalent variance for log-normal
+#' @param sigma_m half-width of uniform shock or equivalent variance for log-normal
 #' @param noise distribution for noise, "lognormal" or "uniform"
 #' @return list of transitition matrix, observation matrix, and reward matrix
 #' @details assumes log-normally distributed observation errors and process errors
@@ -72,10 +72,12 @@ fisheries_matrices <- function(states = 0:23,
 prob <- function(states, mu, sigma, noise = "lognormal"){
   n_s <- length(states)
   if(noise == "lognormal"){
-    x <- dlnorm(states, log(mu), sdlog = sigma)
-    N <- plnorm(states[n_s], log(mu), sigma)
+    meanlog <- log( mu^2 / sqrt(sigma^2/3 + mu^2) )
+    sdlog <- log(1 + sigma^2/3 / mu^2)
+    x <- dlnorm(states, meanlog, sdlog)
+    N <- plnorm(states[n_s], meanlog, sdlog)
   } else if(noise == "uniform"){
-    x <- dunif(states, mu * (1+ sigma), mu * (1 - sigma))
+    x <- dunif(states, mu * (1 + sigma), mu * (1 - sigma))
     N <- punif(states[n_s], mu * (1+ sigma), mu * (1 - sigma))
   }
   if(sum(x) == 0){  ## nextpop is computationally zero, would create NAs
