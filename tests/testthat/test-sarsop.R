@@ -46,7 +46,11 @@ stored_model <- models_from_log(meta)
 
 
 testthat::expect_identical(alpha, stored_alpha[[1]])
-testthat::expect_identical(m, stored_model[[1]])
+
+
+testthat::expect_equivalent(m, stored_model[[1]])
 
 stored_fs <- f_from_log(meta)
-sapply(stored_fs, testthat::expect_is, "function")
+testthat::expect_equivalent(stored_fs[[1]], f)
+
+unlink(paste(log, list.files(log), sep="/"))

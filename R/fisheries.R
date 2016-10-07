@@ -74,8 +74,6 @@ prob <- function(states, mu, sigma, noise = "lognormal"){
   if(noise == "lognormal"){
     meanlog <- log( mu^2 / sqrt(sigma^2/3 + mu^2) )
     sdlog <- sqrt( log(1 + sigma^2/3 / mu^2) )
-    #meanlog <- log(mu)
-    #sdlog <- sigma
     x <- dlnorm(states, meanlog, sdlog)
     N <- plnorm(states[n_s], meanlog, sdlog)
   } else if(noise == "uniform"){
