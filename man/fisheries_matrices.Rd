@@ -20,9 +20,9 @@ fisheries_matrices(states = 0:23, actions = states,
 
 \item{f}{transition function of state x and action a.}
 
-\item{sigma_g}{log-sd for log-normal shock to f or half-width of uniform shock}
+\item{sigma_g}{half-width of uniform shock or equivalent variance for log-normal}
 
-\item{sigma_m}{log-sd for log-normal measurement y of state x, or half-width of of uniform}
+\item{sigma_m}{half-width of uniform shock or equivalent variance for log-normal}
 
 \item{noise}{distribution for noise, "lognormal" or "uniform"}
 }
