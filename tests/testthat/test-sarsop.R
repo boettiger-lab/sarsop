@@ -4,7 +4,7 @@ actions <- states
 obs <- states
 sigma_g <- 0.1
 sigma_m <- 0.1
-reward_fn <- function(x,h) pmin(x,h) #  - .001*h
+reward_fn <- function(x,h) pmin(x,h) # - .001*h
 discount <- 0.95
 
 r <- 1

@@ -1,8 +1,3 @@
-ricker <- function(x, h, r = 1, K = 15){
-  s <- pmax(x - h, 0)
-  s * exp(r * (1 - s / K) )
-}
-
 # FIXME consider generating these matrices from a NIMBLE style model declaration (plus reward function)
 
 #' fisheries_matrices
@@ -24,9 +19,9 @@ fisheries_matrices <- function(states = 0:20,
          actions = states,
          observed_states = states,
          reward_fn = function(x,a) pmin(x,a),
-         f = ricker,
+         f = ricker(1,15),
          sigma_g = 0.1,
-         sigma_m = sigma_g,
+         sigma_m = 0.1,
          noise = c("lognormal", "uniform")){
 
   noise <- match.arg(noise)
@@ -40,7 +35,11 @@ fisheries_matrices <- function(states = 0:20,
   for (k in 1:n_s) {
     for (i in 1:n_a) {
       nextpop <- f(states[k], actions[i])
-      transition[k, , i] <- prob(states, nextpop, sigma_g, noise = noise)
+      if(nextpop <= 0){
+        transition[k, , i] <- c(.99, 0.01, rep(0, n_s-2))  # permit 1% chance of not going to 0 when f(x) <= 0?
+      } else {
+        transition[k, , i] <- prob(states, nextpop, sigma_g, noise = noise)
+      }
       reward[k, i] <- reward_fn(states[k], actions[i])
     }
   }
@@ -49,7 +48,11 @@ fisheries_matrices <- function(states = 0:20,
       observation[, , k] <- diag(n_s)
     } else {
       for (i in 1:n_s) {
+        if(states[i] <= 0)
+          observation[i, , k] <- c(1, rep(0, n_z - 1))
+        else {
           observation[i, , k] <- prob(observed_states, states[i], sigma_m, noise = noise)
+        }
       }
     }
   }
@@ -58,10 +61,7 @@ fisheries_matrices <- function(states = 0:20,
 
 prob <- function(states, mu, sigma, noise = "lognormal"){
   n_s <- length(states)
-  if(mu <= 0){
-    x <- c(1, rep(0, n_s - 1))
-    N <- 1
-  } else if(noise == "lognormal"){
+  if(noise == "lognormal"){
     var <- mu * sigma^2 / 3 ## Rescale to the variance of uniform
     meanlog <- log( mu^2 / sqrt(var + mu^2) )
     sdlog <- sqrt( log(1 + var / mu^2) )
