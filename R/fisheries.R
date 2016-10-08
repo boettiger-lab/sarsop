@@ -1,8 +1,3 @@
-ricker <- function(x, h, r = .1, K = 20){
-  s <- pmax(x - h, 0)
-  s * exp(r * (1 - s / K) )
-}
-
 # FIXME consider generating these matrices from a NIMBLE style model declaration (plus reward function)
 
 #' fisheries_matrices
@@ -20,21 +15,19 @@ ricker <- function(x, h, r = .1, K = 20){
 #' @details assumes log-normally distributed observation errors and process errors
 #' @importFrom stats dlnorm plnorm dunif punif
 #' @export
-fisheries_matrices <- function(states = 0:23,
+fisheries_matrices <- function(states = 0:20,
          actions = states,
          observed_states = states,
          reward_fn = function(x,a) pmin(x,a),
-         f = ricker,
+         f = ricker(1,15),
          sigma_g = 0.1,
-         sigma_m = sigma_g,
+         sigma_m = 0.1,
          noise = c("lognormal", "uniform")){
 
   noise <- match.arg(noise)
-  ## Transition and Reward Matrices
   n_s <- length(states)
   n_a <- length(actions)
   n_z <- length(observed_states)
-
   transition <- array(0, dim = c(n_s, n_s, n_a))
   reward <- array(0, dim = c(n_s, n_a))
   observation <- array(0, dim = c(n_s, n_z, n_a))
@@ -43,25 +36,22 @@ fisheries_matrices <- function(states = 0:23,
     for (i in 1:n_a) {
       nextpop <- f(states[k], actions[i])
       if(nextpop <= 0){
-        transition[k, , i] <- c(1, rep(0, n_s - 1))
-      } else if(sigma_g > 0){
-        transition[k, , i] <- prob(states, nextpop, sigma_g)
+        transition[k, , i] <- c(.99, 0.01, rep(0, n_s-2))  # permit 1% chance of not going to 0 when f(x) <= 0?
       } else {
-        stop("sigma_g not > 0")
+        transition[k, , i] <- prob(states, nextpop, sigma_g, noise = noise)
       }
       reward[k, i] <- reward_fn(states[k], actions[i])
     }
   }
-
   for (k in 1:n_a) {
     if(sigma_m <= 0){
       observation[, , k] <- diag(n_s)
     } else {
       for (i in 1:n_s) {
-        if(states[i] <= 0){ ## treat observed 0 as real 0, (dlnorm cannot have log-mu of 0)
-        observation[i, , k] <- c(1, rep(0, n_z - 1))
-        } else {
-          observation[i, , k] <- prob(observed_states, states[i], sigma_m)
+        if(states[i] <= 0)
+          observation[i, , k] <- c(1, rep(0, n_z - 1))
+        else {
+          observation[i, , k] <- prob(observed_states, states[i], sigma_m, noise = noise)
         }
       }
     }
@@ -72,19 +62,26 @@ fisheries_matrices <- function(states = 0:23,
 prob <- function(states, mu, sigma, noise = "lognormal"){
   n_s <- length(states)
   if(noise == "lognormal"){
-    meanlog <- log( mu^2 / sqrt(sigma^2/3 + mu^2) )
-    sdlog <- log(1 + sigma^2/3 / mu^2)
+    var <- mu * sigma^2 / 3 ## Rescale to the variance of uniform
+    meanlog <- log( mu^2 / sqrt(var + mu^2) )
+    sdlog <- sqrt( log(1 + var / mu^2) )
     x <- dlnorm(states, meanlog, sdlog)
     N <- plnorm(states[n_s], meanlog, sdlog)
+
   } else if(noise == "uniform"){
-    x <- dunif(states, mu * (1 + sigma), mu * (1 - sigma))
-    N <- punif(states[n_s], mu * (1+ sigma), mu * (1 - sigma))
+    x <- dunif(states, mu * (1 - sigma), mu * (1 + sigma))
+    N <- punif(states[n_s], mu * (1 - sigma), mu * (1 + sigma))
   }
+
+  ## Handle exceptions (e.g. from mu ~ 0)
   if(sum(x) == 0){  ## nextpop is computationally zero, would create NAs
     x <- c(1, rep(0, n_s - 1))
-  } else { ## Normalize
+
+  ## Normalize, pile on boundary
+  } else {
     x <- x * N / sum(x)         # normalize densities to  = cdf(boundary)
     x[n_s] <- 1 - N + x[n_s]    # pile remaining probability on boundary
   }
+
   x
 }

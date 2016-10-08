@@ -3,25 +3,32 @@ states <- 0:20
 actions <- states
 obs <- states
 sigma_g <- 0.1
-sigma_m <- sigma_g
-reward_fn <- function(x,h) pmin(x,h)
+sigma_m <- 0.1
+reward_fn <- function(x,h) pmin(x,h) # - .001*h
 discount <- 0.95
 
-r <- 0.5
+r <- 1
 K <- 15
 f <- function(x, h){
   s <- pmax(x - h, 0)
   s * exp(r * (1 - s / K) )
 }
 
-m <- fisheries_matrices(states, actions, obs, reward_fn, f, sigma_g, sigma_m)
 
-alpha <- sarsop(m$transition, m$observation, m$reward, discount, precision = .1)
 
+m <- fisheries_matrices(states, actions, obs, reward_fn, f, sigma_g, sigma_m, noise = "lognormal")
+alpha <- sarsop(m$transition, m$observation, m$reward, discount, precision = .00001)
 df <- compute_policy(alpha, m$transition, m$observation, m$reward)
+#ggplot(df, aes(states[state], states[state] - actions[policy])) + geom_line() + geom_point()
 
-sim <- sim_pomdp(m$transition, m$observation, m$reward, discount,
-                      x0 = 5, Tmax = 20, alpha = alpha)
+#m <- fisheries_matrices(states, actions, obs, reward_fn, f, sigma_g, sigma_m, noise = "uniform")
+#alpha <- sarsop(m$transition, m$observation, m$reward, discount, precision = .05)
+#df <- compute_policy(alpha, m$transition, m$observation, m$reward)
+#ggplot(df, aes(states[state], states[state] - actions[policy])) + geom_line() + geom_point()
+
+
+sim <- sim_pomdp(m$transition, m$observation, m$reward, discount = discount,
+                      x0 = 15, Tmax = 20, alpha = alpha)
 
 
 ## Check logging works
@@ -46,7 +53,11 @@ stored_model <- models_from_log(meta)
 
 
 testthat::expect_identical(alpha, stored_alpha[[1]])
-testthat::expect_identical(m, stored_model[[1]])
+
+
+testthat::expect_equivalent(m, stored_model[[1]])
 
 stored_fs <- f_from_log(meta)
-sapply(stored_fs, testthat::expect_is, "function")
+testthat::expect_equivalent(stored_fs[[1]], f)
+
+unlink(paste(log, list.files(log), sep="/"))

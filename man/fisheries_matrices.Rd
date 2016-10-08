@@ -4,10 +4,10 @@
 \alias{fisheries_matrices}
 \title{fisheries_matrices}
 \usage{
-fisheries_matrices(states = 0:23, actions = states,
+fisheries_matrices(states = 0:20, actions = states,
   observed_states = states, reward_fn = function(x, a) pmin(x, a),
-  f = ricker, sigma_g = 0.1, sigma_m = sigma_g, noise = c("lognormal",
-  "uniform"))
+  f = ricker(1, 15), sigma_g = 0.1, sigma_m = 0.1,
+  noise = c("lognormal", "uniform"))
 }
 \arguments{
 \item{states}{sequence of possible states}
@@ -20,9 +20,9 @@ fisheries_matrices(states = 0:23, actions = states,
 
 \item{f}{transition function of state x and action a.}
 
-\item{sigma_g}{log-sd for log-normal shock to f or half-width of uniform shock}
+\item{sigma_g}{half-width of uniform shock or equivalent variance for log-normal}
 
-\item{sigma_m}{log-sd for log-normal measurement y of state x, or half-width of of uniform}
+\item{sigma_m}{half-width of uniform shock or equivalent variance for log-normal}
 
 \item{noise}{distribution for noise, "lognormal" or "uniform"}
 }

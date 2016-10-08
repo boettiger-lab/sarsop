@@ -127,6 +127,15 @@ allen <- function(r, K, C)
   }
 
 
+bh <- function(r, K)
+  function(x, h){
+    s <- pmax(x - h, 0)
+    (1 + r) * s / (1 + r * s / K)
+  }
+
+
+
+
 #' f from log
 #'
 #' @inheritParams alphas_from_log
@@ -156,5 +165,15 @@ f_from_log <- function(meta){
            ricker = ricker(as.numeric(meta[i,"r"]), as.numeric(meta[i,"K"])),
            allen = allen(as.numeric(meta[i,"r"]), as.numeric(meta[i,"K"]), as.numeric(meta[i, "C"]))
     )
+  })
+}
+
+## load alpha vectors from the intermediate policy files for testing convergence (if timeInterval is specified in sarsop)
+intermediates_from_log <- function(meta, log_dir = "."){
+  lapply(1:dim(meta)[[1]], function(i){
+    id <- meta[i,"id"]
+    lapply(list.files(log_dir, paste0(id, ".*\\.policy")), function(file){
+      read_policyx(paste0(log_dir, "/", file))
+    })
   })
 }
