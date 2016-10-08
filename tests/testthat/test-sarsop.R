@@ -21,14 +21,14 @@ alpha <- sarsop(m$transition, m$observation, m$reward, discount, precision = .00
 df <- compute_policy(alpha, m$transition, m$observation, m$reward)
 #ggplot(df, aes(states[state], states[state] - actions[policy])) + geom_line() + geom_point()
 
-m <- fisheries_matrices(states, actions, obs, reward_fn, f, sigma_g, sigma_m, noise = "uniform")
-alpha <- sarsop(m$transition, m$observation, m$reward, discount, precision = .05)
-df <- compute_policy(alpha, m$transition, m$observation, m$reward)
+#m <- fisheries_matrices(states, actions, obs, reward_fn, f, sigma_g, sigma_m, noise = "uniform")
+#alpha <- sarsop(m$transition, m$observation, m$reward, discount, precision = .05)
+#df <- compute_policy(alpha, m$transition, m$observation, m$reward)
 #ggplot(df, aes(states[state], states[state] - actions[policy])) + geom_line() + geom_point()
 
 
-sim <- sim_pomdp(m$transition, m$observation, m$reward, discount,
-                      x0 = 5, Tmax = 20, alpha = alpha)
+sim <- sim_pomdp(m$transition, m$observation, m$reward, discount = discount,
+                      x0 = 15, Tmax = 20, alpha = alpha)
 
 
 ## Check logging works
