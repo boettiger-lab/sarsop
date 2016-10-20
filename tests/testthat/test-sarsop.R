@@ -17,7 +17,7 @@ f <- function(x, h){
 
 
 m <- fisheries_matrices(states, actions, obs, reward_fn, f, sigma_g, sigma_m, noise = "lognormal")
-alpha <- sarsop(m$transition, m$observation, m$reward, discount, precision = .00001)
+alpha <- sarsop(m$transition, m$observation, m$reward, discount, precision = 1) #precision = .00001)
 df <- compute_policy(alpha, m$transition, m$observation, m$reward)
 #ggplot(df, aes(states[state], states[state] - actions[policy])) + geom_line() + geom_point()
 
