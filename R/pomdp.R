@@ -88,17 +88,3 @@ drop_null <- function(x) x[!vapply(x, is.null, logical(1))]
 
 
 
-#  Remarkably SARSOP seems to have a terrible concept of floating point precision. We have to normalize to 4 digits
-# and then print more than 4 (to remain normalized) in floating point notation (see formatC calls in write_pomdpx)
-normalize <- function(A, digits = 4){
-  if(!is.null(digits)){
-    A <- as.numeric(formatC(A, digits = digits, format="f"))
-
-  }
-  z = sum(A)
-  s = z + (z==0)
-  A / s
-}
-
-
-

@@ -13,7 +13,7 @@
 pomdpsol(model, output = tempfile(), precision = 0.001, timeout = NULL,
   fast = FALSE, randomization = FALSE, memory = NULL,
   improvementConstant = NULL, timeInterval = NULL, stdout = tempfile(),
-  stderr = "")
+  stderr = tempfile())
 
 polgraph(model, policy, output = tempfile(), max_depth = 3,
   max_branches = 10, min_prob = 0.001, stdout = "")
@@ -69,7 +69,7 @@ file and returns the path to the output policy file.
 \examples{
 model <- system.file("models/example.pomdp", package = "appl")
 policy <- tempfile()
-pomdpsol(model, output = policy, timeout = 2)
+pomdpsol(model, output = policy, timeout = 1)
 
 # Other tools
 evaluation <- pomdpeval(model, policy, stdout = FALSE)
