@@ -17,7 +17,7 @@ f <- function(x, h){
 
 
 m <- fisheries_matrices(states, actions, obs, reward_fn, f, sigma_g, sigma_m, noise = "lognormal")
-alpha <- sarsop(m$transition, m$observation, m$reward, discount, precision = 1)
+alpha <- sarsop(m$transition, m$observation, m$reward, discount, precision = 1) #precision = .00001)
 df <- compute_policy(alpha, m$transition, m$observation, m$reward)
 #ggplot(df, aes(states[state], states[state] - actions[policy])) + geom_line() + geom_point()
 
@@ -38,7 +38,7 @@ id <- "uuid"
 id
 
 log_data <- data.frame(id = id, model = "ricker", r = r, K = K, C = NA, sigma_g = sigma_g, sigma_m = sigma_m)
-alpha <- sarsop(m$transition, m$observation, m$reward, discount, precision = .1,
+alpha <- sarsop(m$transition, m$observation, m$reward, discount, precision = 1,
                 log_dir = log, log_data = log_data)
 
 ## Query by id, making sure we get the model results we just ran

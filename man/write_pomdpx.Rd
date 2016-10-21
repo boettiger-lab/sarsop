@@ -5,7 +5,7 @@
 \title{write_pomdpx}
 \usage{
 write_pomdpx(P, O, R, gamma, b = rep(1/dim(O)[1], dim(O)[1]),
-  file = "input.pomdpx", digits = 4, digits2 = 10, format = "f")
+  file = "input.pomdpx", digits = 12, digits2 = 12, format = "f")
 }
 \arguments{
 \item{P}{transition matrix}
