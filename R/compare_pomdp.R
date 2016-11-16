@@ -24,21 +24,22 @@ compare_pomdp <- function(transition, observation, reward, discount, obs, action
                       state_prior = rep(1, dim(observation)[[1]]) / dim(observation)[[1]],
                       alpha = NULL, ...){
 
-    Tmax <- length(obs) - 1
+    Tmax <- length(obs)
     n_states <- dim(observation)[1]
-    optimal <- numeric(Tmax+1)
-    state_posterior <- array(NA, dim = c(Tmax+1, n_states))
+    optimal <- numeric(Tmax)
+    optimal[1] <- NA
+    state_posterior <- array(NA, dim = c(Tmax, n_states))
     if(is.null(state_prior))  state_prior <- rep(1, n_states) / n_states
-
-    state_posterior[2,] <- state_prior
+    state_posterior[1,] <- state_prior
 
     for(t in 2:Tmax){
-      out <- compute_policy(alpha, transition, observation, reward, state_posterior[t,], action[t-1])
+      out <- compute_policy(alpha, transition, observation, reward, state_posterior[t-1,], action[t-1])
       optimal[t] <- out$policy[obs[t]]
-      state_posterior[t+1,] <- update_belief(state_posterior[t,], transition, observation, obs[t], action[t-1])
+      state_posterior[t,] <- update_belief(state_posterior[t-1,], transition, observation, obs[t], action[t-1])
     }
-    df <- data.frame(time = 0:Tmax, obs, action, optimal)[2:Tmax,]
-    list(df = df, state_posterior = state_posterior[2:(Tmax+1),])
+
+    list(df = data.frame(time = 1:Tmax, obs, action, optimal),
+         state_posterior = as.data.frame(state_posterior))
   }
 
 

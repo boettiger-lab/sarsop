@@ -21,7 +21,7 @@
 #' @examples
 #' model <- system.file("models/example.pomdp", package = "appl")
 #' policy <- tempfile()
-#' pomdpsol(model, output = policy, timeout = 2)
+#' pomdpsol(model, output = policy, timeout = 1)
 #'
 #' # Other tools
 #' evaluation <- pomdpeval(model, policy, stdout = FALSE)
@@ -31,7 +31,7 @@ pomdpsol <- function(model, output = tempfile(), precision = 1e-3, timeout = NUL
                      fast = FALSE, randomization = FALSE, memory = NULL,
                      improvementConstant = NULL, timeInterval = NULL,
                      stdout = tempfile(),
-                     stderr = ""){
+                     stderr = tempfile()){
   model <- normalizePath(model, mustWork = TRUE)
   args <- paste(model, "--output", output, "--precision", precision)
 

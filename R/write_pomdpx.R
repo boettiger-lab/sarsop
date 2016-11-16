@@ -11,7 +11,7 @@
 #' @param digits2 precision to write solution to. Leave at 10, since normalizing requires additional precision
 #' @param format floating point format, because sarsop parser doesn't seem to know scientific notation
 #' @export
-write_pomdpx <- function(P, O, R, gamma, b = rep(1/dim(O)[1], dim(O)[1]), file = "input.pomdpx", digits = 4, digits2 = 10, format = "f"){
+write_pomdpx <- function(P, O, R, gamma, b = rep(1/dim(O)[1], dim(O)[1]), file = "input.pomdpx", digits = 12, digits2 = 12, format = "f"){
 
 
     Num_S <- dim(O)[1]
@@ -104,7 +104,9 @@ write_pomdpx <- function(P, O, R, gamma, b = rep(1/dim(O)[1], dim(O)[1]), file =
                                 '<Entry>\n',
                                 paste0('<Instance>',c,' - -</Instance>\n','<ProbTable>'))
       for(i in 1:dim(P)[1]){
-        transition_full <-paste0(transition_full, paste0(formatC(normalize(P[i,,ii], digits = digits), format = format, digits = digits2), collapse= " "), "\n")
+
+
+        transition_full <-paste0(transition_full, paste0(print_numeric(P[i,,ii], digits, digits2, format), collapse= " "), "\n")
       }
       transition_full <- paste0(transition_full, '</ProbTable>\n</Entry>\n')
     }
@@ -133,7 +135,7 @@ write_pomdpx <- function(P, O, R, gamma, b = rep(1/dim(O)[1], dim(O)[1]), file =
                          '<Entry>\n',
                          paste0('<Instance>',c,' - -</Instance>\n','<ProbTable>'))
       for(i in 1:dim(P)[1]){
-        emission <-paste0(emission, paste0(formatC(normalize(O[i,,ii], digits = digits), format = format, digits = digits2), collapse= " "), "\n")
+        emission <-paste0(emission, paste0(print_numeric(O[i,,ii], digits, digits2, format), collapse= " "), "\n")
       }
       emission <- paste0(emission, '</ProbTable>\n</Entry>\n')
 
@@ -250,4 +252,27 @@ write_pomdp <- function(P_Aug, O_Aug, R, gamma, b, file = "input.pomdp"){
   writeLines(out, file)
 
 
+}
+
+
+
+
+
+
+#  Remarkably SARSOP seems to have a terrible concept of floating point precision. We have to normalize to 4 digits
+# and then print more than 4 (to remain normalized) in floating point notation (see formatC calls in write_pomdpx)
+normalize <- function(A, digits = 4){
+  if(!is.null(digits)){
+    A <- as.numeric(formatC(A, digits = digits, format="f"))
+
+  }
+  z = sum(A)
+  s = z + (z==0)
+  A / s
+}
+
+
+print_numeric <- function(x, digits, digits2, format){
+  #formatC(normalize(x, digits = digits), format = format, digits = digits2)
+  x
 }
