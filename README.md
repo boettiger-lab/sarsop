@@ -1,0 +1,23 @@
+
+[![Build Status](https://travis-ci.org/cboettig/appl.svg?branch=master)](https://travis-ci.org/cboettig/appl) [![Build status](https://ci.appveyor.com/api/projects/status/mpa5qevipe47gafx/branch/master?svg=true)](https://ci.appveyor.com/project/cboettig/appl/branch/master) [![Coverage Status](https://img.shields.io/codecov/c/github/cboettig/appl/master.svg)](https://codecov.io/github/cboettig/appl?branch=master) [![Project Status: WIP - Initial development is in progress, but there has not yet been a stable, usable release suitable for the public.](http://www.repostatus.org/badges/latest/wip.svg)](http://www.repostatus.org/#wip)
+
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+APPL for R
+==========
+
+Work in progress.
+
+Notes
+-----
+
+Unfortunately the appl source code is a bit dated and not suitable for using as a shared library. It builds with lot of warnings and on Windows it only builds with MS Visual Studio. This package tries to make things as easy as possible for the user by bunding the appl executables and wrap them with `system` calls in R.
+
+Thanks
+------
+
+Mykel Kochenderfer and Markus Herrmann have been helpful in providing windows builds using MS Visual Studio:
+
+-   <http://web.stanford.edu/group/sisl/resources/appl-0.96-win-win32.zip>
+-   <http://web.stanford.edu/group/sisl/resources/appl-0.96-win-x64.zip>
+
+[![](http://ropensci.org/public_images/github_footer.png)](http://ropensci.org)

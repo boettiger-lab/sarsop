@@ -1,0 +1,105 @@
+---
+title: "Solving POMDPs with the appl R package"
+author: "Carl Boettiger"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Solving POMDPs with appl R package}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r}
+## Don't run chunks in this vignette until it is ready.
+knitr::opts_chunk$set(eval=FALSE)
+```
+
+```{r message=FALSE}
+library(appl)
+library(tidyverse) # for plotting
+```
+
+Parameters specifying our POMDP problem:
+
+```{r}
+states <- seq(0,1, length=50)
+actions <- states
+observations <- states
+sigma_g <- 0.1
+sigma_m <- 0.5
+reward_fn <- function(x,h) pmin(x,h) # - .001*h
+discount <- 0.95
+
+r <- 1
+K <- 0.75
+
+f <- function(x, h){
+  s <- pmax(x - h, 0)
+  s * exp(r * (1 - s / K) )
+}
+```
+
+A convenience function for generating transition, observation, and reward matrices given these parameters for the fisheries management problem:
+
+```{r}
+m <- fisheries_matrices(states, actions, observations, reward_fn, f, sigma_g, sigma_m, noise = "lognormal")
+```
+
+Long-running code to actually compute the solution.  Rather than run this, we'll load the solution from the log.
+
+```{r eval=FALSE}
+
+log_data <- data.frame(id = "vignette", model = "ricker", r = r, K = K, sigma_g = sigma_g, sigma_m = sigma_m)
+
+system.time(
+alpha <- sarsop(m$transition, m$observation, m$reward, discount, precision = .1, log_data = log_data, timeout = 20000)
+)
+```
+
+
+Read a solution from the log:
+
+```{r}
+meta <- meta_from_log(data.frame(K = K, r = r, sigma_g = sigma_g, sigma_m = sigma_m, model = "ricker"))
+alpha <- alphas_from_log(meta)[[1]]
+```
+
+
+Given the model matrices and `alpha` vectors and current belief state, compute & plot policy:
+
+```{r}
+df <- compute_policy(alpha, m$transition, m$observation, m$reward)
+```
+
+```{r}
+ggplot(df, aes(states[state], states[state] - actions[policy])) + geom_line() + geom_point()
+```
+
+
+Simulate management under the POMDP policy:
+
+```{r}
+sim <- sim_pomdp(m$transition, m$observation, m$reward, discount, x0 = K, Tmax = 20, alpha = alpha)
+```
+
+Plot simulation
+
+```{r}
+sim$df %>%
+  select(-value) %>%
+  mutate(state = states[state], action = actions[action], obs = observations[obs]) %>%
+  gather(variable, stock, -time) %>%
+  ggplot(aes(time, stock, color = variable)) + geom_line()  + geom_point()
+```
+
+Plot belief evolution:
+
+```{r}
+Tmax <-length(out$state_posterior[,1])
+
+out$state_posterior %>% data.frame(time = 1:Tmax) %>% 
+  gather(state, probability, -time, factor_key =TRUE) %>% 
+  mutate(state = as.numeric(state)) %>% 
+  ggplot(aes(state, probability, group = time, alpha = time)) + geom_line()
+```
+

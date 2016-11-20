@@ -16,5 +16,6 @@ Suggests: testthat,
     roxygen2,
     knitr,
     rmarkdown,
-    MDPtoolbox
+    MDPtoolbox,
+    covr
 VignetteBuilder: knitr
