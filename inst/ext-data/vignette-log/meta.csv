@@ -1,0 +1,2 @@
+id,load_time_sec,init_time_sec,run_time_sec,final_precision,end_condition,n_states,n_obs,n_actions,discount,date,model,r,K,sigma_g,sigma_m
+vignette,2.9,52.96,20762.3,0.295167,  Preset timeout reached,50,50,50,0.95,2016-11-20 21:16:54,ricker,1,0.75,0.1,0.5
