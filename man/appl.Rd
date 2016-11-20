@@ -72,8 +72,10 @@ policy <- tempfile()
 pomdpsol(model, output = policy, timeout = 1)
 
 # Other tools
+\dontrun{
 evaluation <- pomdpeval(model, policy, stdout = FALSE)
 graph <- polgraph(model, policy, stdout = FALSE)
 simulations <- pomdpsim(model, policy, stdout = FALSE)
+}
 }
 

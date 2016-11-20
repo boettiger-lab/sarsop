@@ -4,7 +4,7 @@
 \alias{read_policyx}
 \title{read_policyx}
 \usage{
-read_policyx(file = "output.policy")
+read_policyx(file = "output.policyx")
 }
 \arguments{
 \item{file}{name of the policyx file to be read.}
