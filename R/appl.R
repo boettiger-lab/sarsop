@@ -19,12 +19,12 @@
 #' @param stderr where output to 'stderr', see \code{\link{system2}}. Use \code{FALSE}
 #' to suppress output.
 #' @examples
+#' \donttest{
 #' model <- system.file("models/example.pomdp", package = "appl")
 #' policy <- tempfile()
 #' pomdpsol(model, output = policy, timeout = 1)
 #'
 #' # Other tools
-#' \dontrun{
 #' evaluation <- pomdpeval(model, policy, stdout = FALSE)
 #' graph <- polgraph(model, policy, stdout = FALSE)
 #' simulations <- pomdpsim(model, policy, stdout = FALSE)
