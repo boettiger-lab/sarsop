@@ -67,6 +67,7 @@ Wrappers for the APPL executables. The \code{pomdpsol} function solves a model
 file and returns the path to the output policy file.
 }
 \examples{
+\donttest{
 model <- system.file("models/example.pomdp", package = "appl")
 policy <- tempfile()
 pomdpsol(model, output = policy, timeout = 1)
@@ -75,5 +76,6 @@ pomdpsol(model, output = policy, timeout = 1)
 evaluation <- pomdpeval(model, policy, stdout = FALSE)
 graph <- polgraph(model, policy, stdout = FALSE)
 simulations <- pomdpsim(model, policy, stdout = FALSE)
+}
 }
 

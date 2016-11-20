@@ -259,8 +259,7 @@ write_pomdp <- function(P_Aug, O_Aug, R, gamma, b, file = "input.pomdp"){
 
 
 
-#  Remarkably SARSOP seems to have a terrible concept of floating point precision. We have to normalize to 4 digits
-# and then print more than 4 (to remain normalized) in floating point notation (see formatC calls in write_pomdpx)
+## Avoids warnings in SARSOP by rounding off precision, but can bias results. Not used.
 normalize <- function(A, digits = 4){
   if(!is.null(digits)){
     A <- as.numeric(formatC(A, digits = digits, format="f"))
@@ -273,6 +272,7 @@ normalize <- function(A, digits = 4){
 
 
 print_numeric <- function(x, digits, digits2, format){
+  ## do not use formatted, normalized string, but instead use raw numeric values
   #formatC(normalize(x, digits = digits), format = format, digits = digits2)
   x
 }

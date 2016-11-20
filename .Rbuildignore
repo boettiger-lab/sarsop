@@ -24,3 +24,7 @@ README.md
 ^inst/doc/*\.pdf
 inst/doc/*.md
 inst/doc/*.png
+^appveyor\.yml$
+^README\.Rmd$
+^README-.*\.png$
+^codecov\.yml$
