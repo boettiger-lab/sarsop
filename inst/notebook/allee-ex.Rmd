@@ -5,40 +5,27 @@ output:
     variant: markdown_github
 ---  
 
-Here we consider the Partially Observed Markov Decision Process
 
-
-First, we will load the libraries needed for this example.  The MDPtoolbox provides simple routines for solving 
 
 ```{r}
-library("MDPtoolbox")
-library("appl")
-library("tidyr")
-library("ggplot2")
-library("purrr")
-knitr::opts_chunk$set(cache = TRUE)
+knitr::opts_chunk$set(fig.width = 7)
+```
+
+```{r message=FALSE}
+library(appl)
+library(tidyverse) # for plotting
 ```
 
 
 ## Problem definition
-
-Our problem is defined by a state space, `states`, representing the true fish stock size (in arbitrary units), 
-and an action space, `actions` representing the number of fish that will be harvested (or attempted to harvest).  
-For simplicitly, we will permit any action from 0 harvest to the maximum possible state size.  
-
-A stock recruitment function, `f` describes the expected future state given the current state.  The true future
-state will be a stochastic draw with this mean.
-
-A reward function determines the value of taking action of harvesting `h` fish when stock size is `x` fish;
-for simplicity this example assumes a fixed price per unit harvest, with no cost on harvesting effort. 
-Future rewards are discounted.
 
 ```{r}
 states <- 0:60
 actions <- states
 obs <- states
 
-f <- function(x, h, r = 1, K = 50, C = 15){
+r = 1; K = 50; C = 15;
+f <- function(x, h){
   s <- pmax(x - h, 0)
   s * exp(r * (1 - s / K) * (s - C) / K)
 }
@@ -51,63 +38,96 @@ discount <- 0.99
 ```
 
 
-## Exact / semi-analytic solution
+
+## Semi-analytic solution to Deterministic problem
 
 For comparison, we note that an exact solution to the deterministic or low-noise problem comes from Reed 1979, which proves that a constant escapement
 policy $S^*$ is optimal, with $\tfrac{df}{dx}|_{x = S^*} = 1/\gamma$ for discount $\gamma$,
 
 ```{r}
-fun <- function(x) -f(x,0) + x / discount
-out <- optimize(f = fun, interval = c(min(states),max(states)))
-S_star <- round(out$minimum)
-exact_policy <- sapply(states, function(x) if(x < S_star) 0 else x - S_star)
+S_star <- optimize(function(x) -f(x,0) + x / discount, 
+                   c(min(states),max(states)))$minimum
+det_policy <- sapply(states, function(x) if(x < S_star) 0 else x - S_star)
+det_action <- sapply(det_policy, function(x) which.min(abs(actions - x)))
 ```
 
-# Generate Matrices
+
+
+A convenience function for generating transition, observation, and reward matrices given these parameters for the fisheries management problem:
 
 ```{r}
-matrices <- fisheries_matrices(states, actions, obs, reward_fn, f, sigma_g, sigma_m)
+m <- fisheries_matrices(states, actions, observations, reward_fn, 
+                        f, sigma_g, sigma_m, noise = "lognormal")
 ```
 
-## Numerical SDP Solution
+Long-running code to actually compute the solution.  Rather than run this, we'll load the solution from the log.
+
+```{r eval=FALSE}
+log_data <- data.frame(id = "allee", model = "allen", 
+                       r = r, K = K, C = C, sigma_g = sigma_g, sigma_m = sigma_m)
+
+system.time(
+alpha <- sarsop(m$transition, m$observation, m$reward, discount, 
+                log_data = log_data, log_dir = ".",
+                precision = .1, timeout = 40000)
+)
+```
+
+`appl` logs solution files in a specificied directory, along with a metadata table.  The metadata table makes it convenient to store multiple solutions in a single directory, and load the desired solution later using it's id or matching metatata.
+Read a solution from the log:
 
 ```{r}
-mdp <- MDPtoolbox::mdp_policy_iteration(matrices$transition, matrices$reward, discount)
+log_dir <- system.file("ext-data/vignette-log", package="appl")
+meta <- meta_from_log(data.frame(id = "vignette"), log_dir)
+
+alpha <- alphas_from_log(meta, log_dir)[[1]] ## bc fn returns a list with all matching alphas, we need [[1]]
 ```
 
 
+Given the model matrices and `alpha` vectors.  Start belief with a uniform prior over states, compute & plot policy:
 
 ```{r}
-system.time( soln <- appl::pomdp_solve(matrices$transition, matrices$observation, matrices$reward, discount, 
-                                 precision = 1, memory = 15750) )
-```
+state_prior = rep(1, length(states)) / length(states) # initial belief
+df <- compute_policy(alpha, m$transition, m$observation, m$reward,  state_prior)
 
+## append deterministic action
+df$det <- det_action
+```
 
 ```{r}
-policies <- data.frame(states = states,
-                       exact = states - exact_policy,
-                       mdp = states - actions[mdp$policy],
-                       pomdp = states - actions[soln$policy])
-
-
-tidyr::gather(policies, soln, escapement, -states) %>%
-  ggplot2::ggplot(ggplot2::aes(states, escapement, col = soln)) + ggplot2::geom_point()
+ggplot(df, aes(states[state], states[state] - actions[policy])) + 
+  geom_line(col='blue') + 
+  geom_line(aes(y = states[state] - actions[det]), col='red')
 ```
 
 
-
+Simulate management under the POMDP policy:
 
 ```{r}
-sim_df <- purrr::map_df(1:100, 
-                        function(n) 
-                          data.frame(sim = n, 
-                                     sim_pomdp(matrices$transition, matrices$observation, matrices$reward, 
-                                               discount, policy = soln$policy, 
-                                               x0 = round(length(states)/2), Tmax=20)))
-
+x0 <- which.min(abs(states - K))
+Tmax <- 20
+sim <- sim_pomdp(m$transition, m$observation, m$reward, discount, 
+                 state_prior, x0 = x0, Tmax = Tmax, alpha = alpha)
 ```
 
+Plot simulation data:
 
 ```{r}
-ggplot(sim_df, aes(time, state, group = sim)) + geom_line()
+sim$df %>%
+  select(-value) %>%
+  mutate(state = states[state], action = actions[action], obs = observations[obs]) %>%
+  gather(variable, stock, -time) %>%
+  ggplot(aes(time, stock, color = variable)) + geom_line()  + geom_point()
 ```
+
+Plot belief evolution:
+
+```{r}
+sim$state_posterior %>% 
+  data.frame(time = 1:Tmax) %>%
+  filter(time %in% seq(1,Tmax, by = 2)) %>%
+  gather(state, probability, -time, factor_key =TRUE) %>% 
+  mutate(state = as.numeric(state)) %>% 
+  ggplot(aes(state, probability, group = time, alpha = time)) + geom_line()
+```
+
