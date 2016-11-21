@@ -28,3 +28,4 @@ inst/doc/*.png
 ^README\.Rmd$
 ^README-.*\.png$
 ^codecov\.yml$
+^docs
