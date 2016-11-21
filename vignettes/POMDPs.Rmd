@@ -18,7 +18,21 @@ library(appl)
 library(tidyverse) # for plotting
 ```
 
-Parameters specifying our POMDP problem:
+
+## Problem definition
+
+Our problem is defined by a state space, `states`, representing the true fish stock size (in arbitrary units), 
+and an action space, `actions` representing the number of fish that will be harvested (or attempted to harvest).  
+For simplicitly, we will permit any action from 0 harvest to the maximum possible state size.  
+
+A stock recruitment function, `f` describes the expected future state given the current state.  The true future
+state will be a stochastic draw with this mean.
+
+A reward function determines the value of taking action of harvesting `h` fish when stock size is `x` fish;
+for simplicity this example assumes a fixed price per unit harvest, with no cost on harvesting effort. 
+Future rewards are discounted.
+
+
 
 ```{r}
 states <- seq(0,1, length=50)
@@ -37,6 +51,21 @@ f <- function(x, h){
   s * exp(r * (1 - s / K) )
 }
 ```
+
+
+## Semi-analytic solution to Deterministic problem
+
+For comparison, we note that an exact solution to the deterministic or low-noise problem comes from Reed 1979, which proves that a constant escapement
+policy $S^*$ is optimal, with $\tfrac{df}{dx}|_{x = S^*} = 1/\gamma$ for discount $\gamma$,
+
+```{r}
+S_star <- optimize(function(x) -f(x,0) + x / discount, 
+                   c(min(states),max(states)))$minimum
+det_policy <- sapply(states, function(x) if(x < S_star) 0 else x - S_star)
+det_action <- sapply(det_policy, function(x) which.min(abs(actions - x)))
+```
+
+
 
 A convenience function for generating transition, observation, and reward matrices given these parameters for the fisheries management problem:
 
@@ -74,10 +103,15 @@ Given the model matrices and `alpha` vectors.  Start belief with a uniform prior
 ```{r}
 state_prior = rep(1, length(states)) / length(states) # initial belief
 df <- compute_policy(alpha, m$transition, m$observation, m$reward,  state_prior)
+
+## append deterministic action
+df$det <- det_action
 ```
 
 ```{r}
-ggplot(df, aes(states[state], states[state] - actions[policy])) + geom_line() + geom_point()
+ggplot(df, aes(states[state], states[state] - actions[policy])) + 
+  geom_line(col='blue') + 
+  geom_line(aes(y = states[state] - actions[det]), col='red')
 ```
 
 
