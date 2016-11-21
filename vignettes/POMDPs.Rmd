@@ -10,8 +10,7 @@ vignette: >
 ---
 
 ```{r}
-## Don't run chunks in this vignette until it is ready.
-knitr::opts_chunk$set(eval=FALSE)
+knitr::opts_chunk$set(fig.width = 7)
 ```
 
 ```{r message=FALSE}
@@ -42,33 +41,39 @@ f <- function(x, h){
 A convenience function for generating transition, observation, and reward matrices given these parameters for the fisheries management problem:
 
 ```{r}
-m <- fisheries_matrices(states, actions, observations, reward_fn, f, sigma_g, sigma_m, noise = "lognormal")
+m <- fisheries_matrices(states, actions, observations, reward_fn, 
+                        f, sigma_g, sigma_m, noise = "lognormal")
 ```
 
 Long-running code to actually compute the solution.  Rather than run this, we'll load the solution from the log.
 
 ```{r eval=FALSE}
 
-log_data <- data.frame(id = "vignette", model = "ricker", r = r, K = K, sigma_g = sigma_g, sigma_m = sigma_m)
+log_data <- data.frame(id = "vignette", model = "ricker", 
+                       r = r, K = K, sigma_g = sigma_g, sigma_m = sigma_m)
 
 system.time(
-alpha <- sarsop(m$transition, m$observation, m$reward, discount, precision = .1, log_data = log_data, timeout = 20000)
+alpha <- sarsop(m$transition, m$observation, m$reward, discount, 
+                precision = .1, log_data = log_data, timeout = 20000)
 )
 ```
 
-
+`appl` logs solution files in a specificied directory, along with a metadata table.  The metadata table makes it convenient to store multiple solutions in a single directory, and load the desired solution later using it's id or matching metatata.
 Read a solution from the log:
 
 ```{r}
-meta <- meta_from_log(data.frame(K = K, r = r, sigma_g = sigma_g, sigma_m = sigma_m, model = "ricker"))
-alpha <- alphas_from_log(meta)[[1]]
+log_dir <- system.file("ext-data/vignette-log", package="appl")
+meta <- meta_from_log(data.frame(id = "vignette"), log_dir)
+
+alpha <- alphas_from_log(meta, log_dir)[[1]] ## bc fn returns a list with all matching alphas, we need [[1]]
 ```
 
 
-Given the model matrices and `alpha` vectors and current belief state, compute & plot policy:
+Given the model matrices and `alpha` vectors.  Start belief with a uniform prior over states, compute & plot policy:
 
 ```{r}
-df <- compute_policy(alpha, m$transition, m$observation, m$reward)
+state_prior = rep(1, length(states)) / length(states) # initial belief
+df <- compute_policy(alpha, m$transition, m$observation, m$reward,  state_prior)
 ```
 
 ```{r}
@@ -79,10 +84,13 @@ ggplot(df, aes(states[state], states[state] - actions[policy])) + geom_line() + 
 Simulate management under the POMDP policy:
 
 ```{r}
-sim <- sim_pomdp(m$transition, m$observation, m$reward, discount, x0 = K, Tmax = 20, alpha = alpha)
+x0 <- which.min(abs(states - K))
+Tmax <- 20
+sim <- sim_pomdp(m$transition, m$observation, m$reward, discount, 
+                 state_prior, x0 = x0, Tmax = Tmax, alpha = alpha)
 ```
 
-Plot simulation
+Plot simulation data:
 
 ```{r}
 sim$df %>%
@@ -95,9 +103,9 @@ sim$df %>%
 Plot belief evolution:
 
 ```{r}
-Tmax <-length(out$state_posterior[,1])
-
-out$state_posterior %>% data.frame(time = 1:Tmax) %>% 
+sim$state_posterior %>% 
+  data.frame(time = 1:Tmax) %>%
+  filter(time %in% seq(1,Tmax, by = 2)) %>%
   gather(state, probability, -time, factor_key =TRUE) %>% 
   mutate(state = as.numeric(state)) %>% 
   ggplot(aes(state, probability, group = time, alpha = time)) + geom_line()

@@ -15,7 +15,6 @@ Imports: xml2
 Suggests: testthat,
     roxygen2,
     knitr,
-    rmarkdown,
-    MDPtoolbox,
+    tidyverse,
     covr
 VignetteBuilder: knitr
