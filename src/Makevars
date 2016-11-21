@@ -116,23 +116,23 @@ libappl.a: $(OBJS_APPL)
 	$(AR) rcs libappl.a $(OBJS_APPL)
 
 pomdpsol: libappl.a appl-0.96/OfflineSolver/solver.o
-	$(CXX) $(CPPFLAGS) $(CXXLAGS) -o pomdpsol appl-0.96/OfflineSolver/solver.o -L. -lappl
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -o pomdpsol appl-0.96/OfflineSolver/solver.o -L. -lappl
 	cp -f pomdpsol $(INSTDIR)
 
 pomdpeval: libappl.a appl-0.96/Evaluator/Evaluator.o
-	$(CXX) $(CPPFLAGS) $(CXXLAGS) -o pomdpeval appl-0.96/Evaluator/Evaluator.o -L. -lappl
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -o pomdpeval appl-0.96/Evaluator/Evaluator.o -L. -lappl
 	cp -f pomdpeval $(INSTDIR)
 
 pomdpsim: libappl.a appl-0.96/Simulator/Simulator.o
-	$(CXX) $(CPPFLAGS) $(CXXLAGS) -o pomdpsim appl-0.96/Simulator/Simulator.o -L. -lappl
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -o pomdpsim appl-0.96/Simulator/Simulator.o -L. -lappl
 	cp -f pomdpsim $(INSTDIR)
 
 polgraph: libappl.a appl-0.96/PolicyGraph/PolicyGraph.o
-	$(CXX) $(CPPFLAGS) $(CXXLAGS) -o polgraph appl-0.96/PolicyGraph/PolicyGraph.o -L. -lappl
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -o polgraph appl-0.96/PolicyGraph/PolicyGraph.o -L. -lappl
 	cp -f polgraph $(INSTDIR)
 
 pomdpconvert: libappl.a appl-0.96/PomdpConvertor/convertor.o
-	$(CXX) $(CPPFLAGS) $(CXXLAGS) -o pomdpconvert appl-0.96/PomdpConvertor/convertor.o -L. -lappl
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -o pomdpconvert appl-0.96/PomdpConvertor/convertor.o -L. -lappl
 	cp -f pomdpconvert $(INSTDIR)
 
 clean:
