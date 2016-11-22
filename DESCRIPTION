@@ -1,15 +1,16 @@
 Package: appl
 Type: Package
 Title: Approximate POMDP Planning Software
-Version: 0.3.0
+Version: 0.4.0
 Authors@R: c(
-    person("Jeroen", "Ooms", email = "jeroen.ooms@stat.ucla.edu", role = c("cre", "aut")),
-    person("Carl", "Boettiger", email = "cboettig@gmail.com", role = "aut"),
+    person("Carl", "Boettiger", email = "cboettig@gmail.com", role = c("cre", "aut")),
+    person("Jeroen", "Ooms", email = "jeroen.ooms@stat.ucla.edu", role = c("aut")),
     person("Milad", "Memarzadeh", role = "aut"))
 Description: APPL is a C++ toolkit for approximate POMDP planning. Originally, it is
     based on the SARSOP algorithm for solving discrete POMDPs.
 License: MIT + file LICENSE
-URL: http://bigbird.comp.nus.edu.sg/pmwiki/farm/appl
+URL: https://github.com/cboettig/appl
+BugReports: https://github.com/cboettig/appl/issues
 RoxygenNote: 5.0.1
 Imports: xml2
 Suggests: testthat,
