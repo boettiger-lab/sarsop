@@ -46,7 +46,7 @@ sim_pomdp <- function(transition, observation, reward, discount,
 
     for(t in 2:Tmax){
       if(update_alpha) alpha <- sarsop(transition, observation, reward, discount, state_posterior[t,], ...)
-
+      ## FIXME compute_policy solves for all possible observations; faster if we solved policy just for obs[t]
       out <- compute_policy(alpha, transition, observation, reward, state_posterior[t,], action[t-1])
       obs[t] <- sample(1:n_obs, 1, prob = observation[state[t], , action[t-1]])
       action[t] <- out$policy[obs[t]]
@@ -58,7 +58,7 @@ sim_pomdp <- function(transition, observation, reward, discount,
     list(df = df, state_posterior = state_posterior[2:(Tmax+1),])
   }
 
-
+  ## FIXME compute_policy duplicates this code, but for all possible observations.  Avoid code duplication.
   update_belief <- function(state_prior, transition, observation, z0, a0){
     belief <-
       vapply(1:length(state_prior), function(i){

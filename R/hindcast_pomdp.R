@@ -1,6 +1,6 @@
-#' compare_pomdp
+#' hindcast_pomdp
 #'
-#' Compare the pomdp solution to historical data
+#' Compare historical actions to what pomdp recommendation would have been
 #' @inheritParams sarsop
 #' @inheritParams compute_policy
 #' @param obs a given sequence of observations
@@ -13,14 +13,13 @@
 #' ## Use example code to generate matrices for pomdp problem:
 #' source(system.file("examples/fisheries-ex.R", package = "appl"))
 #' alpha <- sarsop(transition, observation, reward, discount, precision = 10)
-#' sim <- compare_pomdp(transition, observation, reward, discount,
+#' sim <- hindcast_pomdp(transition, observation, reward, discount,
 #'                      obs = rnorm(21, 15, .1), action = rep(1, 21),
 #'                      alpha = alpha)
-
 #'
 #' }
-#'
-compare_pomdp <- function(transition, observation, reward, discount, obs, action,
+#' @aliases hindcast_pomdp compare_pomdp
+hindcast_pomdp <- function(transition, observation, reward, discount, obs, action,
                       state_prior = rep(1, dim(observation)[[1]]) / dim(observation)[[1]],
                       alpha = NULL, ...){
 
@@ -51,4 +50,4 @@ compare_pomdp <- function(transition, observation, reward, discount, obs, action
     belief / sum(belief)
   }
 
-
+compare_pomdp <- hindcast_pomdp
