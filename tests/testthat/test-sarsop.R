@@ -21,7 +21,8 @@ alpha <- sarsop(m$transition, m$observation, m$reward, discount, precision = 10)
 df <- compute_policy(alpha, m$transition, m$observation, m$reward)
 #ggplot(df, aes(states[state], states[state] - actions[policy])) + geom_line() + geom_point()
 
-m <- fisheries_matrices(states, actions, obs, reward_fn, f, sigma_g, sigma_m, noise = "uniform")
+## for coverage of the unif case
+unif_example <- fisheries_matrices(states, actions, obs, reward_fn, f, sigma_g, sigma_m, noise = "uniform")
 #alpha <- sarsop(m$transition, m$observation, m$reward, discount, precision = .05)
 #df <- compute_policy(alpha, m$transition, m$observation, m$reward)
 #ggplot(df, aes(states[state], states[state] - actions[policy])) + geom_line() + geom_point()
