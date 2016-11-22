@@ -22,7 +22,7 @@ library(tidyverse) # for plotting
 ```{r}
 states <- 0:60
 actions <- states
-obs <- states
+observations <- states
 
 r = 1; K = 50; C = 15;
 f <- function(x, h){
@@ -62,6 +62,8 @@ m <- fisheries_matrices(states, actions, observations, reward_fn,
 
 Long-running code to actually compute the solution.  Rather than run this, we'll load the solution from the log.
 
+<!-- Consider using results from pomdp-solutions-library here instead! -->
+
 ```{r eval=FALSE}
 log_data <- data.frame(id = "allee", model = "allen", 
                        r = r, K = K, C = C, sigma_g = sigma_g, sigma_m = sigma_m)
@@ -77,8 +79,8 @@ alpha <- sarsop(m$transition, m$observation, m$reward, discount,
 Read a solution from the log:
 
 ```{r}
-log_dir <- system.file("ext-data/vignette-log", package="appl")
-meta <- meta_from_log(data.frame(id = "vignette"), log_dir)
+log_dir <- "."
+meta <- meta_from_log(data.frame(id = "allee"), log_dir)
 
 alpha <- alphas_from_log(meta, log_dir)[[1]] ## bc fn returns a list with all matching alphas, we need [[1]]
 ```
