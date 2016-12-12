@@ -57,7 +57,12 @@
       </ul>
       
       <ul class="nav navbar-nav navbar-right">
-        
+        <li>
+  <a href="https://github.com/cboettig/appl">
+    <span class="fa fa-github fa-lg"></span>
+     
+  </a>
+</li>
       </ul>
     </div><!--/.nav-collapse -->
   </div><!--/.container -->
@@ -137,13 +142,13 @@ to suppress output.</dd>
     <pre class="examples"><div class='input'><span class='no'>model</span> <span class='kw'>&lt;-</span> <span class='fu'>system.file</span>(<span class='st'>"models/example.pomdp"</span>, <span class='kw'>package</span> <span class='kw'>=</span> <span class='st'>"appl"</span>)
 <span class='no'>policy</span> <span class='kw'>&lt;-</span> <span class='fu'>tempfile</span>()
 <span class='fu'>pomdpsol</span>(<span class='no'>model</span>, <span class='kw'>output</span> <span class='kw'>=</span> <span class='no'>policy</span>, <span class='kw'>timeout</span> <span class='kw'>=</span> <span class='fl'>1</span>)</div><div class='output co'>#&gt; $load_time_sec
-#&gt; [1] 0.32
+#&gt; [1] 0.31
 #&gt; 
 #&gt; $init_time_sec
-#&gt; [1] 22.99
+#&gt; [1] 23.16
 #&gt; 
 #&gt; $run_time_sec
-#&gt; [1] 23.02
+#&gt; [1] 23.2
 #&gt; 
 #&gt; $final_precision
 #&gt; [1] 54.1782
@@ -169,7 +174,7 @@ to suppress output.</dd>
 
       <footer>
       <div class="copyright">
-  <p>Developed by Jeroen Ooms, Carl Boettiger, Milad Memarzadeh.</p>
+  <p>Developed by Carl Boettiger, Jeroen Ooms, Milad Memarzadeh.</p>
 </div>
 
 <div class="pkgdown">
