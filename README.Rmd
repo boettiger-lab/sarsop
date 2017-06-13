@@ -17,7 +17,7 @@ knitr::opts_chunk$set(
 )
 ```
 
-# APPL for R
+# SARSOP for R
 
 
 Work in progress.  

@@ -1,10 +1,10 @@
-testthat::context("appl")
+testthat::context("sarsop")
 
 
 testthat::test_that("appl base functions generates a policy", {
 
 
-  model <- system.file("models/example.pomdp",  package = "appl")
+  model <- system.file("models/example.pomdp",  package = "sarsop")
   f <- tempfile()
   res <- pomdpsol(model, output = f, precision = 10)
 
@@ -16,7 +16,7 @@ testthat::test_that("appl base functions generates a policy", {
 
 testthat::test_that("pomdpeval, polgraph and pomdpsim run without error", {
 
-  model <- system.file("models/example.pomdp",  package = "appl")
+  model <- system.file("models/example.pomdp",  package = "sarsop")
   policy <- tempfile()
   res <- pomdpsol(model, output = policy, precision = 10)
 

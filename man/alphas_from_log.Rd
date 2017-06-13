@@ -20,7 +20,7 @@ alphas_from_log
 \examples{
 \dontrun{
 
-source(system.file("examples/fisheries-ex.R", package = "appl"))
+source(system.file("examples/fisheries-ex.R", package = "sarsop"))
 log = tempfile()
 alpha <- sarsop(transition, observation, reward, discount, precision = 10,
                 log_dir = log, log_data = log_data)
@@ -30,4 +30,3 @@ meta <- meta_from_log(parameters = data.frame(model = "ricker", r = 0.1), log_di
 alphas <- alphas_from_log(meta, log_dir = log)
 }
 }
-

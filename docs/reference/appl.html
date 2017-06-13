@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>APPL wrappers — pomdpsol • appl</title>
+<title>APPL wrappers — pomdpsol • sarsop</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -25,12 +25,14 @@
 <script src="../pkgdown.js"></script>
 
 <!-- mathjax -->
-<script src='https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML'></script>
+<script src='https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML'></script>
 
 <!--[if lt IE 9]>
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
 <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
 <![endif]-->
+
+
   </head>
 
   <body>
@@ -44,7 +46,7 @@
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <a class="navbar-brand" href="../index.html">appl</a>
+      <a class="navbar-brand" href="../index.html">sarsop</a>
     </div>
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
@@ -82,7 +84,7 @@
 file and returns the path to the output policy file.</p>
     
 
-    <pre><span class='fu'>pomdpsol</span>(<span class='no'>model</span>, <span class='kw'>output</span> <span class='kw'>=</span> <span class='fu'>tempfile</span>(), <span class='kw'>precision</span> <span class='kw'>=</span> <span class='fl'>0.001</span>, <span class='kw'>timeout</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+    <pre class="usage"><span class='fu'>pomdpsol</span>(<span class='no'>model</span>, <span class='kw'>output</span> <span class='kw'>=</span> <span class='fu'>tempfile</span>(), <span class='kw'>precision</span> <span class='kw'>=</span> <span class='fl'>0.001</span>, <span class='kw'>timeout</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='kw'>fast</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>randomization</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>memory</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='kw'>improvementConstant</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>timeInterval</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>stdout</span> <span class='kw'>=</span> <span class='fu'>tempfile</span>(),
   <span class='kw'>stderr</span> <span class='kw'>=</span> <span class='fu'>tempfile</span>())
@@ -99,62 +101,98 @@ file and returns the path to the output policy file.</p>
 <span class='fu'>pomdpconvert</span>(<span class='no'>model</span>, <span class='kw'>stdout</span> <span class='kw'>=</span> <span class='st'>""</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
-    <dl class="dl-horizontal">
-      <dt>model</dt>
-      <dd>file/path to the <code>pomdp</code> model file</dd>
-      <dt>output</dt>
-      <dd>file/path of the output policy file. This is also returned by the function.</dd>
-      <dt>precision</dt>
-      <dd>targetPrecision. Set targetPrecision as the target precision in solution quality; run ends when target precision is reached. The target precision is 1e-3 by default.</dd>
-      <dt>timeout</dt>
-      <dd>Use timeLimit as the timeout in seconds.  If running time exceeds the specified value, pomdpsol writes out a policy and terminates. There is no time limit by default.</dd>
-      <dt>fast</dt>
-      <dd>logical, default FALSE. use fast (but very picky) alternate parser for .pomdp files.</dd>
-      <dt>randomization</dt>
-      <dd>logical, default FALSE. Turn on randomization for the sampling algorithm.</dd>
-      <dt>memory</dt>
-      <dd>Use memoryLimit as the memory limit in MB. No memory limit by default.  If memory usage exceeds the specified value, pomdpsol writes out a policy and terminates. Set the value to be less than physical memory to avoid swapping.</dd>
-      <dt>improvementConstant</dt>
-      <dd>Use improvementConstant as the trial improvement factor in the sampling algorithm. At the default of 0.5, a trial terminates at a belief when the gap between its upper and lower bound is 0.5 of the current precision at the initial belief.</dd>
-      <dt>timeInterval</dt>
-      <dd>Use timeInterval as the time interval between two consecutive write-out of policy files. If this is not specified, pomdpsol only writes out a policy file upon termination.</dd>
-      <dt>stdout</dt>
-      <dd>a filename where pomdp run statistics will be stored</dd>
-      <dt>stderr</dt>
-      <dd>where output to &#39;stderr&#39;, see <code>system2</code>. Use <code>FALSE</code>
-to suppress output.</dd>
-      <dt>policy</dt>
-      <dd>file/path to the policy file</dd>
-      <dt>max_depth</dt>
-      <dd>the maximum horizon of the generated policy graph</dd>
-      <dt>max_branches</dt>
-      <dd>maximum number of branches to show in the policy graph</dd>
-      <dt>min_prob</dt>
-      <dd>the minimum probability threshold for a branch to be shown in the policy graph</dd>
-      <dt>steps</dt>
-      <dd>number of steps for each simulation run</dd>
-      <dt>simulations</dt>
-      <dd>as the number of simulation runs</dd>
-    </dl>
+    <table class="ref-arguments">
+    <colgroup><col class="name" /><col class="desc" /></colgroup>
+    <tr>
+      <th>model</th>
+      <td><p>file/path to the <code>pomdp</code> model file</p></td>
+    </tr>
+    <tr>
+      <th>output</th>
+      <td><p>file/path of the output policy file. This is also returned by the function.</p></td>
+    </tr>
+    <tr>
+      <th>precision</th>
+      <td><p>targetPrecision. Set targetPrecision as the target precision in solution quality; run ends when target precision is reached. The target precision is 1e-3 by default.</p></td>
+    </tr>
+    <tr>
+      <th>timeout</th>
+      <td><p>Use timeLimit as the timeout in seconds.  If running time exceeds the specified value, pomdpsol writes out a policy and terminates. There is no time limit by default.</p></td>
+    </tr>
+    <tr>
+      <th>fast</th>
+      <td><p>logical, default FALSE. use fast (but very picky) alternate parser for .pomdp files.</p></td>
+    </tr>
+    <tr>
+      <th>randomization</th>
+      <td><p>logical, default FALSE. Turn on randomization for the sampling algorithm.</p></td>
+    </tr>
+    <tr>
+      <th>memory</th>
+      <td><p>Use memoryLimit as the memory limit in MB. No memory limit by default.  If memory usage exceeds the specified value, pomdpsol writes out a policy and terminates. Set the value to be less than physical memory to avoid swapping.</p></td>
+    </tr>
+    <tr>
+      <th>improvementConstant</th>
+      <td><p>Use improvementConstant as the trial improvement factor in the sampling algorithm. At the default of 0.5, a trial terminates at a belief when the gap between its upper and lower bound is 0.5 of the current precision at the initial belief.</p></td>
+    </tr>
+    <tr>
+      <th>timeInterval</th>
+      <td><p>Use timeInterval as the time interval between two consecutive write-out of policy files. If this is not specified, pomdpsol only writes out a policy file upon termination.</p></td>
+    </tr>
+    <tr>
+      <th>stdout</th>
+      <td><p>a filename where pomdp run statistics will be stored</p></td>
+    </tr>
+    <tr>
+      <th>stderr</th>
+      <td><p>where output to 'stderr', see <code>system2</code>. Use <code>FALSE</code>
+to suppress output.</p></td>
+    </tr>
+    <tr>
+      <th>policy</th>
+      <td><p>file/path to the policy file</p></td>
+    </tr>
+    <tr>
+      <th>max_depth</th>
+      <td><p>the maximum horizon of the generated policy graph</p></td>
+    </tr>
+    <tr>
+      <th>max_branches</th>
+      <td><p>maximum number of branches to show in the policy graph</p></td>
+    </tr>
+    <tr>
+      <th>min_prob</th>
+      <td><p>the minimum probability threshold for a branch to be shown in the policy graph</p></td>
+    </tr>
+    <tr>
+      <th>steps</th>
+      <td><p>number of steps for each simulation run</p></td>
+    </tr>
+    <tr>
+      <th>simulations</th>
+      <td><p>as the number of simulation runs</p></td>
+    </tr>
+    </table>
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='no'>model</span> <span class='kw'>&lt;-</span> <span class='fu'>system.file</span>(<span class='st'>"models/example.pomdp"</span>, <span class='kw'>package</span> <span class='kw'>=</span> <span class='st'>"appl"</span>)
+    <pre class="examples"><div class='input'>
+<span class='no'>model</span> <span class='kw'>&lt;-</span> <span class='fu'>system.file</span>(<span class='st'>"models/example.pomdp"</span>, <span class='kw'>package</span> <span class='kw'>=</span> <span class='st'>"sarsop"</span>)
 <span class='no'>policy</span> <span class='kw'>&lt;-</span> <span class='fu'>tempfile</span>()
 <span class='fu'>pomdpsol</span>(<span class='no'>model</span>, <span class='kw'>output</span> <span class='kw'>=</span> <span class='no'>policy</span>, <span class='kw'>timeout</span> <span class='kw'>=</span> <span class='fl'>1</span>)</div><div class='output co'>#&gt; $load_time_sec
-#&gt; [1] 0.31
+#&gt; [1] 0.05
 #&gt; 
 #&gt; $init_time_sec
-#&gt; [1] 23.16
+#&gt; [1] 1.2
 #&gt; 
 #&gt; $run_time_sec
-#&gt; [1] 23.2
+#&gt; [1] 1.2
 #&gt; 
 #&gt; $final_precision
 #&gt; [1] 54.1782
 #&gt; 
 #&gt; $end_condition
-#&gt; [1] &quot;  Preset timeout reached&quot;
+#&gt; [1] "  Preset timeout reached"
 #&gt; </div><div class='input'>
 <span class='co'># Other tools</span>
 <span class='no'>evaluation</span> <span class='kw'>&lt;-</span> <span class='fu'>pomdpeval</span>(<span class='no'>model</span>, <span class='no'>policy</span>, <span class='kw'>stdout</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)

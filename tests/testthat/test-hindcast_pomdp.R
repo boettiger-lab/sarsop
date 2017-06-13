@@ -1,7 +1,7 @@
 context("hindcast_pomdp")
 
 testthat::test_that("we can compute hindcasts to compare pomdp to historical values", {
-  source(system.file("examples/fisheries-ex.R", package = "appl"))
+  source(system.file("examples/fisheries-ex.R", package = "sarsop"))
   alpha <- sarsop(transition, observation, reward, discount, precision = 10)
   sim <- hindcast_pomdp(transition, observation, reward, discount,
                        obs = rnorm(21, 15, .1), action = rep(1, 21),

@@ -9,7 +9,7 @@
 #'
 #' @examples \dontrun{
 #'
-#' source(system.file("examples/fisheries-ex.R", package = "appl"))
+#' source(system.file("examples/fisheries-ex.R", package = "sarsop"))
 #' log = tempfile()
 #' alpha <- sarsop(transition, observation, reward, discount, precision = 10,
 #'                 log_dir = log, log_data = log_data)
@@ -39,7 +39,7 @@ meta_from_log <- function(parameters, log_dir = ".", metafile = paste0(log_dir, 
 #'
 #' @examples \dontrun{
 #'
-#' source(system.file("examples/fisheries-ex.R", package = "appl"))
+#' source(system.file("examples/fisheries-ex.R", package = "sarsop"))
 #' log = tempfile()
 #' alpha <- sarsop(transition, observation, reward, discount, precision = 10,
 #'                 log_dir = log, log_data = log_data)
@@ -71,7 +71,7 @@ alphas_from_log <- function(meta, log_dir = "."){
 #'
 #' @examples \dontrun{
 #'
-#' source(system.file("examples/fisheries-ex.R", package = "appl"))
+#' source(system.file("examples/fisheries-ex.R", package = "sarsop"))
 #' log = tempfile()
 #' alpha <- sarsop(transition, observation, reward, discount, precision = 10,
 #'                 log_dir = log, log_data = log_data)
@@ -148,7 +148,7 @@ bh <- function(r, K)
 #'
 #' @examples \dontrun{
 #'
-#' source(system.file("examples/fisheries-ex.R", package = "appl"))
+#' source(system.file("examples/fisheries-ex.R", package = "sarsop"))
 #' log = tempfile()
 #' alpha <- sarsop(transition, observation, reward, discount, precision = 10,
 #'                 log_dir = log, log_data = log_data)

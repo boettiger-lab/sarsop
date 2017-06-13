@@ -34,4 +34,3 @@ write_momdpx(P_full, P_par, O, R, gamma, b_full, b_par = rep(1/dim(O)[1],
 \description{
 write_momdpx
 }
-

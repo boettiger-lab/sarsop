@@ -1,5 +1,5 @@
 ---
-title: "Solving POMDPs with the appl R package"
+title: "Solving POMDPs with the sarsop R package"
 date: "`r Sys.Date()`"
 
 author:
@@ -35,7 +35,7 @@ Here we compare the Markov Decision Process (MDP) solution of the classic optima
 
 
 ```{r message=FALSE}
-library(appl)
+library(sarsop)
 library(tidyverse) # for plotting
 ```
 
@@ -121,7 +121,7 @@ alpha <- sarsop(m$transition, m$observation, m$reward, discount,
 `appl` logs solution files in a specificied directory, along with a metadata table.  The metadata table makes it convenient to store multiple solutions in a single directory, and load the desired solution later using it's id or matching metatata. We can read this solution from the log where it is stored:
 
 ```{r}
-log_dir <- system.file("ext-data/vignette-log", package="appl")
+log_dir <- system.file("ext-data/vignette-log", package="sarsop")
 meta <- meta_from_log(data.frame(id = "vignette"), log_dir)
 
 alpha <- alphas_from_log(meta, log_dir)[[1]] ## bc fn returns a list with all matching alphas, we need [[1]]

@@ -9,9 +9,9 @@ Authors@R: c(
 Description: APPL is a C++ toolkit for approximate POMDP planning. Originally, it is
     based on the SARSOP algorithm for solving discrete POMDPs.
 License: MIT + file LICENSE
-URL: https://github.com/cboettig/appl
-BugReports: https://github.com/cboettig/appl/issues
-RoxygenNote: 5.0.1
+URL: https://github.com/boettiger-lab/sarsop
+BugReports: https://github.com/cboettig/sarsop/issues
+RoxygenNote: 6.0.1
 Imports: xml2
 Suggests: testthat,
     roxygen2,

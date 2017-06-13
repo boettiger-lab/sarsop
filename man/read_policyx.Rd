@@ -17,4 +17,3 @@ a list, first element "vectors" is an n_states x n_vectors array of alpha vector
 \description{
 read a .policyx file created by SARSOP and return alpha vectors and associated actions.
 }
-

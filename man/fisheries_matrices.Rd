@@ -35,4 +35,3 @@ initialize the transition, observation, and reward matrices given a transition f
 \details{
 assumes log-normally distributed observation errors and process errors
 }
-

@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>write_momdpx — write_momdpx • appl</title>
+<title>write_momdpx — write_momdpx • sarsop</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -25,12 +25,14 @@
 <script src="../pkgdown.js"></script>
 
 <!-- mathjax -->
-<script src='https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML'></script>
+<script src='https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML'></script>
 
 <!--[if lt IE 9]>
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
 <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
 <![endif]-->
+
+
   </head>
 
   <body>
@@ -44,7 +46,7 @@
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <a class="navbar-brand" href="../index.html">appl</a>
+      <a class="navbar-brand" href="../index.html">sarsop</a>
     </div>
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
@@ -81,35 +83,58 @@
     <p>write_momdpx</p>
     
 
-    <pre><span class='fu'>write_momdpx</span>(<span class='no'>P_full</span>, <span class='no'>P_par</span>, <span class='no'>O</span>, <span class='no'>R</span>, <span class='no'>gamma</span>, <span class='no'>b_full</span>, <span class='kw'>b_par</span> <span class='kw'>=</span> <span class='fu'>rep</span>(<span class='fl'>1</span>/<span class='fu'>dim</span>(<span class='no'>O</span>)[<span class='fl'>1</span>],
+    <pre class="usage"><span class='fu'>write_momdpx</span>(<span class='no'>P_full</span>, <span class='no'>P_par</span>, <span class='no'>O</span>, <span class='no'>R</span>, <span class='no'>gamma</span>, <span class='no'>b_full</span>, <span class='kw'>b_par</span> <span class='kw'>=</span> <span class='fu'>rep</span>(<span class='fl'>1</span>/<span class='fu'>dim</span>(<span class='no'>O</span>)[<span class='fl'>1</span>],
   <span class='fu'>dim</span>(<span class='no'>O</span>)[<span class='fl'>1</span>]), <span class='kw'>file</span> <span class='kw'>=</span> <span class='st'>"input.pomdpx"</span>, <span class='kw'>digits</span> <span class='kw'>=</span> <span class='fl'>4</span>, <span class='kw'>digits2</span> <span class='kw'>=</span> <span class='fl'>10</span>,
   <span class='kw'>format</span> <span class='kw'>=</span> <span class='st'>"f"</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
-    <dl class="dl-horizontal">
-      <dt>P_full</dt>
-      <dd>transition matrix for fully observable states</dd>
-      <dt>P_par</dt>
-      <dd>transition matrix for partially observable states</dd>
-      <dt>O</dt>
-      <dd>observation matrix</dd>
-      <dt>R</dt>
-      <dd>reward</dd>
-      <dt>gamma</dt>
-      <dd>discount factor</dd>
-      <dt>b_full</dt>
-      <dd>initial fully observable state</dd>
-      <dt>b_par</dt>
-      <dd>initial belief of partially observable states</dd>
-      <dt>file</dt>
-      <dd>pomdpx file to create</dd>
-      <dt>digits</dt>
-      <dd>precision to round to before normalizing. Leave at 4 since sarsop seems unable to do more?</dd>
-      <dt>digits2</dt>
-      <dd>precision to write solution to. Leave at 10, since normalizing requires additional precision</dd>
-      <dt>format</dt>
-      <dd>floating point format, because sarsop parser doesn&#39;t seem to know scientific notation</dd>
-    </dl>
+    <table class="ref-arguments">
+    <colgroup><col class="name" /><col class="desc" /></colgroup>
+    <tr>
+      <th>P_full</th>
+      <td><p>transition matrix for fully observable states</p></td>
+    </tr>
+    <tr>
+      <th>P_par</th>
+      <td><p>transition matrix for partially observable states</p></td>
+    </tr>
+    <tr>
+      <th>O</th>
+      <td><p>observation matrix</p></td>
+    </tr>
+    <tr>
+      <th>R</th>
+      <td><p>reward</p></td>
+    </tr>
+    <tr>
+      <th>gamma</th>
+      <td><p>discount factor</p></td>
+    </tr>
+    <tr>
+      <th>b_full</th>
+      <td><p>initial fully observable state</p></td>
+    </tr>
+    <tr>
+      <th>b_par</th>
+      <td><p>initial belief of partially observable states</p></td>
+    </tr>
+    <tr>
+      <th>file</th>
+      <td><p>pomdpx file to create</p></td>
+    </tr>
+    <tr>
+      <th>digits</th>
+      <td><p>precision to round to before normalizing. Leave at 4 since sarsop seems unable to do more?</p></td>
+    </tr>
+    <tr>
+      <th>digits2</th>
+      <td><p>precision to write solution to. Leave at 10, since normalizing requires additional precision</p></td>
+    </tr>
+    <tr>
+      <th>format</th>
+      <td><p>floating point format, because sarsop parser doesn't seem to know scientific notation</p></td>
+    </tr>
+    </table>
     
 
   </div>

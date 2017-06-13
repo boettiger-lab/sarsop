@@ -11,7 +11,7 @@
 #' @examples
 #' \dontrun{ ## Takes > 5s
 #' ## Use example code to generate matrices for pomdp problem:
-#' source(system.file("examples/fisheries-ex.R", package = "appl"))
+#' source(system.file("examples/fisheries-ex.R", package = "sarsop"))
 #' alpha <- sarsop(transition, observation, reward, discount, precision = 10)
 #' sim <- hindcast_pomdp(transition, observation, reward, discount,
 #'                      obs = rnorm(21, 15, .1), action = rep(1, 21),

@@ -29,4 +29,3 @@ write_pomdpx(P, O, R, gamma, b = rep(1/dim(O)[1], dim(O)[1]),
 \description{
 write_pomdpx
 }
-

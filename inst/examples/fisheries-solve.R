@@ -1,7 +1,7 @@
 #library("MDPtoolbox")
 #library("appl")
 
-source(system.file("examples/fisheries-ex.R", package = "appl"))
+source(system.file("examples/fisheries-ex.R", package = "sarsop"))
 
 
 ## Deterministic Solution

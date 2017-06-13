@@ -42,10 +42,9 @@ This function can thus be used at the heart of most pomdp applications.
 \examples{
 \dontrun{ ## Takes > 5s
 ## Use example code to generate matrices for pomdp problem:
-source(system.file("examples/fisheries-ex.R", package = "appl"))
+source(system.file("examples/fisheries-ex.R", package = "sarsop"))
 alpha <- sarsop(transition, observation, reward, discount, precision = 10)
 compute_policy(alpha, transition, observation, reward)
 }
 
 }
-
