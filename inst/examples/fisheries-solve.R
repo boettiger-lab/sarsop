@@ -1,5 +1,5 @@
 #library("MDPtoolbox")
-#library("appl")
+#library("sarsop")
 
 source(system.file("examples/fisheries-ex.R", package = "sarsop"))
 

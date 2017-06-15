@@ -9,7 +9,7 @@ First, we will load the libraries needed for this example. The `MDPtoolbox` prov
 
 ``` r
 library("MDPtoolbox")
-library("appl")
+library("sarsop")
 ```
 
 Problem definition

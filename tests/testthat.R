@@ -1,4 +1,4 @@
 library(testthat)
-library(appl)
+library(sarsop)
 
-test_check("appl")
+test_check("sarsop")
