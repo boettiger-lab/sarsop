@@ -5,7 +5,7 @@ output: github_document
 [![Build Status](https://travis-ci.org/boettiger-lab/sarsop.svg?branch=master)](https://travis-ci.org/boettiger-lab/sarsop) [![Build status](https://ci.appveyor.com/api/projects/status/mpa5qevipe47gafx/branch/master?svg=true)](https://ci.appveyor.com/project/boettiger-lab/boettiger-lab/branch/master)
 [![Coverage Status](https://img.shields.io/codecov/c/github/boettiger-lab/sarsop/master.svg)](https://codecov.io/github/boettiger-lab/sarsop?branch=master)
 [![Project Status: WIP - Initial development is in progress, but there has not yet been a stable, usable release suitable for the public.](http://www.repostatus.org/badges/latest/wip.svg)](http://www.repostatus.org/#wip)
-
+[![CRAN_Status_Badge](http://www.r-pkg.org/badges/version/sarsop)](https://cran.r-project.org/package=sarsop)
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
