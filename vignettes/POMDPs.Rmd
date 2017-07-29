@@ -40,7 +40,7 @@ Future rewards are discounted.
 
 
 ```{r}
-states <- seq(0,1, length=50)
+states <- seq(0,1, length=30)
 actions <- states
 observations <- states
 sigma_g <- 0.1
