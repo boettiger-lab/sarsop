@@ -44,7 +44,7 @@ states <- seq(0,1, length=50)
 actions <- states
 observations <- states
 sigma_g <- 0.1
-sigma_m <- 0.5
+sigma_m <- 0.2
 reward_fn <- function(x,h) pmin(x,h) # - .001*h
 discount <- 0.95
 
