@@ -6,7 +6,7 @@
 \usage{
 sim_pomdp(transition, observation, reward, discount, state_prior = rep(1,
   dim(observation)[[1]])/dim(observation)[[1]], x0, a0 = 1, Tmax = 20,
-  alpha = NULL, ...)
+  policy = NULL, alpha = NULL, ...)
 }
 \arguments{
 \item{transition}{Transition matrix, dimension n_s x n_s x n_a}
@@ -25,6 +25,8 @@ sim_pomdp(transition, observation, reward, discount, state_prior = rep(1,
 if the observation process is independent of the action taken)}
 
 \item{Tmax}{duration of simulation}
+
+\item{policy}{Simulate using a pre-computed policy (e.g. MDP policy) instead of POMDP}
 
 \item{alpha}{the matrix of alpha vectors returned by \code{\link{sarsop}}}
 
