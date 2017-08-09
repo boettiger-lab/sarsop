@@ -7,27 +7,56 @@
 #' if the observation process is independent of the action taken)
 #' @param Tmax duration of simulation
 #' @param policy Simulate using a pre-computed policy (e.g. MDP policy) instead of POMDP
+#' @param ... additional arguments to mclapply
 #' @details simulation assumes the following order of updating: For system in state[t] at
 #' time t, an observation of the system obs[t] is made, and then action[t] is based on that
 #' observation and the given policy, returning (discounted) reward[t].
 #' @return a data frame with columns for time, state, obs, action, and (discounted) value.
 #' @export
+#' @importFrom parallel mclapply
 #' @examples
 #' \dontrun{ ## Takes > 5s
 #' ## Use example code to generate matrices for pomdp problem:
 #' source(system.file("examples/fisheries-ex.R", package = "sarsop"))
 #' alpha <- sarsop(transition, observation, reward, discount, precision = 10)
 #' sim <- sim_pomdp(transition, observation, reward, discount,
-#'                      x0 = 5, Tmax = 20, alpha = alpha)
-
+#'                  x0 = 5, Tmax = 20, alpha = alpha)
+#'
+#'  ## compare to a simple constant harvest policy, with 4 replicates:
+#'  sim <- sim_pomdp(transition, observation, reward, discount,
+#'                  x0 = 5, Tmax = 20, policy = rep(2, length(states)),
+#'                  reps = 4)
+#
 #'
 #' }
 #'
 sim_pomdp <- function(transition, observation, reward, discount,
                       state_prior = rep(1, dim(observation)[[1]]) / dim(observation)[[1]],
                       x0, a0 = 1, Tmax = 20, policy = NULL,
-                      alpha = NULL, ...){
+                      alpha = NULL, reps = 1, ...){
+  ## permit parallelized replicates
+  if(reps > 1){
+    sims <- parallel::mclapply(1:reps,
+                    function(i){
+                      sim <- sim_pomdp_1(transition, observation, reward, discount,
+                                  state_prior, x0, a0, Tmax, policy, alpha)
+                      sim$df$rep <- i
+                      # cbind(sim$state_posterior, i) ## matrix, rep not explicit
+                      sim
+                    },
+                    ...)
+    list(             df = do.call(rbind, lapply(sims, `[[`, "df")),
+         state_posterior = do.call(rbind, lapply(sims, `[[`, "state_posterior")))
+  } else {
+    sim_pomdp_1(transition, observation, reward, discount,
+                state_prior, x0, a0, Tmax, policy, alpha)
+  }
+}
 
+  sim_pomdp_1 <- function(transition, observation, reward, discount,
+                        state_prior = rep(1, dim(observation)[[1]]) / dim(observation)[[1]],
+                        x0, a0 = 1, Tmax = 20, policy = NULL,
+                        alpha = NULL, ...){
     n_states <- dim(observation)[1]
     n_obs <- dim(observation)[2]
 

@@ -12,7 +12,8 @@ License: MIT + file LICENSE
 URL: https://github.com/boettiger-lab/sarsop
 BugReports: https://github.com/cboettig/sarsop/issues
 RoxygenNote: 6.0.1
-Imports: xml2
+Imports: xml2,
+    parallel
 Suggests: testthat,
     roxygen2,
     knitr,
