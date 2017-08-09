@@ -30,6 +30,8 @@ if the observation process is independent of the action taken)}
 
 \item{alpha}{the matrix of alpha vectors returned by \code{\link{sarsop}}}
 
+\item{reps}{number of replicate simulations to compute}
+
 \item{...}{additional arguments to mclapply}
 }
 \value{

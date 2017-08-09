@@ -7,6 +7,7 @@
 #' if the observation process is independent of the action taken)
 #' @param Tmax duration of simulation
 #' @param policy Simulate using a pre-computed policy (e.g. MDP policy) instead of POMDP
+#' @param reps number of replicate simulations to compute
 #' @param ... additional arguments to mclapply
 #' @details simulation assumes the following order of updating: For system in state[t] at
 #' time t, an observation of the system obs[t] is made, and then action[t] is based on that
