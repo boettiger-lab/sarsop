@@ -6,7 +6,7 @@
 \usage{
 sim_pomdp(transition, observation, reward, discount, state_prior = rep(1,
   dim(observation)[[1]])/dim(observation)[[1]], x0, a0 = 1, Tmax = 20,
-  policy = NULL, alpha = NULL, ...)
+  policy = NULL, alpha = NULL, reps = 1, ...)
 }
 \arguments{
 \item{transition}{Transition matrix, dimension n_s x n_s x n_a}
@@ -30,7 +30,9 @@ if the observation process is independent of the action taken)}
 
 \item{alpha}{the matrix of alpha vectors returned by \code{\link{sarsop}}}
 
-\item{...}{additional arguments to \code{\link{appl}}.}
+\item{reps}{number of replicate simulations to compute}
+
+\item{...}{additional arguments to mclapply}
 }
 \value{
 a data frame with columns for time, state, obs, action, and (discounted) value.
@@ -49,7 +51,12 @@ observation and the given policy, returning (discounted) reward[t].
 source(system.file("examples/fisheries-ex.R", package = "sarsop"))
 alpha <- sarsop(transition, observation, reward, discount, precision = 10)
 sim <- sim_pomdp(transition, observation, reward, discount,
-                     x0 = 5, Tmax = 20, alpha = alpha)
+                 x0 = 5, Tmax = 20, alpha = alpha)
+
+ ## compare to a simple constant harvest policy, with 4 replicates:
+ sim <- sim_pomdp(transition, observation, reward, discount,
+                 x0 = 5, Tmax = 20, policy = rep(2, length(states)),
+                 reps = 4)
 
 }
 

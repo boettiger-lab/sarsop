@@ -36,7 +36,7 @@ fisheries_matrices <- function(states = 0:20,
     for (i in 1:n_a) {
       nextpop <- f(states[k], actions[i])
       if(nextpop <= 0){
-        transition[k, , i] <- c(.99, 0.01, rep(0, n_s-2))  # permit 1% chance of not going to 0 when f(x) <= 0?
+        transition[k, , i] <- c(1, rep(0, n_s-1)) # c(.99, 0.01, rep(0, n_s-2))  # permit 1% chance of not going to 0 when f(x) <= 0?
       } else {
         transition[k, , i] <- prob(states, nextpop, sigma_g, noise = noise)
       }

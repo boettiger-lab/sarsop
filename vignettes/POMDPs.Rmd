@@ -1,8 +1,25 @@
 ---
-title: "Solving POMDPs with the sarsop R package"
-author: "Carl Boettiger"
+title: "Solving Partially Observed Markov Decision Processes in conservation problems"
 date: "`r Sys.Date()`"
-output: rmarkdown::html_vignette
+author:
+  - name: Carl Boettiger
+    email: cboettig@berkeley.edu
+    affiliation: ucb
+    footnote: Corresponding Author
+  - name: Jeroen Ooms
+    affiliation: ucb
+  - name: Milad Memarzadeh
+    affiliation: ucb
+address:
+  - code: ucb
+    address: "ESPM Department, University of California, 130 Mulford Hall Berkeley, CA 94720-3114, USA"
+abstract: |
+   This is the abstract.
+ 
+   It consists of two paragraphs.
+ 
+bibliography: refs.bib
+output: rticles::elsevier_article
 vignette: >
   %\VignetteIndexEntry{Solving POMDPs with sarsop R package}
   %\VignetteEngine{knitr::rmarkdown}
@@ -14,8 +31,18 @@ knitr::opts_chunk$set(fig.width = 7)
 ```
 
 
+Making decisions in the face of uncertainty and change over time is a challenge fundamental to both ecological management and our understanding of the behavior and evolution. @Marescot2013 provides an excellent review of the importance of such Markov Decision Processes (MDP) in ecological and conservation problems.  In a Markov Decision Process, an agent must repeatedly choose (the decision) among a set of possible actions given observations about their environment and uncertainty about the future (the Markov Process).  The ecological literature frequently refers to such problems by a common solution method, Stochastic Dynamic Programming (SDP) [@Chades2014], which has long been a workhorse of research in both behavorial ecology and natural resource management [@Mangel1985; @Mangel1988].  Examples include patch selection, reproductive allocation in behavioral ecology [@Mangel1988], and in conservation include optimal harvests and invasive species [@Clark1976].  
 
-Here we compare the Markov Decision Process (MDP) solution of the classic optimal harvest problem in fisheries (Reed 1979) to the corresponding solution under measurment uncertainty, the Partially Observed Markov Decision Process (POMDP) problem.  The classic problem can be solved exactly for a discrete model using Stochastic Dynamic Programming.  Here we demonstrate a computationally efficient approximate solution using the point-based SARSOP algorithm for POMDP, implemented in C++ in by the [APPL](http://bigbird.comp.nus.edu.sg/pmwiki/farm/appl) software and provided here as an R package.  We will first set up the problem, then present the analytic solution to deterministic problem, followed by the MDP solution to the stochastic problem.  As Reed proved in 1979, these solutions are identical as long as the stochasticity is small enough for the population to meet the self-sustaining criterion.  We then introduce measurement uncertainty and illustrate the resulting POMDP solution, discussing some of issues the user should be aware of when utilizing these approximate algorithms. 
+A limitation of the MDP approach is the assumption that the agent is able to perfectly observe the current state of the system prior to each decision.  It is this assumption that exploits the "Markov" property, in which future states of a system are stochastic but depend only on knowledge of the current state.  If there are aspects of the state which the agent cannot observe, or can observe only to within some measurement error, the system is described as "Partially Observed Markov Decision Process," or POMDP.[^1] A partially observed system is not Markovian with respect to the observed states: that is, given only current observations, we cannot assign probabilities to future observations.  In fact, those probabilities depend on all previous observations, not just the most recent set.  However, a clever trick provides a way forward. Instead of focusing on the true state or the observed state, we focus on the agent's belief about a state: i.e., the probability the agent assigns to the system being in each possible state. A partially observed system is Markovian with respect to the agent's beliefs.  Provided some rule about how an agent updates their belief about a state in response to an additional observation, such as assuming a Bayesian updating of belief, we can assign the necessary probabilities.  Unfortunately, this trick increases the computational difficulty of the problem immensely.  Instead of considering a process defined over $1, ..., N$ states, we must now consider a problem that has $M$ possible belief levels for each of the $N$ states (where we have broken continuous probabilities into $M$ possible levels for simplicity).  
+
+[^1]: A Partially Observed Markov Decision Process, POMDP is closely related to a partially observed Markov process, sometimes called a Hidden Markov Model (HMM), just as an MDP is closely related to a Markov Model (MM).  It is important to keep in mind the key distinction: the "Decision" part of the Decision process, which introduces an agent and their decisions (actions) on top of the Markov process description of the underlying state dynamics.  The goal of research in HMM problems is typically to infer parameters of the Markov process.  It is essentially to realize that even once these parameters are known (e.g. inferred as probability distributions or even known with perfect certainty), the task of choosing the optimal decisions is far from trivial, and can only be determined by solving the subsequent POMDP problem.  In this way, MDP and POMDP tools are not alternatives to statistical research for inferring MD and POMP from data, but rather complements which describe how to turn those inferences into policies / decision strategies that optimize a given objective. 
+
+Consequently, though the reality of measurement error or only partially observed systems is almost ubiquitious in ecologicical problems, thus far 
+issue of computational complexity have dramatically limited the application of POMDPs.  Those examples in the conservation literature so far have been forced to consider problems restricted to only a handful of possible states and actions [], though these papers already demonstrate key qualitative differences relative to approaches which simply ignore this uncertainty.  Fortunately, a steady stream of theoretical insights and algorithmic inivations in the engineering and artificial intellgence literature, together with ever-increasing computational power, has at last made these problems ammenable to more typically complex ecological problems.  
+
+Here, we introduce the R package `sarsop`, which adapts the powerful and efficient SARSOP algorithm to typical conservation problems in a convenient and familiar interface.  The SARSOP algorithm was originally discovered by artificial intellegence researchers [@] and the core logic implemented in C++  program APPL [@appl].  The `sarsop` R package no only provides a wrapper around the low-level C++ software that makes it easy to deploy in an R environment on any platform, but also a rich higher-level interface for defining POMDP problems in R, translating these definitions into the XML-based input used by the C++ code, logging and parsing the resulting output files, and computing and simulating optimal policies determined from the alpha vectors returned by the C++ code.  This approach combines the computational efficency of the low-level implementation with a more portable and easy-to-use higher level interface.  Our software also provides the benefits of unit testing, continuous intergration, and issues tracking to ensure more robust and sustainable development.  The package, like the underlying C++ code, 
+
+Here we compare the Markov Decision Process (MDP) solution of the classic optimal harvest problem in fisheries [@Reed1979] to the corresponding solution under measurment uncertainty, the Partially Observed Markov Decision Process (POMDP) problem.  The classic problem can be solved exactly for a discrete model using Stochastic Dynamic Programming.  Here we demonstrate a computationally efficient approximate solution using the point-based SARSOP algorithm for POMDP, implemented in C++ in by the [APPL](http://bigbird.comp.nus.edu.sg/pmwiki/farm/appl) software and provided here as an R package.  We will first set up the problem, then present the analytic solution to deterministic problem, followed by the MDP solution to the stochastic problem.  As Reed proved in 1979, these solutions are identical as long as the stochasticity is small enough for the population to meet the self-sustaining criterion.  We then introduce measurement uncertainty and illustrate the resulting POMDP solution, discussing some of issues the user should be aware of when utilizing these approximate algorithms. 
 
 
 ```{r message=FALSE}
