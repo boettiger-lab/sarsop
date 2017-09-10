@@ -8,7 +8,7 @@ Authors@R: c(
     person("Milad", "Memarzadeh", role = "aut"))
 Description: APPL is a C++ toolkit for approximate POMDP planning. Originally, it is
     based on the SARSOP algorithm for solving discrete POMDPs.
-License: MIT + file LICENSE
+License: GPL-2
 URL: https://github.com/boettiger-lab/sarsop
 BugReports: https://github.com/cboettig/sarsop/issues
 RoxygenNote: 6.0.1
