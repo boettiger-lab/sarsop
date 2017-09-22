@@ -109,7 +109,8 @@ models_from_log <- function(meta, reward_fn = function(x,h) pmin(x,h)){
                        reward_fn = reward_fn,
                        f = f_from_log(meta)[[i]],
                        sigma_g = meta[i,"sigma_g"],
-                       sigma_m = meta[i,"sigma_m"])
+                       sigma_m = meta[i,"sigma_m"],
+                       noise = as.character(meta[i, "noise"]))
   })
 }
 

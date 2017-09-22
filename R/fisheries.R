@@ -22,7 +22,7 @@ fisheries_matrices <- function(states = 0:20,
          f = ricker(1,15),
          sigma_g = 0.1,
          sigma_m = 0.1,
-         noise = c("rescaled-lognormal", "lognormal", "uniform")){
+         noise = c("rescaled-lognormal", "lognormal", "uniform", "normal")){
 
   noise <- match.arg(noise)
   n_s <- length(states)
@@ -71,6 +71,9 @@ prob <- function(states, mu, sigma, noise = "lognormal"){
     meanlog <- log(mu) - sigma ^ 2 / 2
     x <- dlnorm(states, meanlog, sigma)
     N <- plnorm(states[n_s], meanlog, sigma)
+  } else if(noise == "normal"){
+    x <- pmax(dlnorm(states, mu, sigma), 0)
+    N <- plnorm(states[n_s], mu, sigma)
   } else if(noise == "uniform"){
     x <- dunif(states, mu * (1 - sigma), mu * (1 + sigma))
     N <- punif(states[n_s], mu * (1 - sigma), mu * (1 + sigma))

@@ -38,7 +38,8 @@ log <- tempdir()
 id <- "uuid"
 id
 
-log_data <- data.frame(id = id, model = "ricker", r = r, K = K, C = NA, sigma_g = sigma_g, sigma_m = sigma_m)
+log_data <- data.frame(id = id, model = "ricker", r = r, K = K, C = NA,
+                       sigma_g = sigma_g, sigma_m = sigma_m, noise = "lognormal")
 alpha <- sarsop(m$transition, m$observation, m$reward, discount, precision = 10,
                 log_dir = log, log_data = log_data)
 
