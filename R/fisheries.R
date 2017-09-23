@@ -72,8 +72,8 @@ prob <- function(states, mu, sigma, noise = "lognormal"){
     x <- dlnorm(states, meanlog, sigma)
     N <- plnorm(states[n_s], meanlog, sigma)
   } else if(noise == "normal"){
-    x <- pmax(dlnorm(states, mu, sigma), 0)
-    N <- plnorm(states[n_s], mu, sigma)
+    x <- pmax(dnorm(states, mu, sigma), 0)
+    N <- pnorm(states[n_s], mu, sigma)
   } else if(noise == "uniform"){
     x <- dunif(states, mu * (1 - sigma), mu * (1 + sigma))
     N <- punif(states[n_s], mu * (1 - sigma), mu * (1 + sigma))
