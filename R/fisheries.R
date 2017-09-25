@@ -73,9 +73,9 @@ prob <- function(states, mu, sigma, noise = "lognormal"){
     N <- plnorm(states[n_s], meanlog, sigma)
   } else if(noise == "normal"){
     x <- dnorm(states, mu, sigma)
+    ## Pile negative density onto boundary
     negs <- dnorm(-states[-1], mu, sigma)
     x[1] <- x[1] + sum(negs)
-    x <- pmax(p, 0)
     N <- pnorm(states[n_s], mu, sigma)
   } else if(noise == "uniform"){
     x <- dunif(states, mu * (1 - sigma), mu * (1 + sigma))
