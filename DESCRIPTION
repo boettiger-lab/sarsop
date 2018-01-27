@@ -18,5 +18,6 @@ Suggests: testthat,
     roxygen2,
     knitr,
     tidyverse,
-    covr
+    covr,
+    rticles
 VignetteBuilder: knitr
