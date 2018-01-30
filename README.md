@@ -1,5 +1,5 @@
 
-[![Build Status](https://travis-ci.org/boettiger-lab/sarsop.svg?branch=master)](https://travis-ci.org/boettiger-lab/sarsop) [![Build status](https://ci.appveyor.com/api/projects/status/mpa5qevipe47gafx/branch/master?svg=true)](https://ci.appveyor.com/project/boettiger-lab/boettiger-lab/branch/master) [![Coverage Status](https://img.shields.io/codecov/c/github/boettiger-lab/sarsop/master.svg)](https://codecov.io/github/boettiger-lab/sarsop?branch=master) [![Project Status: Active – The project has reached a stable, usable state and is being actively developed.](http://www.repostatus.org/badges/latest/active.svg)](http://www.repostatus.org/#active) [![CRAN\_Status\_Badge](http://www.r-pkg.org/badges/version/sarsop)](https://cran.r-project.org/package=sarsop)
+[![Build Status](https://travis-ci.org/boettiger-lab/sarsop.svg?branch=master)](https://travis-ci.org/boettiger-lab/sarsop) [![Build status](https://ci.appveyor.com/api/projects/status/mpa5qevipe47gafx/branch/master?svg=true)](https://ci.appveyor.com/project/boettiger-lab/boettiger-lab/branch/master) [![Coverage Status](https://img.shields.io/codecov/c/github/boettiger-lab/sarsop/master.svg)](https://codecov.io/github/boettiger-lab/sarsop?branch=master) [![Project Status: Active – The project has reached a stable, usable state and is being actively developed.](http://www.repostatus.org/badges/latest/active.svg)](http://www.repostatus.org/#active) [![CRAN\_Status\_Badge](http://www.r-pkg.org/badges/version/sarsop)](https://cran.r-project.org/package=sarsop) [![DOI](https://zenodo.org/badge/56890962.svg)](https://zenodo.org/badge/latestdoi/56890962)
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 SARSOP for R
@@ -103,6 +103,7 @@ ggplot(df, aes(states[state], states[state] - actions[policy])) +
 Simulate management under the POMDP policy:
 
 ``` r
+set.seed(12345)
 x0 <- which.min(abs(states - K))
 Tmax <- 20
 sim <- sim_pomdp(m$transition, m$observation, m$reward, discount, 
