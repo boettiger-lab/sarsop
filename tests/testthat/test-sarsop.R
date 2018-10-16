@@ -17,7 +17,7 @@ f <- function(x, h){
 }
 
 
-test_that("test sarsop", {
+test_that("test sarsop and logging", {
   m <- fisheries_matrices(states, actions, obs,
                           reward_fn, f, sigma_g, sigma_m, noise = "lognormal")
 
@@ -40,11 +40,7 @@ test_that("test sarsop", {
 
   expect_is(sim$df, "data.frame")
 
-})
 
-
-
-test_that("Check logging works", {
   log <- tempdir()
   id <- "uuid"
 
