@@ -37,14 +37,14 @@ pomdpsol <- function(model, output = tempfile(), precision = 1e-3, timeout = NUL
   model <- normalizePath(model, mustWork = TRUE)
   args <- paste(model, "--output", output, "--precision", precision)
 
-  if(!is.null(timeout)) args <- paste(args, "--timeout", timeout)
-  if(!is.null(memory)) args <- paste(args, "--memory", memory)
-  if(!is.null(timeInterval)) args <- paste(args, "--policy-interval", timeInterval)
-  if(!is.null(improvementConstant)) paste(args, "--trial-improvement-factor", improvementConstant)
-  if(randomization) args <- paste(args, "--randomization")
-  if(fast) args <- paste(args, "--fast")
-  exec_program("pomdpsol", args, stdout = stdout, stderr = stderr)
-  parse_sarsop_messages(readLines(stdout))
+  if (!is.null(timeout)) args <- paste(args, "--timeout", timeout)
+  if (!is.null(memory)) args <- paste(args, "--memory", memory)
+  if (!is.null(timeInterval)) args <- paste(args, "--policy-interval", timeInterval)
+  if (!is.null(improvementConstant)) paste(args, "--trial-improvement-factor", improvementConstant)
+  if (randomization) args <- paste(args, "--randomization")
+  if (fast) args <- paste(args, "--fast")
+  std_out <- exec_program("pomdpsol", args, stdout = stdout, stderr = stderr)
+  parse_sarsop_messages(readLines(textConnection(std_out)))
 }
 
 #' @export
