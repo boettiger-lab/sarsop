@@ -14,6 +14,8 @@
 #' @param log_dir pomdpx and policyx files will be saved here, along with a metadata file
 #' @param log_data a data.frame of additional columns to include in the log, such as model parameters. A unique id value for each run
 #' can be provided as one of the columns, otherwise, a globally unique id will be generated.
+#' @param cache should results from the log directory be cached? Default TRUE.
+#' Identical functional calls will quickly return previously cached alpha vectors from file rather than re-running.
 #' @return a matrix of alpha vectors. Column index indicates action associated with the alpha vector, (1:n_actions),
 #'  rows indicate system state, x. Actions for which no alpha vector was found are included as all -Inf, since such actions are
 #'  not optimal regardless of belief, and thus have no corresponding alpha vectors in alpha_action list.
@@ -26,30 +28,38 @@
 #' compute_policy(alpha, transition, observation, reward)
 #' }
 #'
-sarsop <- function(transition, observation, reward, discount,
+sarsop <- function(transition,
+                   observation,
+                   reward,
+                   discount,
                    state_prior = rep(1, dim(observation)[[1]]) / dim(observation)[[1]],
-                   verbose = TRUE, log_dir = tempdir(), log_data = NULL, ...){
-  ## Consider more robust normalization.  Check write-out precision in write_pomdp
-  initial = normalize(state_prior)
+                   verbose = TRUE,
+                   log_dir = tempdir(),
+                   log_data = NULL,
+                   cache = TRUE,
+                   ...){
 
-  ## Use ID given in log_data, if provided
-  if(is.null(log_data) | is.null(log_data$id)){
-    id <- gsub("/", "", tempfile("", tmpdir = ""))
-  } else {
-    id <- log_data$id
-    log_data$id <- NULL
-  }
-
-
-  ## Compute alpha-vectors using SARSOP pomdp algorithm from APPL
+  ## unique id based on arguments specified in function call
+  id <- digest::digest(match.call())
 
   infile <- paste0(log_dir, "/", id,  ".pomdpx")
   outfile <-  paste0(log_dir, "/", id,  ".policyx")
   stdout <-  paste0(log_dir, "/", id,  ".log")
+
+  ## Basically a simple version of memoise with a filesystem cache
+  if (cache && file.exists(outfile)) {
+    return(read_policyx(file = outfile))
+  }
+
+
+
+  ## Consider more robust normalization.  Check the write-out precision in write_pomdp
+  initial = normalize(state_prior)
+  ## Compute alpha-vectors using SARSOP pomdp algorithm from APPL
   write_pomdpx(transition, observation, reward, discount, initial, file = infile)
   status <- pomdpsol(infile, outfile, stdout = stdout, ...)
 
-  if(verbose){
+  if (verbose) {
     message(paste("load time:", status[["load_time_sec"]],
                   "sec, init time:", status[["init_time_sec"]],
                   "sec, run time:", status[["run_time_sec"]],
@@ -59,7 +69,7 @@ sarsop <- function(transition, observation, reward, discount,
 
   alpha <- read_policyx(file = outfile)
 
-  if(!is.null(log_data))
+  if (!is.null(log_data))
     solutions_log(id,
                   metafile = paste0(log_dir, "/meta.csv"),
                   status = status,
