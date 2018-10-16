@@ -1,3 +1,5 @@
+context("sarsop")
+
 
 states <- 0:20
 actions <- states
@@ -15,56 +17,63 @@ f <- function(x, h){
 }
 
 
+test_that("test sarsop", {
+  m <- fisheries_matrices(states, actions, obs,
+                          reward_fn, f, sigma_g, sigma_m, noise = "lognormal")
 
-m <- fisheries_matrices(states, actions, obs, reward_fn, f, sigma_g, sigma_m, noise = "lognormal")
-alpha <- sarsop(m$transition, m$observation, m$reward, discount, precision = 10)
-df <- compute_policy(alpha, m$transition, m$observation, m$reward)
-#ggplot(df, aes(states[state], states[state] - actions[policy])) + geom_line() + geom_point()
+  alpha <- sarsop(m$transition, m$observation,
+                  m$reward, discount, precision = 10)
+  df <- compute_policy(alpha, m$transition, m$observation, m$reward)
 
-## for coverage of the unif case
-unif_example <- fisheries_matrices(states, actions, obs, reward_fn, f, sigma_g, sigma_m, noise = "uniform")
-#alpha <- sarsop(m$transition, m$observation, m$reward, discount, precision = .05)
-#df <- compute_policy(alpha, m$transition, m$observation, m$reward)
-#ggplot(df, aes(states[state], states[state] - actions[policy])) + geom_line() + geom_point()
+  ## for coverage of the unif case
+  unif_example <- fisheries_matrices(states, actions, obs,
+                                     reward_fn, f, sigma_g,
+                                     sigma_m, noise = "uniform")
 
+  sim <- sim_pomdp(m$transition,
+                   m$observation,
+                   m$reward,
+                   discount = discount,
+                   x0 = 15, Tmax = 20,
+                   alpha = alpha)
 
-sim <- sim_pomdp(m$transition, m$observation, m$reward, discount = discount,
-                      x0 = 15, Tmax = 20, alpha = alpha)
+  expect_is(sim$df, "data.frame")
 
-
-## Check logging works
-log <- tempdir()
-
-id <- "uuid"
-id
-
-log_data <- data.frame(id = id, model = "ricker", r = r, K = K, C = NA,
-                       sigma_g = sigma_g, sigma_m = sigma_m, noise = "lognormal")
-alpha <- sarsop(m$transition, m$observation, m$reward, discount, precision = 10,
-                log_dir = log, log_data = log_data)
-
-## Query by id, making sure we get the model results we just ran
-meta <- meta_from_log(parameters = data.frame(id = id), log_dir = log)[1,]
-
-## Query by parameter values, getting all results from library that match the desired conditions
-meta <- meta_from_log(parameters = data.frame(model = "ricker", r = r), log_dir = log)[1,]
-
-## Note, these return a list since meta may have multiple models
-stored_alpha <- alphas_from_log(meta, log_dir = log)
-stored_model <- models_from_log(meta)
-
-
-testthat::expect_identical(alpha, stored_alpha[[1]])
-
-
-testthat::expect_equivalent(m, stored_model[[1]])
-
-stored_fs <- f_from_log(meta)
-
-testthat::test_that("we get the same f functions back", {
-  skip_on_travis()
-  testthat::expect_equivalent(stored_fs[[1]], f)
 })
 
 
-unlink(paste(log, list.files(log), sep="/"))
+
+test_that("Check logging works", {
+  log <- tempdir()
+  id <- "uuid"
+
+  log_data <- data.frame(id = id, model = "ricker", r = r, K = K, C = NA,
+                         sigma_g = sigma_g, sigma_m = sigma_m, noise = "lognormal")
+  alpha <- sarsop(m$transition, m$observation, m$reward, discount, precision = 10,
+                  log_dir = log, log_data = log_data)
+
+  ## Query by id, making sure we get the model results we just ran
+  meta <- meta_from_log(parameters = data.frame(id = id), log_dir = log)[1,]
+
+  ## Query by parameter values, getting all results from library that match the desired conditions
+  meta <- meta_from_log(parameters = data.frame(model = "ricker", r = r), log_dir = log)[1,]
+
+  ## Note, these return a list since meta may have multiple models
+  stored_alpha <- alphas_from_log(meta, log_dir = log)
+  stored_model <- models_from_log(meta)
+
+
+  testthat::expect_identical(alpha, stored_alpha[[1]])
+  testthat::expect_equivalent(m, stored_model[[1]])
+  stored_fs <- f_from_log(meta)
+
+
+  testthat::test_that("we get the same f functions back", {
+    skip_on_travis()
+    testthat::expect_equivalent(stored_fs[[1]], f)
+  })
+
+})
+
+unlink(paste(log, list.files(log), sep = "/"))
+

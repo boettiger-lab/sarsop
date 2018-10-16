@@ -1,4 +1,6 @@
+context("longer tests")
 
+test_that("we can run longer test successfully", {
 
 states <- seq(0,1, length=50)
 actions <- states
@@ -18,8 +20,12 @@ f <- function(x, h){
 
 
 
-m <- fisheries_matrices(states, actions, obs, reward_fn, f, sigma_g, sigma_m, noise = "lognormal")
+m <- fisheries_matrices(states, actions, obs, reward_fn, f,
+                        sigma_g, sigma_m, noise = "lognormal")
 
-alpha <- sarsop(m$transition, m$observation, m$reward, discount, precision = .1, timeout=10)
+alpha <- sarsop(m$transition, m$observation, m$reward,
+                discount, precision = .1, timeout = 10)
 df <- compute_policy(alpha, m$transition, m$observation, m$reward)
-#' ggplot2::ggplot(df, ggplot2::aes(states[state], states[state] - actions[policy])) + ggplot2::geom_line() + ggplot2::geom_point()
+
+
+})
