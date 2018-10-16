@@ -16,8 +16,7 @@
 #' @param improvementConstant Use improvementConstant as the trial improvement factor in the sampling algorithm. At the default of 0.5, a trial terminates at a belief when the gap between its upper and lower bound is 0.5 of the current precision at the initial belief.
 #' @param timeInterval Use timeInterval as the time interval between two consecutive write-out of policy files. If this is not specified, pomdpsol only writes out a policy file upon termination.
 #' @param stdout a filename where pomdp run statistics will be stored
-#' @param stderr where output to 'stderr', see \code{\link{system2}}. Use \code{FALSE}
-#' to suppress output.
+#' @param stderr currently ignored.
 #' @examples
 #' \donttest{
 #' model <- system.file("models/example.pomdp", package = "sarsop")
@@ -37,14 +36,14 @@ pomdpsol <- function(model, output = tempfile(), precision = 1e-3, timeout = NUL
   model <- normalizePath(model, mustWork = TRUE)
   args <- paste(model, "--output", output, "--precision", precision)
 
-  if(!is.null(timeout)) args <- paste(args, "--timeout", timeout)
-  if(!is.null(memory)) args <- paste(args, "--memory", memory)
-  if(!is.null(timeInterval)) args <- paste(args, "--policy-interval", timeInterval)
-  if(!is.null(improvementConstant)) paste(args, "--trial-improvement-factor", improvementConstant)
-  if(randomization) args <- paste(args, "--randomization")
-  if(fast) args <- paste(args, "--fast")
-  exec_program("pomdpsol", args, stdout = stdout, stderr = stderr)
-  parse_sarsop_messages(readLines(stdout))
+  if (!is.null(timeout)) args <- paste(args, "--timeout", timeout)
+  if (!is.null(memory)) args <- paste(args, "--memory", memory)
+  if (!is.null(timeInterval)) args <- paste(args, "--policy-interval", timeInterval)
+  if (!is.null(improvementConstant)) paste(args, "--trial-improvement-factor", improvementConstant)
+  if (randomization) args <- paste(args, "--randomization")
+  if (fast) args <- paste(args, "--fast")
+  std_out <- exec_program("pomdpsol", args, stdout = stdout, stderr = stderr)
+  parse_sarsop_messages(readLines(textConnection(std_out)))
 }
 
 #' @export
@@ -95,16 +94,20 @@ pomdpconvert <- function(model, stdout = ""){
   return(model)
 }
 
+#' @importFrom processx run
 exec_program <- function(program, args, stdout, stderr = "") {
-  if(identical(.Platform$OS.type, "windows")){
+  if (identical(.Platform$OS.type, "windows")) {
     program <- paste0(.Platform$r_arch, "/", program, ".exe")
   }
   binpath <- system.file("bin", package = "sarsop")
   path <- normalizePath(file.path(binpath, program), mustWork = TRUE)
-  res <- system2(path, args, stdout = stdout, stderr = stderr)
-  if(res != 0) stop("Call to ", program, " failed with error: ", res)
-  return(res)
+
+  res <- processx::run(path, strsplit(args, " ")[[1]], spinner = TRUE)
+  if (res$status != 0) stop("Call to ", program, " failed with error: ", res)
+  return(res$stdout)
 }
+
+
 
 
 parse_key_value <- function(key, txt){
