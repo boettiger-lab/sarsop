@@ -3,7 +3,10 @@ Type: Package
 Title: Approximate POMDP Planning Software
 Version: 0.5.0
 Authors@R: c(
-    person("Carl", "Boettiger", email = "cboettig@gmail.com", role = c("cre", "aut")),
+    person("Carl", "Boettiger", 
+            email = "cboettig@gmail.com", 
+            role = c("cre", "aut"),
+            comment = c(ORCID = "0000-0002-1642-628X")),
     person("Jeroen", "Ooms", email = "jeroen.ooms@stat.ucla.edu", role = c("aut")),
     person("Milad", "Memarzadeh", role = "aut"))
 Description: APPL is a C++ toolkit for approximate POMDP planning. Originally, it is
