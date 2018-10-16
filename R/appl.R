@@ -95,16 +95,20 @@ pomdpconvert <- function(model, stdout = ""){
   return(model)
 }
 
+#' @importFrom processx run
 exec_program <- function(program, args, stdout, stderr = "") {
-  if(identical(.Platform$OS.type, "windows")){
+  if (identical(.Platform$OS.type, "windows")) {
     program <- paste0(.Platform$r_arch, "/", program, ".exe")
   }
   binpath <- system.file("bin", package = "sarsop")
   path <- normalizePath(file.path(binpath, program), mustWork = TRUE)
-  res <- system2(path, args, stdout = stdout, stderr = stderr)
-  if(res != 0) stop("Call to ", program, " failed with error: ", res)
-  return(res)
+
+  res <- processx::run(path, strsplit(args, " ")[[1]], spinner = TRUE)
+  if (res$status != 0) stop("Call to ", program, " failed with error: ", res)
+  return(res$stdout)
 }
+
+
 
 
 parse_key_value <- function(key, txt){

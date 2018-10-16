@@ -10,16 +10,16 @@
 \alias{pomdpconvert}
 \title{APPL wrappers}
 \usage{
-pomdpsol(model, output = tempfile(), precision = 0.001, timeout = NULL,
-  fast = FALSE, randomization = FALSE, memory = NULL,
-  improvementConstant = NULL, timeInterval = NULL, stdout = tempfile(),
-  stderr = tempfile())
+pomdpsol(model, output = tempfile(), precision = 0.001,
+  timeout = NULL, fast = FALSE, randomization = FALSE,
+  memory = NULL, improvementConstant = NULL, timeInterval = NULL,
+  stdout = tempfile(), stderr = tempfile())
 
 polgraph(model, policy, output = tempfile(), max_depth = 3,
   max_branches = 10, min_prob = 0.001, stdout = "")
 
-pomdpsim(model, policy, output = tempfile(), steps = 100, simulations = 3,
-  stdout = "")
+pomdpsim(model, policy, output = tempfile(), steps = 100,
+  simulations = 3, stdout = "")
 
 pomdpeval(model, policy, output = tempfile(), steps = 100,
   simulations = 3, stdout = "")
