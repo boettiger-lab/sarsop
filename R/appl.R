@@ -44,6 +44,7 @@ pomdpsol <- function(model, output = tempfile(), precision = 1e-3, timeout = NUL
   if (fast) args <- paste(args, "--fast")
   exec_program("pomdpsol", args, stdout = stdout, stderr = stderr)
   parse_sarsop_messages(readLines(stdout))
+
 }
 
 #' @export
@@ -108,6 +109,7 @@ exec_program <- function(program, args, stdout, stderr = "") {
   if (!stdout) return(res$status)
   writeLines(res$stdout, stdout)
   res$status
+
 }
 
 
