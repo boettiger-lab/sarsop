@@ -16,8 +16,7 @@
 #' @param improvementConstant Use improvementConstant as the trial improvement factor in the sampling algorithm. At the default of 0.5, a trial terminates at a belief when the gap between its upper and lower bound is 0.5 of the current precision at the initial belief.
 #' @param timeInterval Use timeInterval as the time interval between two consecutive write-out of policy files. If this is not specified, pomdpsol only writes out a policy file upon termination.
 #' @param stdout a filename where pomdp run statistics will be stored
-#' @param stderr where output to 'stderr', see \code{\link{system2}}. Use \code{FALSE}
-#' to suppress output.
+#' @param stderr currently ignored.
 #' @examples
 #' \donttest{
 #' model <- system.file("models/example.pomdp", package = "sarsop")

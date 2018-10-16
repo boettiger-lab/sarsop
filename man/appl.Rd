@@ -47,8 +47,7 @@ pomdpconvert(model, stdout = "")
 
 \item{stdout}{a filename where pomdp run statistics will be stored}
 
-\item{stderr}{where output to 'stderr', see \code{\link{system2}}. Use \code{FALSE}
-to suppress output.}
+\item{stderr}{currently ignored.}
 
 \item{policy}{file/path to the policy file}
 
