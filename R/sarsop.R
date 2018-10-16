@@ -60,7 +60,7 @@ sarsop <- function(transition,
   write_pomdpx(transition, observation, reward, discount, initial, file = infile)
   status <- pomdpsol(infile, outfile, stdout = stdout, ...)
 
-  if (verbose) {
+  if (verbose && is.list(status)) {
     message(paste("load time:", status[["load_time_sec"]],
                   "sec, init time:", status[["init_time_sec"]],
                   "sec, run time:", status[["run_time_sec"]],

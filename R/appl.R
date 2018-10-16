@@ -42,7 +42,11 @@ pomdpsol <- function(model, output = tempfile(), precision = 1e-3, timeout = NUL
   if (!is.null(improvementConstant)) paste(args, "--trial-improvement-factor", improvementConstant)
   if (randomization) args <- paste(args, "--randomization")
   if (fast) args <- paste(args, "--fast")
-  exec_program("pomdpsol", args, stdout = stdout, stderr = stderr)
+  res <- exec_program("pomdpsol", args, stdout = stdout, stderr = stderr)
+
+  if (!is.character(stdout)) return(res)
+  if (!file.exists(stdout)) return(res)
+
   parse_sarsop_messages(readLines(stdout))
 
 }
