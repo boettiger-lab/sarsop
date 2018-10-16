@@ -6,7 +6,7 @@
 \usage{
 sarsop(transition, observation, reward, discount, state_prior = rep(1,
   dim(observation)[[1]])/dim(observation)[[1]], verbose = TRUE,
-  log_dir = tempdir(), log_data = NULL, ...)
+  log_dir = tempdir(), log_data = NULL, cache = TRUE, ...)
 }
 \arguments{
 \item{transition}{Transition matrix, dimension n_s x n_s x n_a}
@@ -25,6 +25,9 @@ sarsop(transition, observation, reward, discount, state_prior = rep(1,
 
 \item{log_data}{a data.frame of additional columns to include in the log, such as model parameters. A unique id value for each run
 can be provided as one of the columns, otherwise, a globally unique id will be generated.}
+
+\item{cache}{should results from the log directory be cached? Default TRUE.
+Identical functional calls will quickly return previously cached alpha vectors from file rather than re-running.}
 
 \item{...}{additional arguments to \code{\link{appl}}.}
 }
