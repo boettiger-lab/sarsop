@@ -42,8 +42,8 @@ pomdpsol <- function(model, output = tempfile(), precision = 1e-3, timeout = NUL
   if (!is.null(improvementConstant)) paste(args, "--trial-improvement-factor", improvementConstant)
   if (randomization) args <- paste(args, "--randomization")
   if (fast) args <- paste(args, "--fast")
-  std_out <- exec_program("pomdpsol", args, stdout = stdout, stderr = stderr)
-  parse_sarsop_messages(readLines(textConnection(std_out)))
+  exec_program("pomdpsol", args, stdout = stdout, stderr = stderr)
+  parse_sarsop_messages(readLines(stdout))
 }
 
 #' @export
@@ -104,7 +104,10 @@ exec_program <- function(program, args, stdout, stderr = "") {
 
   res <- processx::run(path, strsplit(args, " ")[[1]], spinner = TRUE)
   if (res$status != 0) stop("Call to ", program, " failed with error: ", res)
-  return(res$stdout)
+  if (stdout == "") return(res$status)
+
+  writeLines(res$stdout, stdout)
+  res$status
 }
 
 
