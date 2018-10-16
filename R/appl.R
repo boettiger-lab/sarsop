@@ -110,7 +110,7 @@ exec_program <- function(program, args, stdout, stderr = "") {
   res <- processx::run(path, strsplit(args, " ")[[1]], spinner = TRUE)
   if (res$status != 0) stop("Call to ", program, " failed with error: ", res)
   if (stdout == "") return(res$status)
-  if (!stdout) return(res$status)
+  if (!is.character(stdout)) return(res$status)
   writeLines(res$stdout, stdout)
   res$status
 
