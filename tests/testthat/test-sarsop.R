@@ -74,7 +74,8 @@ test_that("Check logging works", {
     testthat::expect_equivalent(stored_fs[[1]], f)
   })
 
+  unlink(paste(log, list.files(log), sep = "/"))
+
 })
 
-unlink(paste(log, list.files(log), sep = "/"))
 
