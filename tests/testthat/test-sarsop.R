@@ -22,7 +22,8 @@ test_that("test sarsop", {
                           reward_fn, f, sigma_g, sigma_m, noise = "lognormal")
 
   alpha <- sarsop(m$transition, m$observation,
-                  m$reward, discount, precision = 10)
+                  m$reward, discount, precision = 10,
+                  cache = FALSE)
   df <- compute_policy(alpha, m$transition, m$observation, m$reward)
 
   ## for coverage of the unif case
@@ -50,7 +51,7 @@ test_that("Check logging works", {
   log_data <- data.frame(id = id, model = "ricker", r = r, K = K, C = NA,
                          sigma_g = sigma_g, sigma_m = sigma_m, noise = "lognormal")
   alpha <- sarsop(m$transition, m$observation, m$reward, discount, precision = 10,
-                  log_dir = log, log_data = log_data)
+                  log_dir = log, log_data = log_data, cache = FALSE)
 
   ## Query by id, making sure we get the model results we just ran
   meta <- meta_from_log(parameters = data.frame(id = id), log_dir = log)[1,]
