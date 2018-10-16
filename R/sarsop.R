@@ -20,6 +20,7 @@
 #'  rows indicate system state, x. Actions for which no alpha vector was found are included as all -Inf, since such actions are
 #'  not optimal regardless of belief, and thus have no corresponding alpha vectors in alpha_action list.
 #' @export
+#' @importFrom digest digest
 #' @examples
 #' \dontrun{ ## Takes > 5s
 #' ## Use example code to generate matrices for pomdp problem:
