@@ -14,3 +14,7 @@ src/pomdpsol
 inst/bin
 *.RData
 inst/doc
+*.log
+*.policyx
+*.pomdpx
+meta.csv

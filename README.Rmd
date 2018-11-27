@@ -2,6 +2,7 @@
 output: github_document
 ---
 
+
 [![Build Status](https://travis-ci.org/boettiger-lab/sarsop.svg?branch=master)](https://travis-ci.org/boettiger-lab/sarsop) 
 [![AppVeyor build status](https://ci.appveyor.com/api/projects/status/github/boettiger-lab/sarsop?branch=master&svg=true)](https://ci.appveyor.com/project/boettiger-lab/sarsop)
 [![Coverage Status](https://img.shields.io/codecov/c/github/boettiger-lab/sarsop/master.svg)](https://codecov.io/github/boettiger-lab/sarsop?branch=master)
@@ -85,13 +86,13 @@ simplicity we assume only a log-normal measurement error independent of the acti
 
 Long-running code to actually compute the solution.  
 
-```{r eval=FALSE}
+```{r }
 log_data <- data.frame(id = "vignette", model = "ricker", 
                        r = r, K = K, sigma_g = sigma_g, sigma_m = sigma_m)
 
 alpha <- sarsop(m$transition, m$observation, m$reward, discount, 
                 log_data = log_data, log_dir = ".",
-                precision = .1, timeout = 20000)
+                precision = .1, timeout = 200) # run much longer for more precise curve
 ```
 
 `sarsop` logs solution files in a specificied directory, along with a metadata table.  The metadata table makes it convenient to store multiple solutions in a single directory, and load the desired solution later using it's id or matching metatata. We can read this solution from the log where it is stored.  (For convience, a cached copy of the above long-running result is shipped with the package.)
@@ -167,6 +168,3 @@ using MS Visual Studio:
  - http://web.stanford.edu/group/sisl/resources/appl-0.96-win-win32.zip
  - http://web.stanford.edu/group/sisl/resources/appl-0.96-win-x64.zip
 
------------
-
-[![](http://ropensci.org/public_images/github_footer.png)](http://ropensci.org)
