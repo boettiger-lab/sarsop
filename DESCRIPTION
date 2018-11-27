@@ -1,7 +1,7 @@
 Package: sarsop
 Type: Package
 Title: Approximate POMDP Planning Software
-Version: 0.5.0
+Version: 0.6.0
 Authors@R: c(
     person("Carl", "Boettiger", 
             email = "cboettig@gmail.com", 
@@ -14,7 +14,7 @@ Description: APPL is a C++ toolkit for approximate POMDP planning. Originally, i
 License: GPL-2
 URL: https://github.com/boettiger-lab/sarsop
 BugReports: https://github.com/cboettig/sarsop/issues
-RoxygenNote: 6.1.0
+RoxygenNote: 6.1.1
 Imports: xml2,
     parallel,
     processx,

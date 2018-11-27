@@ -17,6 +17,7 @@
 #' @param timeInterval Use timeInterval as the time interval between two consecutive write-out of policy files. If this is not specified, pomdpsol only writes out a policy file upon termination.
 #' @param stdout a filename where pomdp run statistics will be stored
 #' @param stderr currently ignored.
+#' @param spinner should we show a spinner while sarsop is running?
 #' @examples
 #' \donttest{
 #' model <- system.file("models/example.pomdp", package = "sarsop")
@@ -32,7 +33,7 @@ pomdpsol <- function(model, output = tempfile(), precision = 1e-3, timeout = NUL
                      fast = FALSE, randomization = FALSE, memory = NULL,
                      improvementConstant = NULL, timeInterval = NULL,
                      stdout = tempfile(),
-                     stderr = tempfile()){
+                     stderr = tempfile(), spinner = TRUE){
   model <- normalizePath(model, mustWork = TRUE)
   args <- paste(model, "--output", output, "--precision", precision)
 
@@ -42,7 +43,7 @@ pomdpsol <- function(model, output = tempfile(), precision = 1e-3, timeout = NUL
   if (!is.null(improvementConstant)) paste(args, "--trial-improvement-factor", improvementConstant)
   if (randomization) args <- paste(args, "--randomization")
   if (fast) args <- paste(args, "--fast")
-  res <- exec_program("pomdpsol", args, stdout = stdout, stderr = stderr)
+  res <- exec_program("pomdpsol", args, stdout = stdout, stderr = stderr, spinner = spinner)
 
   if (!is.character(stdout)) return(res)
   if (!file.exists(stdout)) return(res)
@@ -57,13 +58,14 @@ pomdpsol <- function(model, output = tempfile(), precision = 1e-3, timeout = NUL
 #' @param max_depth the maximum horizon of the generated policy graph
 #' @param max_branches maximum number of branches to show in the policy graph
 #' @param min_prob the minimum probability threshold for a branch to be shown in the policy graph
+#' @param spinner should we show a spinner while sarsop is running?
 polgraph <- function(model, policy, output = tempfile(), max_depth = 3, max_branches = 10,
-                     min_prob = 0.001, stdout = ""){
+                     min_prob = 0.001, stdout = "", spinner = TRUE){
   model <- normalizePath(model, mustWork = TRUE)
   policy <- normalizePath(policy, mustWork = TRUE)
   args <- paste(model, "--policy-file", policy, "--policy-graph", output, "--graph-max-depth", max_depth,
     "--graph-max-branch", max_branches, "--graph-min-prob", min_prob)
-  exec_program("polgraph", args, stdout = stdout)
+  exec_program("polgraph", args, stdout = stdout, spinner = spinner)
   return(output)
 }
 
@@ -71,43 +73,43 @@ polgraph <- function(model, policy, output = tempfile(), max_depth = 3, max_bran
 #' @rdname appl
 #' @param steps number of steps for each simulation run
 #' @param simulations as the number of simulation runs
-pomdpsim <- function(model, policy, output = tempfile(), steps = 100, simulations = 3, stdout = ""){
+pomdpsim <- function(model, policy, output = tempfile(), steps = 100, simulations = 3, stdout = "", spinner = TRUE){
   model <- normalizePath(model, mustWork = TRUE)
   policy <- normalizePath(policy, mustWork = TRUE)
   args <- paste(model, "--policy-file", policy, "--output-file", output, "--simLen",
     steps, "--simNum", simulations)
-  exec_program("pomdpsim", args, stdout = stdout)
+  exec_program("pomdpsim", args, stdout = stdout, spinner = spinner)
   return(output)
 }
 
 #' @export
 #' @rdname appl
-pomdpeval <- function(model, policy, output = tempfile(), steps = 100, simulations = 3, stdout = ""){
+pomdpeval <- function(model, policy, output = tempfile(), steps = 100, simulations = 3, stdout = "", spinner = TRUE){
   model <- normalizePath(model, mustWork = TRUE)
   policy <- normalizePath(policy, mustWork = TRUE)
   args <- paste(model, "--policy-file", policy, "--output-file", output, "--simLen",
                 steps, "--simNum", simulations)
-  exec_program("pomdpeval", args, stdout = stdout)
+  exec_program("pomdpeval", args, stdout = stdout, spinner = spinner)
   return(output)
 }
 
 #' @export
 #' @rdname appl
-pomdpconvert <- function(model, stdout = ""){
+pomdpconvert <- function(model, stdout = "", spinner = TRUE){
   model <- normalizePath(model, mustWork = TRUE)
-  exec_program("pomdpconvert", model)
+  exec_program("pomdpconvert", model, spinner = spinner)
   return(model)
 }
 
 #' @importFrom processx run
-exec_program <- function(program, args, stdout, stderr = "") {
+exec_program <- function(program, args, stdout, stderr = "", spinner = TRUE) {
   if (identical(.Platform$OS.type, "windows")) {
     program <- paste0(.Platform$r_arch, "/", program, ".exe")
   }
   binpath <- system.file("bin", package = "sarsop")
   path <- normalizePath(file.path(binpath, program), mustWork = TRUE)
 
-  res <- processx::run(path, strsplit(args, " ")[[1]], spinner = TRUE)
+  res <- processx::run(path, strsplit(args, " ")[[1]], spinner = spinner)
   if (res$status != 0) stop("Call to ", program, " failed with error: ", res)
   if (stdout == "") return(res$status)
   if (!is.character(stdout)) return(res$status)

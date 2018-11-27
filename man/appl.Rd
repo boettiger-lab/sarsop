@@ -13,18 +13,18 @@
 pomdpsol(model, output = tempfile(), precision = 0.001,
   timeout = NULL, fast = FALSE, randomization = FALSE,
   memory = NULL, improvementConstant = NULL, timeInterval = NULL,
-  stdout = tempfile(), stderr = tempfile())
+  stdout = tempfile(), stderr = tempfile(), spinner = TRUE)
 
 polgraph(model, policy, output = tempfile(), max_depth = 3,
-  max_branches = 10, min_prob = 0.001, stdout = "")
+  max_branches = 10, min_prob = 0.001, stdout = "", spinner = TRUE)
 
 pomdpsim(model, policy, output = tempfile(), steps = 100,
-  simulations = 3, stdout = "")
+  simulations = 3, stdout = "", spinner = TRUE)
 
 pomdpeval(model, policy, output = tempfile(), steps = 100,
-  simulations = 3, stdout = "")
+  simulations = 3, stdout = "", spinner = TRUE)
 
-pomdpconvert(model, stdout = "")
+pomdpconvert(model, stdout = "", spinner = TRUE)
 }
 \arguments{
 \item{model}{file/path to the \code{pomdp} model file}
@@ -49,6 +49,8 @@ pomdpconvert(model, stdout = "")
 
 \item{stderr}{currently ignored.}
 
+\item{spinner}{should we show a spinner while sarsop is running?}
+
 \item{policy}{file/path to the policy file}
 
 \item{max_depth}{the maximum horizon of the generated policy graph}
@@ -60,6 +62,8 @@ pomdpconvert(model, stdout = "")
 \item{steps}{number of steps for each simulation run}
 
 \item{simulations}{as the number of simulation runs}
+
+\item{spinner}{should we show a spinner while sarsop is running?}
 }
 \description{
 Wrappers for the APPL executables. The \code{pomdpsol} function solves a model

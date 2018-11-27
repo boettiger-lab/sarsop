@@ -2,7 +2,8 @@
 output: github_document
 ---
 
-[![Build Status](https://travis-ci.org/boettiger-lab/sarsop.svg?branch=master)](https://travis-ci.org/boettiger-lab/sarsop) [![Build status](https://ci.appveyor.com/api/projects/status/mpa5qevipe47gafx/branch/master?svg=true)](https://ci.appveyor.com/project/boettiger-lab/boettiger-lab/branch/master)
+[![Build Status](https://travis-ci.org/boettiger-lab/sarsop.svg?branch=master)](https://travis-ci.org/boettiger-lab/sarsop) 
+[![AppVeyor build status](https://ci.appveyor.com/api/projects/status/github/boettiger-lab/sarsop?branch=master&svg=true)](https://ci.appveyor.com/project/boettiger-lab/sarsop)
 [![Coverage Status](https://img.shields.io/codecov/c/github/boettiger-lab/sarsop/master.svg)](https://codecov.io/github/boettiger-lab/sarsop?branch=master)
 [![Project Status: Active – The project has reached a stable, usable state and is being actively developed.](http://www.repostatus.org/badges/latest/active.svg)](http://www.repostatus.org/#active)
 [![CRAN_Status_Badge](http://www.r-pkg.org/badges/version/sarsop)](https://cran.r-project.org/package=sarsop)
