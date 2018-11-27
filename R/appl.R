@@ -58,7 +58,6 @@ pomdpsol <- function(model, output = tempfile(), precision = 1e-3, timeout = NUL
 #' @param max_depth the maximum horizon of the generated policy graph
 #' @param max_branches maximum number of branches to show in the policy graph
 #' @param min_prob the minimum probability threshold for a branch to be shown in the policy graph
-#' @param spinner should we show a spinner while sarsop is running?
 polgraph <- function(model, policy, output = tempfile(), max_depth = 3, max_branches = 10,
                      min_prob = 0.001, stdout = "", spinner = TRUE){
   model <- normalizePath(model, mustWork = TRUE)

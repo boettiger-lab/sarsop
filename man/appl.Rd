@@ -62,8 +62,6 @@ pomdpconvert(model, stdout = "", spinner = TRUE)
 \item{steps}{number of steps for each simulation run}
 
 \item{simulations}{as the number of simulation runs}
-
-\item{spinner}{should we show a spinner while sarsop is running?}
 }
 \description{
 Wrappers for the APPL executables. The \code{pomdpsol} function solves a model
