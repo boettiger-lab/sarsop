@@ -5,4 +5,5 @@
   the previous behavior where sarsop runs would be set to `eval=FALSE` and results
   manually loaded from cache with `meta_from_log` and `alpha_from_log`.  Just call
   `sarsop` again to get load output from cache, if parameters (call signature) matches
-  any available cache that will be loaded instead.  
+  any available cache that will be loaded instead. 
+* Uses `processx` to control execution of sarsop C++ code.
