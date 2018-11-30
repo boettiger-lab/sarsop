@@ -2,7 +2,7 @@
 [![Build
 Status](https://travis-ci.org/boettiger-lab/sarsop.svg?branch=master)](https://travis-ci.org/boettiger-lab/sarsop)
 [![AppVeyor build
-status](https://ci.appveyor.com/api/projects/status/github/boettiger-lab/sarsop?branch=master&svg=true)](https://ci.appveyor.com/project/boettiger-lab/sarsop)
+status](https://ci.appveyor.com/api/projects/status/github/boettiger-lab/sarsop?branch=master&svg=true)](https://ci.appveyor.com/project/cboettig/sarsop)
 [![Coverage
 Status](https://img.shields.io/codecov/c/github/boettiger-lab/sarsop/master.svg)](https://codecov.io/github/boettiger-lab/sarsop?branch=master)
 [![Project Status: Active – The project has reached a stable, usable
