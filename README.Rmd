@@ -16,7 +16,8 @@ output: github_document
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>",
-  fig.path = "README-"
+  fig.path = "man/figures/README-",
+  out.width = "100%"
 )
 ```
 
@@ -87,23 +88,13 @@ simplicity we assume only a log-normal measurement error independent of the acti
 Long-running code to actually compute the solution.  
 
 ```{r }
-log_data <- data.frame(id = "vignette", model = "ricker", 
-                       r = r, K = K, sigma_g = sigma_g, sigma_m = sigma_m)
-
+log_dir <- "inst/extdata/vignette" 
 alpha <- sarsop(m$transition, m$observation, m$reward, discount, 
-                log_data = log_data, log_dir = ".",
+                log_dir = log_dir,
                 precision = .1, timeout = 200) # run much longer for more precise curve
 ```
 
-`sarsop` logs solution files in a specificied directory, along with a metadata table.  The metadata table makes it convenient to store multiple solutions in a single directory, and load the desired solution later using it's id or matching metatata. We can read this solution from the log where it is stored.  (For convience, a cached copy of the above long-running result is shipped with the package.)
-
-```{r}
-log_dir <- system.file("ext-data/vignette-log", package = "sarsop")
-meta <- meta_from_log(data.frame(id = "vignette"), log_dir)
-
-alpha <- alphas_from_log(meta, log_dir)[[1]] ## bc fn returns a list with all matching alphas, we need [[1]]
-```
-
+`sarsop` logs solution files in the specified directory, along with a metadata table.  The metadata table makes it convenient to store multiple solutions in a single directory, and load the desired solution later using it's id or matching metatata. We can read this solution from the log where it is stored. 
 
 Given the model matrices and `alpha` vectors.  Start belief with a uniform prior over states, compute & plot policy:
 

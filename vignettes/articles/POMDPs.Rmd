@@ -33,7 +33,7 @@ knitr::opts_chunk$set(fig.width = 7)
 
 Making decisions in the face of uncertainty and change over time is a challenge fundamental to both ecological management and our understanding of the behavior and evolution. @Marescot2013 provides an excellent review of the importance of such Markov Decision Processes (MDP) in ecological and conservation problems.  In a Markov Decision Process, an agent must repeatedly choose (the decision) among a set of possible actions given observations about their environment and uncertainty about the future (the Markov Process).  The ecological literature frequently refers to such problems by a common solution method, Stochastic Dynamic Programming (SDP) [@Chades2014], which has long been a workhorse of research in both behavorial ecology and natural resource management [@Mangel1985; @Mangel1988].  Examples include patch selection, reproductive allocation in behavioral ecology [@Mangel1988], and in conservation include optimal harvests and invasive species [@Clark1976].  
 
-A limitation of the MDP approach is the assumption that the agent is able to perfectly observe the current state of the system prior to each decision.  It is this assumption that exploits the "Markov" property, in which future states of a system are stochastic but depend only on knowledge of the current state.  If there are aspects of the state which the agent cannot observe, or can observe only to within some measurement error, the system is described as "Partially Observed Markov Decision Process," or POMDP.[^1] A partially observed system is not Markovian with respect to the observed states: that is, given only current observations, we cannot assign probabilities to future observations.  In fact, those probabilities depend on all previous observations, not just the most recent set.  However, a clever trick provides a way forward. Instead of focusing on the true state or the observed state, we focus on the agent's belief about a state: i.e., the probability the agent assigns to the system being in each possible state. A partially observed system is Markovian with respect to the agent's beliefs.  Provided some rule about how an agent updates their belief about a state in response to an additional observation, such as assuming a Bayesian updating of belief, we can assign the necessary probabilities.  Unfortunately, this trick increases the computational difficulty of the problem immensely.  Instead of considering a process defined over $1, ..., N$ states, we must now consider a problem that has $M$ possible belief levels for each of the $N$ states (where we have broken continuous probabilities into $M$ possible levels for simplicity).  
+A limitation of the MDP approach is the assumption that the agent is able to perfectly observe the current state of the system prior to each decision.  It is this assumption that exploits the *Markov* property, in which future states of a system are stochastic but depend only on knowledge of the current state.  If there are dimensions of the state which the agent cannot observe, or can observe only to within some measurement error, the system is described as "Partially Observed Markov Decision Process," or POMDP.[^1] A partially observed system is not Markovian with respect to the observed states: that is, given only current observations, we cannot assign probabilities to future observations.  In fact, those probabilities depend on all previous observations, not just the most recent set.  However, a clever trick provides a way forward. Instead of focusing on the true state or the observed state, we focus on the agent's belief about a state: i.e., the probability the agent assigns to the system being in each possible state. A partially observed system is Markovian with respect to the agent's beliefs.  Provided some rule about how an agent updates their belief about a state in response to an additional observation, such as assuming a Bayesian updating of belief, we can assign the necessary probabilities.  Unfortunately, this trick increases the computational difficulty of the problem immensely.  Instead of considering a process defined over $1, ..., N$ states, we must now consider a problem that has $M$ possible belief levels for each of the $N$ states (where we have broken continuous probabilities into $M$ possible levels for simplicity).  
 
 [^1]: A Partially Observed Markov Decision Process, POMDP is closely related to a partially observed Markov process, sometimes called a Hidden Markov Model (HMM), just as an MDP is closely related to a Markov Model (MM).  It is important to keep in mind the key distinction: the "Decision" part of the Decision process, which introduces an agent and their decisions (actions) on top of the Markov process description of the underlying state dynamics.  The goal of research in HMM problems is typically to infer parameters of the Markov process.  It is essentially to realize that even once these parameters are known (e.g. inferred as probability distributions or even known with perfect certainty), the task of choosing the optimal decisions is far from trivial, and can only be determined by solving the subsequent POMDP problem.  In this way, MDP and POMDP tools are not alternatives to statistical research for inferring MD and POMP from data, but rather complements which describe how to turn those inferences into policies / decision strategies that optimize a given objective. 
 
@@ -116,73 +116,3 @@ In the POMDP problem, the true state is unknown, but measured imperfectly.  We i
 an observation matrix to indicate the probabilty of observing a particular state $y$ given
 a true state $x$. In principle this could depend on the action taken as well, though for 
 simplicity we assume only a log-normal measurement error independent of the action chosen.
-
-Long-running code to actually compute the solution.  
-
-```{r eval=FALSE}
-
-log_data <- data.frame(id = "vignette", model = "ricker", 
-                       r = r, K = K, sigma_g = sigma_g, sigma_m = sigma_m)
-
-alpha <- sarsop(m$transition, m$observation, m$reward, discount, 
-                log_data = log_data, log_dir = ".",
-                precision = .1, timeout = 20000)
-```
-
-`sarsop` logs solution files in a specificied directory, along with a metadata table.  The metadata table makes it convenient to store multiple solutions in a single directory, and load the desired solution later using it's id or matching metatata. We can read this solution from the log where it is stored:
-
-```{r}
-log_dir <- system.file("ext-data/vignette-log", package = "sarsop")
-meta <- meta_from_log(data.frame(id = "vignette"), log_dir)
-
-alpha <- alphas_from_log(meta, log_dir)[[1]] ## bc fn returns a list with all matching alphas, we need [[1]]
-```
-
-
-Given the model matrices and `alpha` vectors.  Start belief with a uniform prior over states, compute & plot policy:
-
-```{r}
-state_prior = rep(1, length(states)) / length(states) # initial belief
-df <- compute_policy(alpha, m$transition, m$observation, m$reward,  state_prior)
-
-## append deterministic action
-df$det <- det_action
-```
-
-```{r}
-ggplot(df, aes(states[state], states[state] - actions[policy])) + 
-  geom_line(col='blue') + 
-  geom_line(aes(y = states[state] - actions[det]), col='red')
-```
-
-
-Simulate management under the POMDP policy:
-
-```{r}
-x0 <- which.min(abs(states - K))
-Tmax <- 20
-sim <- sim_pomdp(m$transition, m$observation, m$reward, discount, 
-                 state_prior, x0 = x0, Tmax = Tmax, alpha = alpha)
-```
-
-Plot simulation data:
-
-```{r}
-sim$df %>%
-  select(-value) %>%
-  mutate(state = states[state], action = actions[action], obs = observations[obs]) %>%
-  gather(variable, stock, -time) %>%
-  ggplot(aes(time, stock, color = variable)) + geom_line()  + geom_point()
-```
-
-Plot belief evolution:
-
-```{r}
-sim$state_posterior %>% 
-  data.frame(time = 1:Tmax) %>%
-  filter(time %in% seq(1,Tmax, by = 2)) %>%
-  gather(state, probability, -time, factor_key =TRUE) %>% 
-  mutate(state = as.numeric(state)) %>% 
-  ggplot(aes(state, probability, group = time, alpha = time)) + geom_line()
-```
-
