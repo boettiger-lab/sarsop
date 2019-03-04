@@ -1,0 +1,309 @@
+---
+title: "Solving Partially Observed Markov Decision Processes in conservation problems"
+date: "`r Sys.Date()`"
+author:
+  - name: Carl Boettiger
+    email: cboettig@berkeley.edu
+    affiliation: ucb
+    footnote: Corresponding Author
+  - name: Jeroen Ooms
+    affiliation: ucb
+  - name: Milad Memarzadeh
+    affiliation: ucb
+address:
+  - code: ucb
+    address: "ESPM Department, University of California, 130 Mulford Hall Berkeley, CA 94720-3114, USA"
+abstract: |
+   This is the abstract.
+ 
+   It consists of two paragraphs.
+ 
+bibliography: refs.bib
+output: rticles::elsevier_article
+vignette: >
+  %\VignetteIndexEntry{Solving POMDPs with sarsop R package}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r}
+knitr::opts_chunk$set(fig.width = 7)
+```
+
+
+
+Interestingly in this case, introducing uncertainty into the extinction rate can shift the threshold (up or down, depending on mean, otherwise averages out).    
+
+To Do: add nonlinear model from Dee, $v_t = a r_t ^ b$, where utility still only gets applied to critical subset. Does observation uncertainty matter? 
+
+
+```{r message = FALSE}
+library(tidyverse)   # plotting and data manipulation
+library(MDPtoolbox)  # MDP solution
+library(sarsop)      # POMDP solution (focal package)
+```
+
+### Parameters
+
+Minor modification adds randomness to expected number of extinctions per year.  Poisson probability of extinctions with mean 1 overall means a slightly *lower* threshold for the critical number of species to protect.  (Uncertainty -> less cautious because some probability that not acting will not result in no species loss).
+
+Further modification could set a Poisson probability for loss at a range of actions, so that more costly actions can decrease but not eliminate the possibility of species loss. 
+
+```{r}
+S_0 <- 40 # total/maximum number of species
+states <- 0:S_0
+# Actions: protect = 1, not protect = 0
+actions <- c(0,1)
+
+V = 90 #value of ES
+C = 80 #costs incurred by protection
+K = 10 #number of critical species
+discount = 0.95 ## Discount factor
+
+E = 1 ## Expected number of extinctions per year
+```
+
+### Analytic calculation of optimal species to protect
+
+```{r}
+if(V > C){
+  Sbar <- ceiling((K * ((V / C) - discount)) / (1 - discount))
+  Sbar <- min(Sbar, S_0) # Optimal can't be larger than total number
+} else { 
+   Sbar <- 0
+}
+Sbar
+```
+
+### Transistion Probabilities in State Space
+
+Transisition probabilities in natural space (i.e. state is just number of species; not the vector index indicating both number of species and whether or not critical species are included.)
+
+```{r}
+## DEVELOPER NOTE: Not vectorized, but should be
+
+# prob state -> next_state given action
+prob_transition <- function(state, next_state, action){
+  ## Exactly one species is lost every time no action is taken
+  ##next_state == pmax(state - (1 - action), 0)
+  
+  ## no protection means no losses
+  if(action == 1)
+    return(as.numeric(state == next_state))
+  
+  ## species gone are gone forever
+  if(state == 0 & next_state == 0)
+    return(1)
+  
+  ## Cannot gain species!
+  if(state < next_state)
+    return(0)
+  
+    
+  n_lost <- max(state - next_state,0)
+  # dbinom(n_lost, state, E)  ## all species have equal prob extinction.  stupid since this becomes (1-E)^K
+  dpois(n_lost, E)
+
+
+  #as.numeric(n_lost == 1)  ## same as deterministic loss of 1 speices per time
+   
+  ## fixed probabilities of losing 0, 1, or 2 species
+#  switch (as.character(n_lost),
+#    "0" = .10,
+#    "1" = .70,
+#    "2" = 0.10,
+#    "3" = 0.10,
+#    0) 
+}
+
+# probability we have critical species after this transition
+prob_critical <- function(state, next_state, action){
+  
+  ## Generalize to transitions that lose multiple species
+    n_lost <- max(state - next_state,0)
+    max( ((state - K) / state) ^ n_lost , 0)
+  
+}
+```
+
+Transition probabilities given state space vector.  State space is length $2 \cdot (1 + S_0)$, since possible states include having any of $\{0 \dots S_0\}$ species, either including or not including all critical species.  (technically could be $2 \cdot (1+S_0) - K$, since we could drop the states corresponding to having all critical species but having less than K species.  But that is just more cumbersome to index; we can include these 'unreachable' states and pay computational cost for simpler logical implementation)
+
+```{r}
+## DEVELOPER NOTE not vectorized, but should be
+
+## state space is 2*n: we have 1:n species, & either have all critical species or we not
+n = length(states)
+ss <- 1:(2*n)
+parse_ss <- function(x){
+  if(x <= n) return(list(s = x, r = TRUE))
+  else return(list(s = x - n, r = FALSE))
+}
+
+## Transitions work on idices, not state values
+f_ss <- function(ST, ST1, a_t){
+  if(a_t == 1){
+    return(as.numeric(ST == ST1))
+  } else {
+    
+    st = parse_ss(ST)
+    st1 = parse_ss(ST1)
+    
+    P_trans <- prob_transition(states[st$s], states[st1$s], a_t)
+    P_crit <- prob_critical(states[st$s], states[st1$s], a_t)
+    
+    if(st$r){ ## Currently have all critical species
+      if(st1$r) ## keep critical species with prob
+        out <- P_trans * P_crit
+      else
+        out <- P_trans * (1 - P_crit)
+    } else {    ## Already lost a critical species
+      if(st1$r) ## Cannot get them back
+        out <- 0
+      else ## Dynamics
+        out <- P_trans
+    }
+    as.numeric(out)
+  }
+}
+
+```
+
+
+### Utility Function (in state space)
+
+```{r}
+ss_utility <- function(s_t, a_t, V, C, K) {
+  
+  S <- parse_ss(s_t)
+  
+  if (a_t == 1) { ## "Protect"
+    if (S$s < K) {
+      return(-C)
+    } else {
+      return(V * S$r - C)  
+    }
+  } else if (a_t == 0) {  ## Do nothing
+    if (S$s < K) {
+      return(0)
+    } else {
+      ## Do we get the benefit that year?
+      #return(V * S$r) 
+      return((  (S$s - K) / S$s) * V * S$r )
+    }
+  }
+}
+```
+
+### Calculate Transition Matrix (P) and Utility Matrix (U)
+
+```{r}
+m = length(ss)
+P <- array(dim=c(m,m,2))
+U <- array(dim=c(m,2))
+for(i in 1:m){
+  for(k in 1:length(actions)){
+    U[i,k] <- ss_utility(ss[i], actions[k], V, C, K)
+    for(j in 1:m){  
+     P[i,j,k] <- f_ss(ss[i], ss[j], actions[k]) 
+    }
+  }
+}
+
+rowNorm <- function(M){
+  N <- rowSums(M)
+  M / N
+}
+
+P = list(rowNorm( Matrix(P[,,1]) ), rowNorm( Matrix(P[,,2])))
+```
+
+```{r include=FALSE}
+stopifnot( sum( (rowSums(P[[1]]) - 1)) < 1e-9 )  ## some tolerance
+stopifnot( all(1 == rowSums(P[[2]])  ) )
+```
+
+### Value Iteration
+
+
+```{r}
+o <- mdp_value_iteration(P, U, discount)
+
+optimal <- max(which(o$policy[1:n]==2))
+optimal
+#stopifnot(Sbar == optimal)
+```
+
+### Results
+
+```{r}
+df <- tibble(states, actions = actions[o$policy][1:n], value = o$V[1:n])
+df %>% ggplot(aes(states, actions)) + geom_point()
+```
+
+```{r}
+df %>% ggplot(aes(states, value)) + geom_point()
+```
+
+
+-----------
+
+
+## Observation Uncertainty
+
+This initial analysis assumes that the manager has perfect knowledge of the size of the current species pool. If there is a (known) probability of observing a given species, than the total number of species present is a binomial random variable instead: 
+
+```{r}
+# install_github("boettiger_lab/sarsop")
+library(sarsop)
+```
+
+```{r}
+prob_obs <- .5
+obs1 <- array(0,dim = c(n,n))
+
+for(i in 1:n){
+#   obs1[i,] <- c(1, rep(0, n-1))
+#  obs1[i,] <- dbinom(states, states[i]+10, prob_obs)
+    obs1[,i] <- dbinom(states, states[i]+10, prob_obs)
+
+    }
+obs1 <- rowNorm(obs1)
+zeros <- array(0,dim = c(n,n))
+obs_ss <- cbind(
+  rbind(obs1, zeros),
+  rbind(zeros, obs1))
+
+stopifnot( sum( (rowSums(obs_ss) - 1)) < 1e-9 )  ## some tolerance
+
+obs <- array(dim = c(m,m,2))
+tran <- array(dim = c(m,m,2))
+for(i in 1:length(actions)){
+  obs[,,i] <- obs_ss
+  tran[,,i] <- as.matrix(P[[i]])
+}
+
+state_prior = rep(1, m) / m # initial belief
+```
+
+```{r}
+dir.create("sarsop-cache")
+alpha <- sarsop(tran, obs, U, discount, precision = .1, 
+                state_prior = state_prior, timeout = 500,
+                log_dir = "sarsop-cache")
+```
+
+
+```{r}
+df <- compute_policy(alpha, tran, obs, U)
+```
+
+
+```{r}
+df %>% filter(state <= n) %>% ggplot(aes(state, actions[policy])) + geom_point()
+```
+
+**This makes us more cautious**
+
+```{r}
+max(which(df$policy[1:n]==2))
+```
