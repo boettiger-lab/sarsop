@@ -30,3 +30,4 @@ inst/doc/*.png
 ^README-.*\.png$
 ^codecov\.yml$
 ^docs
+^articles/$

@@ -95,27 +95,18 @@ independent of the action chosen.
 Long-running code to actually compute the solution.
 
 ``` r
-log_data <- data.frame(id = "vignette", model = "ricker", 
-                       r = r, K = K, sigma_g = sigma_g, sigma_m = sigma_m)
-
+log_dir <- "inst/extdata/vignette" 
 alpha <- sarsop(m$transition, m$observation, m$reward, discount, 
-                log_data = log_data, log_dir = ".",
+                log_dir = log_dir,
                 precision = .1, timeout = 200) # run much longer for more precise curve
+#> load time: 2.23 sec, init time: 6.38 sec, run time: 230.21 sec, final precision: 0.125493 end_condition:   Preset timeout reached
 ```
 
-`sarsop` logs solution files in a specificied directory, along with a
+`sarsop` logs solution files in the specified directory, along with a
 metadata table. The metadata table makes it convenient to store multiple
 solutions in a single directory, and load the desired solution later
 using it’s id or matching metatata. We can read this solution from the
-log where it is stored. (For convience, a cached copy of the above
-long-running result is shipped with the package.)
-
-``` r
-log_dir <- system.file("ext-data/vignette-log", package = "sarsop")
-meta <- meta_from_log(data.frame(id = "vignette"), log_dir)
-
-alpha <- alphas_from_log(meta, log_dir)[[1]] ## bc fn returns a list with all matching alphas, we need [[1]]
-```
+log where it is stored.
 
 Given the model matrices and `alpha` vectors. Start belief with a
 uniform prior over states, compute & plot policy:
@@ -134,7 +125,7 @@ ggplot(df, aes(states[state], states[state] - actions[policy])) +
   geom_line(aes(y = states[state] - actions[det]), col='red')
 ```
 
-![](README-unnamed-chunk-9-1.png)<!-- -->
+<img src="man/figures/README-unnamed-chunk-8-1.png" width="100%" />
 
 Simulate management under the POMDP policy:
 
@@ -156,7 +147,7 @@ sim$df %>%
   ggplot(aes(time, stock, color = variable)) + geom_line()  + geom_point()
 ```
 
-![](README-unnamed-chunk-11-1.png)<!-- -->
+<img src="man/figures/README-unnamed-chunk-10-1.png" width="100%" />
 
 Plot belief evolution:
 
@@ -169,7 +160,7 @@ sim$state_posterior %>%
   ggplot(aes(state, probability, group = time, alpha = time)) + geom_line()
 ```
 
-![](README-unnamed-chunk-12-1.png)<!-- -->
+<img src="man/figures/README-unnamed-chunk-11-1.png" width="100%" />
 
 -----
 

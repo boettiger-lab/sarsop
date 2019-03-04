@@ -9,8 +9,11 @@ Authors@R: c(
             comment = c(ORCID = "0000-0002-1642-628X")),
     person("Jeroen", "Ooms", email = "jeroen.ooms@stat.ucla.edu", role = c("aut")),
     person("Milad", "Memarzadeh", role = "aut"))
-Description: APPL is a C++ toolkit for approximate POMDP planning. Originally, it is
-    based on the SARSOP algorithm for solving discrete POMDPs.
+Description: A toolkit for Partially Observed Markov Decision Processes (POMDP). Provides
+    bindings to C++ libraries implementing the algorithm SARSOP (Successive Approximations
+    of the Reachable Space under Optimal Policies and described in Kurniawati (2008),
+    <doi:10.15607/RSS.2008.IV.009>.  This package also provides a high-level interface
+    for generating, solving and simulating POMDP problems and their solutions.
 License: GPL-2
 URL: https://github.com/boettiger-lab/sarsop
 BugReports: https://github.com/cboettig/sarsop/issues
@@ -19,10 +22,14 @@ Imports: xml2,
     parallel,
     processx,
     digest
-Suggests: testthat,
+Suggests: 
+    testthat,
     roxygen2,
     knitr,
     tidyverse,
     covr,
-    rticles
+    rticles,
+    spelling
 VignetteBuilder: knitr
+Encoding: UTF-8
+Language: en-US
