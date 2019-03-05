@@ -2,6 +2,7 @@
 
 export(alphas_from_log)
 export(compute_policy)
+export(es_matrices)
 export(f_from_log)
 export(fisheries_matrices)
 export(hindcast_pomdp)

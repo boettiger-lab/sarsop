@@ -14,6 +14,8 @@
 #' @return list of transitition matrix, observation matrix, and reward matrix
 #' @details assumes log-normally distributed observation errors and process errors
 #' @importFrom stats dlnorm plnorm dunif punif dnorm pnorm
+#' @examples
+#' m <- fisheries_matrices()
 #' @export
 fisheries_matrices <- function(states = 0:20,
          actions = states,
