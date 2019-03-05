@@ -54,7 +54,7 @@ es_matrices <-
   }
 
   #state_prior = rep(1, m) / m # initial belief
-  observation <- observation_matrix(states, actions, prob_obs = 0.5, tol=1e9)
+  observation <- observation_matrix(states, actions, prob_obs = 0.5, tol = 1e-9)
 
 
   list("transition" = transition, "observation" = observation, "reward" = U)
@@ -120,7 +120,7 @@ prob_critical <- function(state, next_state, action, K){
 
 
 ## Observation matrix
-observation_matrix <- function(states, actions, prob_obs = 0.5, tol=1e-9){
+observation_matrix <- function(states, actions, prob_obs = 0.5, tol = 1e-9){
 
   n <- length(states)
   m <- 2*n
@@ -137,7 +137,7 @@ observation_matrix <- function(states, actions, prob_obs = 0.5, tol=1e-9){
     rbind(obs1, zeros),
     rbind(zeros, obs1))
 
-  ## validation, with some tolernace
+  ## validation, with some tolerance
   stopifnot( sum( (rowSums(obs_ss) - 1)) < tol )  ## some tolerance
 
   obs <- array(dim = c(m,m,2))
