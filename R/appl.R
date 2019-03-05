@@ -7,21 +7,36 @@
 #' @rdname appl
 #' @aliases appl SARSOP
 #' @param model file/path to the \code{pomdp} model file
-#' @param output file/path of the output policy file. This is also returned by the function.
-#' @param fast logical, default FALSE. use fast (but very picky) alternate parser for .pomdp files.
-#' @param precision targetPrecision. Set targetPrecision as the target precision in solution quality; run ends when target precision is reached. The target precision is 1e-3 by default.
-#' @param randomization logical, default FALSE. Turn on randomization for the sampling algorithm.
-#' @param timeout Use timeLimit as the timeout in seconds.  If running time exceeds the specified value, pomdpsol writes out a policy and terminates. There is no time limit by default.
-#' @param memory Use memoryLimit as the memory limit in MB. No memory limit by default.  If memory usage exceeds the specified value, pomdpsol writes out a policy and terminates. Set the value to be less than physical memory to avoid swapping.
-#' @param improvementConstant Use improvementConstant as the trial improvement factor in the sampling algorithm. At the default of 0.5, a trial terminates at a belief when the gap between its upper and lower bound is 0.5 of the current precision at the initial belief.
-#' @param timeInterval Use timeInterval as the time interval between two consecutive write-out of policy files. If this is not specified, pomdpsol only writes out a policy file upon termination.
+#' @param output file/path of the output policy file. This is also returned
+#'  by the function.
+#' @param fast logical, default FALSE. use fast (but very picky) alternate
+#'  parser for .pomdp files.
+#' @param precision targetPrecision. Set targetPrecision as the target precision
+#'  in solution quality; run ends when target precision is reached. The target
+#'   precision is 1e-3 by default.
+#' @param randomization logical, default FALSE. Turn on randomization for the
+#'  sampling algorithm.
+#' @param timeout Use timeLimit as the timeout in seconds.  If running time
+#'  exceeds the specified value, pomdpsol writes out a policy and terminates.
+#'  There is no time limit by default.
+#' @param memory Use memoryLimit as the memory limit in MB. No memory limit
+#'  by default.  If memory usage exceeds the specified value, pomdpsol writes
+#'  out a policy and terminates. Set the value to be less than physical memory
+#'  to avoid swapping.
+#' @param improvementConstant Use improvementConstant as the trial improvement
+#'  factor in the sampling algorithm. At the default of 0.5, a trial terminates
+#'  at a belief when the gap between its upper and lower bound is 0.5 of the
+#'  current precision at the initial belief.
+#' @param timeInterval Use timeInterval as the time interval between two
+#' consecutive write-out of policy files. If this is not specified, pomdpsol
+#' only writes out a policy file upon termination.
 #' @param stdout a filename where pomdp run statistics will be stored
 #' @param stderr currently ignored.
 #' @param spinner should we show a spinner while sarsop is running?
 #' @examples
 #' \donttest{
-#' model <- system.file("models/example.pomdp", package = "sarsop")
-#' policy <- tempfile()
+#' model <- base::system.file("models", "example.pomdp", package = "sarsop")
+#' policy <- tempfile(fileext = ".policyx")
 #' pomdpsol(model, output = policy, timeout = 1)
 #'
 #' # Other tools
@@ -105,7 +120,7 @@ exec_program <- function(program, args, stdout, stderr = "", spinner = TRUE) {
   if (identical(.Platform$OS.type, "windows")) {
     program <- paste0(.Platform$r_arch, "/", program, ".exe")
   }
-  binpath <- system.file("bin", package = "sarsop")
+  binpath <- system.file("bin", package = "sarsop", mustWork = TRUE)
   path <- normalizePath(file.path(binpath, program), mustWork = TRUE)
 
   res <- processx::run(path, strsplit(args, " ")[[1]], spinner = spinner)
