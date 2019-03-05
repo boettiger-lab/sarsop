@@ -2,7 +2,7 @@
 % Please edit documentation in R/eco_services.R
 \name{es_matrices}
 \alias{es_matrices}
-\title{es_matrices}
+\title{Matrices for the ecosystem services model}
 \usage{
 es_matrices(S_0 = 40, V = 90, C = 80, K = 10, E = 1,
   discount = 0.95)

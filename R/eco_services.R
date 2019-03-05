@@ -1,6 +1,5 @@
-# FIXME consider generating these matrices from a NIMBLE style model declaration (plus reward function)
 
-#' es_matrices
+#' Matrices for the ecosystem services model
 #'
 #' initialize the transition, observation, and reward matrices given a transition function, reward function, and state space
 #' @param S_0 total / maximum number of species possible
@@ -10,6 +9,8 @@
 #' @param E the expected number of extinctions per hear
 #' @param discount the discount factor.
 #' @return list of transitition matrix, observation matrix, and reward matrix
+#' @importFrom stats dbinom dpois
+#' @importFrom Matrix Matrix rowSums
 #' @examples
 #' m <- es_matrices()
 #' @export
@@ -53,7 +54,7 @@ es_matrices <-
   }
 
   #state_prior = rep(1, m) / m # initial belief
-  observation <- observation_matrix(states, prob_obs = 0.5, tol=1e9)
+  observation <- observation_matrix(states, actions, prob_obs = 0.5, tol=1e9)
 
 
   list("transition" = transition, "observation" = observation, "reward" = U)
@@ -119,7 +120,7 @@ prob_critical <- function(state, next_state, action, K){
 
 
 ## Observation matrix
-observation_matrix <- function(states, prob_obs = 0.5, tol=1e-9){
+observation_matrix <- function(states, actions, prob_obs = 0.5, tol=1e-9){
 
   n <- length(states)
   m <- 2*n
