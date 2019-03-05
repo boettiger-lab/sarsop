@@ -24,7 +24,8 @@ es_matrices(S_0 = 40, V = 90, C = 80, K = 10, E = 1,
 list of transitition matrix, observation matrix, and reward matrix
 }
 \description{
-initialize the transition, observation, and reward matrices given a transition function, reward function, and state space
+initialize the transition, observation, and reward matrices
+ given a transition function, reward function, and state space
 }
 \examples{
 m <- es_matrices()

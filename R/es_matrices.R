@@ -1,7 +1,8 @@
 
 #' Matrices for the ecosystem services model
 #'
-#' initialize the transition, observation, and reward matrices given a transition function, reward function, and state space
+#' initialize the transition, observation, and reward matrices
+#'  given a transition function, reward function, and state space
 #' @param S_0 total / maximum number of species possible
 #' @param V value of the ecosystem services
 #' @param C cost incurred in protecting the ecosystem
@@ -16,19 +17,19 @@
 #' @export
 es_matrices <-
   function(S_0 = 40, # total/maximum number of species
-           V = 90, # value of ES
-           C = 80, # costs incurred by protection
-           K = 10, # number of critical species
-           E = 1,  # Expected number of extinctions per year
-           discount = 0.95  # Discount factor
+             V = 90, # value of ES
+             C = 80, # costs incurred by protection
+             K = 10, # number of critical species
+             E = 1,  # Expected number of extinctions per year
+      discount = 0.95  # Discount factor
   ){
 
   states <- 0:S_0
   # Actions: protect = 1, not protect = 0
   actions <- c(0,1)
 
-
-  ## state space is 2*n: we have 1:n species, & either have all critical species or we not
+  ## state space is 2*n: we have 1:n species,
+  ## & either have all critical species or we not
   n = length(states)
   ss <- 1:(2*n)
 
@@ -54,7 +55,8 @@ es_matrices <-
   }
 
   #state_prior = rep(1, m) / m # initial belief
-  observation <- observation_matrix(states, actions, prob_obs = 0.5, tol = 1e-9)
+  observation <- observation_matrix(states, actions,
+                                    prob_obs = 0.5, tol = 1e-9)
 
 
   list("transition" = transition, "observation" = observation, "reward" = U)
@@ -85,11 +87,14 @@ prob_transition <- function(state, next_state, action,
 
   n_lost <- max(state - next_state,0)
 
-  # dbinom(n_lost, state, E)  ## Assumes all species have equal prob extinction.  Trivial since this becomes (1-E)^K
+  ## Assumes all species have equal  prob extinction.
+  ## Trivial since this becomes (1-E)^K
+  # dbinom(n_lost, state, E)
+
   dpois(n_lost, E)
 
-  ## Dee et al assumes deterministic loss rate
-  #as.numeric(n_lost == 1)  ## same as deterministic loss of 1 speices per time
+  ## Dee et al assumes deterministic loss rate:
+  ##  as.numeric(n_lost == 1)
 
   ## Alternative forms
   ## fixed probabilities of losing 0, 1, or 2 species
@@ -111,16 +116,9 @@ prob_critical <- function(state, next_state, action, K){
 }
 
 
-
-
-
-
-
-
-
-
 ## Observation matrix
-observation_matrix <- function(states, actions, prob_obs = 0.5, tol = 1e-9){
+observation_matrix <- function(states, actions,
+                               prob_obs = 0.5, tol = 1e-9){
 
   n <- length(states)
   m <- 2*n
@@ -148,7 +146,8 @@ observation_matrix <- function(states, actions, prob_obs = 0.5, tol = 1e-9){
 }
 
 
-## Define a 1-D state-space from all combinations of # of species + binary indicator of critical species present
+## Define a 1-D state-space from all combinations
+# of number of species + binary indicator of critical species present
 parse_ss <- function(x, n){
   if(x <= n) return(list(s = x, r = TRUE))
   else return(list(s = x - n, r = FALSE))
