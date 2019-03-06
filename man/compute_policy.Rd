@@ -17,7 +17,8 @@ compute_policy(alpha, transition, observation, reward,
 
 \item{reward}{reward matrix, dimension n_s x n_a}
 
-\item{state_prior}{initial belief state, optional, defaults to uniform over states}
+\item{state_prior}{initial belief state, optional, defaults to uniform
+over states}
 
 \item{a_0}{previous action. Belief in state depends not only on observation, but on prior belief of the state and subsequent action that had been taken.}
 }

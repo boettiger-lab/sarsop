@@ -9,7 +9,7 @@
 #' @param K number of critical species
 #' @param E the expected number of extinctions per hear
 #' @param discount the discount factor.
-#' @return list of transitition matrix, observation matrix, and reward matrix
+#' @return list of  transition matrix, observation matrix, and reward matrix
 #' @importFrom stats dbinom dpois
 #' @importFrom Matrix Matrix rowSums
 #' @examples

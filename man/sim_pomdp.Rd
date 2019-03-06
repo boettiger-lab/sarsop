@@ -17,7 +17,8 @@ sim_pomdp(transition, observation, reward, discount, state_prior = rep(1,
 
 \item{discount}{the discount factor}
 
-\item{state_prior}{initial belief state, optional, defaults to uniform over states}
+\item{state_prior}{initial belief state, optional, defaults to uniform
+over states}
 
 \item{x0}{initial state}
 

@@ -27,10 +27,11 @@ fisheries_matrices(states = 0:20, actions = states,
 \item{noise}{distribution for noise, "lognormal" or "uniform"}
 }
 \value{
-list of transitition matrix, observation matrix, and reward matrix
+list of transition matrix, observation matrix, and reward matrix
 }
 \description{
-initialize the transition, observation, and reward matrices given a transition function, reward function, and state space
+initialize the transition, observation, and reward matrices given
+ a transition function, reward function, and state space
 }
 \details{
 assumes log-normally distributed observation errors and process errors

@@ -22,7 +22,8 @@ hindcast_pomdp(transition, observation, reward, discount, obs, action,
 
 \item{action}{the corresponding sequence of actions}
 
-\item{state_prior}{initial belief state, optional, defaults to uniform over states}
+\item{state_prior}{initial belief state, optional, defaults to uniform
+over states}
 
 \item{alpha}{the matrix of alpha vectors returned by \code{\link{sarsop}}}
 
