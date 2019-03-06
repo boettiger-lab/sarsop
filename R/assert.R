@@ -1,5 +1,13 @@
-
-
+#' test the APPL binaries
+#'
+#' Asserts that the C++ binaries for appl have been compiled successfully
+#'
+#' @return Will return TRUE if binaries are installed and can be located
+#'  and executed, and FALSE otherwise.
+#' @export
+#' @examples
+#' assert_has_appl()
+#'
 assert_has_appl <- function(){
   model <- system.file("models", "example.pomdp", package = "sarsop")
   path <- exec_path("pomdpsol")
