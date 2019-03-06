@@ -13,7 +13,7 @@ assert_has_appl <- function(){
   path <- exec_path("pomdpsol")
   args <- paste(model, "--timeout 0.01 --fast")
   res <- processx::run(path, strsplit(args, " ")[[1]],
-                       spinner = FALSE, error_on_status = TRUE)
+                       spinner = FALSE, error_on_status = FALSE)
   res$status == 0
 }
 
