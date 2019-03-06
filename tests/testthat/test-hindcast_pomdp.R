@@ -1,6 +1,9 @@
 context("hindcast_pomdp")
 
 testthat::test_that("we can compute hindcasts to compare pomdp to historical values", {
+
+  assert_testing()
+
   source(system.file("examples/fisheries-ex.R", package = "sarsop"))
   alpha <- sarsop(transition, observation, reward, discount, precision = 10)
   sim <- hindcast_pomdp(transition, observation, reward, discount,

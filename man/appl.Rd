@@ -29,21 +29,36 @@ pomdpconvert(model, stdout = "", spinner = TRUE)
 \arguments{
 \item{model}{file/path to the \code{pomdp} model file}
 
-\item{output}{file/path of the output policy file. This is also returned by the function.}
+\item{output}{file/path of the output policy file. This is also returned
+by the function.}
 
-\item{precision}{targetPrecision. Set targetPrecision as the target precision in solution quality; run ends when target precision is reached. The target precision is 1e-3 by default.}
+\item{precision}{targetPrecision. Set targetPrecision as the target precision
+in solution quality; run ends when target precision is reached. The target
+ precision is 1e-3 by default.}
 
-\item{timeout}{Use timeLimit as the timeout in seconds.  If running time exceeds the specified value, pomdpsol writes out a policy and terminates. There is no time limit by default.}
+\item{timeout}{Use timeLimit as the timeout in seconds.  If running time
+exceeds the specified value, pomdpsol writes out a policy and terminates.
+There is no time limit by default.}
 
-\item{fast}{logical, default FALSE. use fast (but very picky) alternate parser for .pomdp files.}
+\item{fast}{logical, default FALSE. use fast (but very picky) alternate
+parser for .pomdp files.}
 
-\item{randomization}{logical, default FALSE. Turn on randomization for the sampling algorithm.}
+\item{randomization}{logical, default FALSE. Turn on randomization for the
+sampling algorithm.}
 
-\item{memory}{Use memoryLimit as the memory limit in MB. No memory limit by default.  If memory usage exceeds the specified value, pomdpsol writes out a policy and terminates. Set the value to be less than physical memory to avoid swapping.}
+\item{memory}{Use memoryLimit as the memory limit in MB. No memory limit
+by default.  If memory usage exceeds the specified value, pomdpsol writes
+out a policy and terminates. Set the value to be less than physical memory
+to avoid swapping.}
 
-\item{improvementConstant}{Use improvementConstant as the trial improvement factor in the sampling algorithm. At the default of 0.5, a trial terminates at a belief when the gap between its upper and lower bound is 0.5 of the current precision at the initial belief.}
+\item{improvementConstant}{Use improvementConstant as the trial improvement
+factor in the sampling algorithm. At the default of 0.5, a trial terminates
+at a belief when the gap between its upper and lower bound is 0.5 of the
+current precision at the initial belief.}
 
-\item{timeInterval}{Use timeInterval as the time interval between two consecutive write-out of policy files. If this is not specified, pomdpsol only writes out a policy file upon termination.}
+\item{timeInterval}{Use timeInterval as the time interval between two
+consecutive write-out of policy files. If this is not specified, pomdpsol
+only writes out a policy file upon termination.}
 
 \item{stdout}{a filename where pomdp run statistics will be stored}
 
@@ -69,13 +84,17 @@ file and returns the path to the output policy file.
 }
 \examples{
 \donttest{
-model <- system.file("models/example.pomdp", package = "sarsop")
-policy <- tempfile()
-pomdpsol(model, output = policy, timeout = 1)
+
+if(assert_has_appl()){
+  model <- system.file("models", "example.pomdp", package = "sarsop")
+  policy <- tempfile(fileext = ".policyx")
+  pomdpsol(model, output = policy, timeout = 1)
 
 # Other tools
-evaluation <- pomdpeval(model, policy, stdout = FALSE)
-graph <- polgraph(model, policy, stdout = FALSE)
-simulations <- pomdpsim(model, policy, stdout = FALSE)
+  evaluation <- pomdpeval(model, policy, stdout = FALSE)
+  graph <- polgraph(model, policy, stdout = FALSE)
+  simulations <- pomdpsim(model, policy, stdout = FALSE)
+}
+
 }
 }

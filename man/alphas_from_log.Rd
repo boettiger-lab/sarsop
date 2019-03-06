@@ -7,12 +7,15 @@
 alphas_from_log(meta, log_dir = ".")
 }
 \arguments{
-\item{meta}{a data frame containing the log metadata for each set of alpha vectors desired, see \code{\link{meta_from_log}}}
+\item{meta}{a data frame containing the log metadata
+for each set of alpha vectors desired, see
+\code{\link{meta_from_log}}}
 
 \item{log_dir}{path to log directory}
 }
 \value{
-a list with a matrix of alpha vectors for each entry in the provided metadata (as returned by \code{\link{sarsop}}).
+a list with a matrix of alpha vectors for each
+ entry in the provided metadata (as returned by \code{\link{sarsop}}).
 }
 \description{
 alphas_from_log

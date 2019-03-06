@@ -35,14 +35,18 @@
 #' @param spinner should we show a spinner while sarsop is running?
 #' @examples
 #' \donttest{
-#' model <- base::system.file("models", "example.pomdp", package = "sarsop")
-#' policy <- tempfile(fileext = ".policyx")
-#' pomdpsol(model, output = policy, timeout = 1)
+#'
+#' if(assert_has_appl()){
+#'   model <- system.file("models", "example.pomdp", package = "sarsop")
+#'   policy <- tempfile(fileext = ".policyx")
+#'   pomdpsol(model, output = policy, timeout = 1)
 #'
 #' # Other tools
-#' evaluation <- pomdpeval(model, policy, stdout = FALSE)
-#' graph <- polgraph(model, policy, stdout = FALSE)
-#' simulations <- pomdpsim(model, policy, stdout = FALSE)
+#'   evaluation <- pomdpeval(model, policy, stdout = FALSE)
+#'   graph <- polgraph(model, policy, stdout = FALSE)
+#'   simulations <- pomdpsim(model, policy, stdout = FALSE)
+#' }
+#'
 #' }
 pomdpsol <- function(model, output = tempfile(), precision = 1e-3, timeout = NULL,
                      fast = FALSE, randomization = FALSE, memory = NULL,
@@ -116,23 +120,27 @@ pomdpconvert <- function(model, stdout = "", spinner = TRUE){
 }
 
 #' @importFrom processx run
-exec_program <- function(program, args, stdout, stderr = "", spinner = TRUE) {
-  if (identical(.Platform$OS.type, "windows")) {
-    program <- paste0(.Platform$r_arch, "/", program, ".exe")
-  }
-  binpath <- system.file("bin", package = "sarsop", mustWork = TRUE)
-  path <- normalizePath(file.path(binpath, program), mustWork = TRUE)
+exec_program <- function(program, args, stdout, stderr = "",
+                         spinner = TRUE, error_on_status = TRUE) {
 
-  res <- processx::run(path, strsplit(args, " ")[[1]], spinner = spinner)
+  path <- exec_path(program)
+  res <- processx::run(path, strsplit(args, " ")[[1]],
+                       spinner = spinner, error_on_status = error_on_status)
   if (res$status != 0) stop("Call to ", program, " failed with error: ", res)
   if (stdout == "") return(res$status)
   if (!is.character(stdout)) return(res$status)
   writeLines(res$stdout, stdout)
   res$status
-
 }
 
-
+exec_path <- function(program){
+  if (identical(.Platform$OS.type, "windows")) {
+    program <- paste0(.Platform$r_arch, "/", program, ".exe")
+  }
+  binpath <- system.file("bin", package = "sarsop", mustWork = TRUE)
+  path <- normalizePath(file.path(binpath, program), mustWork = TRUE)
+  path
+}
 
 
 parse_key_value <- function(key, txt){

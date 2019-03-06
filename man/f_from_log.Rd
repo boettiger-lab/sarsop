@@ -7,7 +7,9 @@
 f_from_log(meta)
 }
 \arguments{
-\item{meta}{a data frame containing the log metadata for each set of alpha vectors desired, see \code{\link{meta_from_log}}}
+\item{meta}{a data frame containing the log metadata
+for each set of alpha vectors desired, see
+\code{\link{meta_from_log}}}
 }
 \value{
 the growth function associated with the model indicated.

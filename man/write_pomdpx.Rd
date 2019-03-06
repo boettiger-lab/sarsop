@@ -20,12 +20,22 @@ write_pomdpx(P, O, R, gamma, b = rep(1/dim(O)[1], dim(O)[1]),
 
 \item{file}{pomdpx file to create}
 
-\item{digits}{precision to round to before normalizing. Leave at 4 since sarsop seems unable to do more?}
+\item{digits}{precision to round to before normalizing.
+Leave at 4 since sarsop seems unable to do more?}
 
-\item{digits2}{precision to write solution to. Leave at 10, since normalizing requires additional precision}
+\item{digits2}{precision to write solution to. Leave at 10,
+since normalizing requires additional precision}
 
-\item{format}{floating point format, because sarsop parser doesn't seem to know scientific notation}
+\item{format}{floating point format, because sarsop parser
+doesn't seem to know scientific notation}
 }
 \description{
 write_pomdpx
+}
+\examples{
+m <- fisheries_matrices()
+f <- tempfile()
+write_pomdpx(m$transition, m$observation, m$reward, 0.95,
+             file = f)
+
 }

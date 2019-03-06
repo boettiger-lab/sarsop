@@ -33,8 +33,11 @@ meta_from_log <- function(parameters, log_dir = ".", metafile = paste0(log_dir, 
 #' alphas_from_log
 #'
 #' @inheritParams meta_from_log
-#' @param meta a data frame containing the log metadata for each set of alpha vectors desired, see \code{\link{meta_from_log}}
-#' @return a list with a matrix of alpha vectors for each entry in the provided metadata (as returned by \code{\link{sarsop}}).
+#' @param meta a data frame containing the log metadata
+#'  for each set of alpha vectors desired, see
+#'  \code{\link{meta_from_log}}
+#' @return a list with a matrix of alpha vectors for each
+#'  entry in the provided metadata (as returned by \code{\link{sarsop}}).
 #' @export
 #'
 #' @examples \dontrun{
@@ -62,11 +65,13 @@ alphas_from_log <- function(meta, log_dir = "."){
 #' model from log
 #'
 #' @inheritParams alphas_from_log
-#' @param reward_fn a function f(x,a) giving the reward for taking action a given a system in state x.
+#' @param reward_fn a function f(x,a) giving the reward for taking action
+#'  a given a system in state x.
 #' @return a list with an element for each row in the requested meta data frame,
 #' which itself is a list of the three matrices: transition, observation, and
 #' reward, defining the pomdp problem.
-#' @details assumes transition can be determined by the f_from_log function, which is specific to the fisheries example
+#' @details assumes transition can be determined by the f_from_log function,
+#'  which is specific to the fisheries example
 #' @export
 #'
 #' @examples \dontrun{
@@ -164,13 +169,15 @@ f_from_log <- function(meta){
   lapply(1:dim(meta)[[1]], function(i){
     switch(as.character(meta[i,"model"]),
            ricker = ricker(as.numeric(meta[i,"r"]), as.numeric(meta[i,"K"])),
-           allen = allen(as.numeric(meta[i,"r"]), as.numeric(meta[i,"K"]), as.numeric(meta[i, "C"])),
+           allen = allen(as.numeric(meta[i,"r"]),
+                         as.numeric(meta[i,"K"]), as.numeric(meta[i, "C"])),
            bh = bh(as.numeric(meta[i,"r"]), as.numeric(meta[i,"K"]))
     )
   })
 }
 
-## load alpha vectors from the intermediate policy files for testing convergence (if timeInterval is specified in sarsop)
+## load alpha vectors from the intermediate policy files for
+## testing convergence (if timeInterval is specified in sarsop)
 intermediates_from_log <- function(meta, log_dir = "."){
   lapply(1:dim(meta)[[1]], function(i){
     id <- meta[i,"id"]

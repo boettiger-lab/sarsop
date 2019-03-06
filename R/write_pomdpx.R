@@ -7,11 +7,21 @@
 #' @param gamma discount factor
 #' @param b initial belief
 #' @param file pomdpx file to create
-#' @param digits precision to round to before normalizing. Leave at 4 since sarsop seems unable to do more?
-#' @param digits2 precision to write solution to. Leave at 10, since normalizing requires additional precision
-#' @param format floating point format, because sarsop parser doesn't seem to know scientific notation
+#' @param digits precision to round to before normalizing.
+#' Leave at 4 since sarsop seems unable to do more?
+#' @param digits2 precision to write solution to. Leave at 10,
+#'  since normalizing requires additional precision
+#' @param format floating point format, because sarsop parser
+#'  doesn't seem to know scientific notation
 #' @export
-write_pomdpx <- function(P, O, R, gamma, b = rep(1/dim(O)[1], dim(O)[1]), file = "input.pomdpx", digits = 12, digits2 = 12, format = "f"){
+#' @examples
+#' m <- fisheries_matrices()
+#' f <- tempfile()
+#' write_pomdpx(m$transition, m$observation, m$reward, 0.95,
+#'              file = f)
+#'
+write_pomdpx <- function(P, O, R, gamma, b = rep(1/dim(O)[1], dim(O)[1]),
+                         file = "input.pomdpx", digits = 12, digits2 = 12, format = "f"){
 
 
     Num_S <- dim(O)[1]

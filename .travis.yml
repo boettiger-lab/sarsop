@@ -8,6 +8,7 @@ matrix:
   include:
     - dist: trusty
     - dist: xenial
+      warnings_are_errors: false
     - os: osx
       osx_image: xcode10.1
       warnings_are_errors: false
