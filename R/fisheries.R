@@ -2,7 +2,8 @@
 
 #' fisheries_matrices
 #'
-#' initialize the transition, observation, and reward matrices given a transition function, reward function, and state space
+#' initialize the transition, observation, and reward matrices given
+#'  a transition function, reward function, and state space
 #' @param states sequence of possible states
 #' @param actions sequence of possible actions
 #' @param observed_states sequence of possible observations
@@ -11,7 +12,7 @@
 #' @param sigma_g half-width of uniform shock or equivalent variance for log-normal
 #' @param sigma_m half-width of uniform shock or equivalent variance for log-normal
 #' @param noise distribution for noise, "lognormal" or "uniform"
-#' @return list of transitition matrix, observation matrix, and reward matrix
+#' @return list of transition matrix, observation matrix, and reward matrix
 #' @details assumes log-normally distributed observation errors and process errors
 #' @importFrom stats dlnorm plnorm dunif punif dnorm pnorm
 #' @examples

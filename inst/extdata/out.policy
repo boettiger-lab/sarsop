@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Policy version="0.1" type="value" model="/Users/cboettig/Documents/boettiger-lab/sarsop/inst/models/example.pomdp" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="policyx.xsd">
+<AlphaVector vectorLength="24" numObsValue="1" numVectors="2">
+<Vector action="4" obsValue="0">0 1 2 3 4 6.62523 17.7906 41.7699 58.7453 67.1386 71.0273 72.909 73.8639 74.3862 74.6987 74.8892 75.011 75.0889 75.1452 75.1888 75.2141 75.2347 75.2437 75.2513 </Vector>
+<Vector action="0" obsValue="0">0 17.9381 30.7763 47.4451 58.0109 63.8139 66.9152 68.6167 69.5745 70.1407 70.4953 70.7214 70.8706 70.9701 71.0415 71.0938 71.1277 71.1532 71.1657 71.1756 71.1773 71.1758 71.1696 71.1573 </Vector>
+</AlphaVector> </Policy>

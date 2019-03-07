@@ -21,7 +21,7 @@ es_matrices(S_0 = 40, V = 90, C = 80, K = 10, E = 1,
 \item{discount}{the discount factor.}
 }
 \value{
-list of transitition matrix, observation matrix, and reward matrix
+list of  transition matrix, observation matrix, and reward matrix
 }
 \description{
 initialize the transition, observation, and reward matrices

@@ -84,13 +84,17 @@ file and returns the path to the output policy file.
 }
 \examples{
 \donttest{
-model <- base::system.file("models", "example.pomdp", package = "sarsop")
-policy <- tempfile(fileext = ".policyx")
-pomdpsol(model, output = policy, timeout = 1)
+
+if(assert_has_appl()){
+  model <- system.file("models", "example.pomdp", package = "sarsop")
+  policy <- tempfile(fileext = ".policyx")
+  pomdpsol(model, output = policy, timeout = 1)
 
 # Other tools
-evaluation <- pomdpeval(model, policy, stdout = FALSE)
-graph <- polgraph(model, policy, stdout = FALSE)
-simulations <- pomdpsim(model, policy, stdout = FALSE)
+  evaluation <- pomdpeval(model, policy, stdout = FALSE)
+  graph <- polgraph(model, policy, stdout = FALSE)
+  simulations <- pomdpsim(model, policy, stdout = FALSE)
+}
+
 }
 }

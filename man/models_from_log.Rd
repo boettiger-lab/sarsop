@@ -7,9 +7,12 @@
 models_from_log(meta, reward_fn = function(x, h) pmin(x, h))
 }
 \arguments{
-\item{meta}{a data frame containing the log metadata for each set of alpha vectors desired, see \code{\link{meta_from_log}}}
+\item{meta}{a data frame containing the log metadata
+for each set of alpha vectors desired, see
+\code{\link{meta_from_log}}}
 
-\item{reward_fn}{a function f(x,a) giving the reward for taking action a given a system in state x.}
+\item{reward_fn}{a function f(x,a) giving the reward for taking action
+a given a system in state x.}
 }
 \value{
 a list with an element for each row in the requested meta data frame,
@@ -20,7 +23,8 @@ reward, defining the pomdp problem.
 model from log
 }
 \details{
-assumes transition can be determined by the f_from_log function, which is specific to the fisheries example
+assumes transition can be determined by the f_from_log function,
+ which is specific to the fisheries example
 }
 \examples{
 \dontrun{

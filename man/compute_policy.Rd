@@ -17,7 +17,8 @@ compute_policy(alpha, transition, observation, reward,
 
 \item{reward}{reward matrix, dimension n_s x n_a}
 
-\item{state_prior}{initial belief state, optional, defaults to uniform over states}
+\item{state_prior}{initial belief state, optional, defaults to uniform
+over states}
 
 \item{a_0}{previous action. Belief in state depends not only on observation, but on prior belief of the state and subsequent action that had been taken.}
 }
@@ -28,11 +29,12 @@ a data frame providing the optimal policy (choice of action) and corresponding v
 compute_policy
 }
 \examples{
-\dontrun{ ## Takes > 5s
-## Use example code to generate matrices for pomdp problem:
-source(system.file("examples/fisheries-ex.R", package = "sarsop"))
-alpha <- sarsop(transition, observation, reward, discount, precision = 10)
-compute_policy(alpha, transition, observation, reward)
-}
+
+m <- fisheries_matrices()
+\donttest{ ## Takes > 5s
+if(assert_has_appl()){
+alpha <- sarsop(m$transition, m$observation, m$reward, 0.95, precision = 10)
+compute_policy(alpha, m$transition, m$observation, m$reward)
+}}
 
 }

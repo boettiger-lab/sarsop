@@ -22,7 +22,8 @@ hindcast_pomdp(transition, observation, reward, discount, obs, action,
 
 \item{action}{the corresponding sequence of actions}
 
-\item{state_prior}{initial belief state, optional, defaults to uniform over states}
+\item{state_prior}{initial belief state, optional, defaults to uniform
+over states}
 
 \item{alpha}{the matrix of alpha vectors returned by \code{\link{sarsop}}}
 
@@ -36,13 +37,13 @@ and an array containing the posterior belief distribution at each time t
 Compare historical actions to what pomdp recommendation would have been
 }
 \examples{
-\dontrun{ ## Takes > 5s
-## Use example code to generate matrices for pomdp problem:
-source(system.file("examples/fisheries-ex.R", package = "sarsop"))
-alpha <- sarsop(transition, observation, reward, discount, precision = 10)
-sim <- hindcast_pomdp(transition, observation, reward, discount,
+m <- fisheries_matrices()
+\donttest{ ## Takes > 5s
+if(assert_has_appl()){
+alpha <- sarsop(m$transition, m$observation, m$reward, 0.95, precision = 10)
+sim <- hindcast_pomdp(m$transition, m$observation, m$reward, 0.95,
                      obs = rnorm(21, 15, .1), action = rep(1, 21),
                      alpha = alpha)
 
-}
+}}
 }

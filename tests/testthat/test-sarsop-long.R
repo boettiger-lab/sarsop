@@ -2,6 +2,8 @@ context("longer tests")
 
 test_that("we can run longer test successfully", {
 
+  assert_testing()
+
 states <- seq(0,1, length=50)
 actions <- states
 obs <- states

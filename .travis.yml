@@ -1,8 +1,21 @@
-# R for travis: see documentation at https://docs.travis-ci.com/user/languages/r
-
 language: R
-sudo: false
 cache: packages
+latex: false
+pandoc: false
+fortran: false
+
+matrix:
+  include:
+    - dist: trusty
+    - dist: xenial
+      warnings_are_errors: false
+    - os: osx
+      osx_image: xcode10.0
+      warnings_are_errors: false
+    - os: osx
+      osx_image: xcode9.0
+      warnings_are_errors: false
+
 
 after_success:
     - Rscript -e 'covr::codecov(quiet = FALSE)'

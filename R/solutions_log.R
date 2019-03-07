@@ -7,7 +7,9 @@ solutions_log <- function(id,
                           log_data = NULL){
 
   append <- file.exists(metafile)
-  log <- data.frame(id, status, n_states, n_obs, n_actions, discount, date = Sys.time(), log_data)
-  utils::write.table(log, metafile, append = append, col.names = !append, sep=",", quote = FALSE, row.names = FALSE)
+  log <- data.frame(id, status, n_states, n_obs,
+                    n_actions, discount, date = Sys.time(), log_data)
+  utils::write.table(log, metafile, append = append,
+                     col.names = !append, sep=",", quote = FALSE, row.names = FALSE)
 }
 

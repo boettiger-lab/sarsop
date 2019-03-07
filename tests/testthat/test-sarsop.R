@@ -18,6 +18,9 @@ f <- function(x, h){
 
 
 test_that("test sarsop and logging", {
+
+  assert_testing()
+
   m <- fisheries_matrices(states, actions, obs,
                           reward_fn, f, sigma_g, sigma_m, noise = "lognormal")
 

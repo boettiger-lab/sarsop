@@ -1,8 +1,10 @@
 context("sarsop")
 
 
+
 test_that("appl base functions generates a policy", {
 
+  assert_testing()
 
   model <- system.file("models/example.pomdp",  package = "sarsop")
   f <- tempfile()
@@ -15,6 +17,8 @@ test_that("appl base functions generates a policy", {
 })
 
 test_that("pomdpeval, polgraph and pomdpsim run without error", {
+
+  assert_testing()
 
   model <- system.file("models/example.pomdp",  package = "sarsop")
   policy <- tempfile()

@@ -17,7 +17,8 @@ sim_pomdp(transition, observation, reward, discount, state_prior = rep(1,
 
 \item{discount}{the discount factor}
 
-\item{state_prior}{initial belief state, optional, defaults to uniform over states}
+\item{state_prior}{initial belief state, optional, defaults to uniform
+over states}
 
 \item{x0}{initial state}
 
@@ -46,18 +47,14 @@ time t, an observation of the system obs[t] is made, and then action[t] is based
 observation and the given policy, returning (discounted) reward[t].
 }
 \examples{
-\dontrun{ ## Takes > 5s
-## Use example code to generate matrices for pomdp problem:
-source(system.file("examples/fisheries-ex.R", package = "sarsop"))
-alpha <- sarsop(transition, observation, reward, discount, precision = 10)
-sim <- sim_pomdp(transition, observation, reward, discount,
+m <- fisheries_matrices()
+discount <- 0.95
+\donttest{ ## Takes > 5s
+if(assert_has_appl()){
+alpha <- sarsop(m$transition, m$observation, m$reward, discount, precision = 10)
+sim <- sim_pomdp(m$transition, m$observation, m$reward, discount,
                  x0 = 5, Tmax = 20, alpha = alpha)
 
- ## compare to a simple constant harvest policy, with 4 replicates:
- sim <- sim_pomdp(transition, observation, reward, discount,
-                 x0 = 5, Tmax = 20, policy = rep(2, length(states)),
-                 reps = 4)
-
-}
+}}
 
 }
