@@ -55,11 +55,11 @@ endif
 # Compiler
 # ----------------------------------------------------------------------
 
-CC            = gcc
+CC            = clang
 
 CFLAGS        = -g -w -O3 $(INCDIR) -msse2  -mfpmath=sse $(CYGWIN_CFLAGS)  #-DDEBUG_LOG_ON
 
-CXX           = g++
+CXX           = clang++
 
 CXXFLAGS      = $(CFLAGS)
 

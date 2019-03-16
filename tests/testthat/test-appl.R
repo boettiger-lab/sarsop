@@ -28,4 +28,7 @@ test_that("pomdpeval, polgraph and pomdpsim run without error", {
   graph <- polgraph(model, policy, stdout = FALSE)
   simulations <- pomdpsim(model, policy, stdout = FALSE, steps = 10)
 
+  expect_true(file.exists(evaluation))
+  expect_true(file.exists(graph))
+  expect_true(file.exists(simulations))
 })
