@@ -23,6 +23,7 @@ test_that("pomdpeval, polgraph and pomdpsim run without error", {
   model <- system.file("models/example.pomdp",  package = "sarsop")
   policy <- tempfile()
   res <- pomdpsol(model, output = policy, precision = 10, stdout = FALSE)
+  expect_true(file.exists(policy))
 
   evaluation <- pomdpeval(model, policy, stdout = FALSE, steps = 10)
   graph <- polgraph(model, policy, stdout = FALSE)
