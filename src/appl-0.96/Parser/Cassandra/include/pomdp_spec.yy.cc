@@ -1224,7 +1224,7 @@ case YY_STATE_EOF(INITIAL):
 		}
 
 	default:
-		YY_FATAL_ERROR(
+		YY_FATAL_ERROR((char *) 
 			"fatal flex scanner internal error--no action found" );
 	} /* end of action switch */
 		} /* end of scanning one token */
@@ -1247,7 +1247,7 @@ static int yy_get_next_buffer()
 	int ret_val;
 
 	if ( yy_c_buf_p > &yy_current_buffer->yy_ch_buf[yy_n_chars + 1] )
-		YY_FATAL_ERROR(
+		YY_FATAL_ERROR((char *) 
 		"fatal flex scanner internal error--end of buffer missed" );
 
 	if ( yy_current_buffer->yy_fill_buffer == 0 )
@@ -1291,7 +1291,7 @@ static int yy_get_next_buffer()
 		while ( num_to_read <= 0 )
 			{ /* Not enough room in the buffer - grow it. */
 #ifdef YY_USES_REJECT
-			YY_FATAL_ERROR(
+			YY_FATAL_ERROR((char *) 
 "input buffer overflow, can't enlarge buffer because scanner uses REJECT" );
 #else
 
@@ -1320,8 +1320,8 @@ static int yy_get_next_buffer()
 				b->yy_ch_buf = 0;
 
 			if ( ! b->yy_ch_buf )
-				YY_FATAL_ERROR(
-				"fatal error - scanner input buffer overflow" );
+				YY_FATAL_ERROR( 
+				(char *) "fatal error - scanner input buffer overflow" );
 
 			yy_c_buf_p = &b->yy_ch_buf[yy_c_buf_p_offset];
 
@@ -1461,7 +1461,7 @@ register char *yy_bp;
 			yy_n_chars = yy_current_buffer->yy_buf_size;
 
 		if ( yy_cp < yy_current_buffer->yy_ch_buf + 2 )
-			YY_FATAL_ERROR( "flex scanner push-back overflow" );
+			YY_FATAL_ERROR( (char *) "flex scanner push-back overflow" );
 		}
 
 	*--yy_cp = (char) c;
@@ -1618,7 +1618,7 @@ int size;
 
 	b = (YY_BUFFER_STATE) yy_flex_alloc( sizeof( struct yy_buffer_state ) );
 	if ( ! b )
-		YY_FATAL_ERROR( "out of dynamic memory in yy_create_buffer()" );
+		YY_FATAL_ERROR( (char *) "out of dynamic memory in yy_create_buffer()" );
 
 	b->yy_buf_size = size;
 
@@ -1627,7 +1627,7 @@ int size;
 	 */
 	b->yy_ch_buf = (char *) yy_flex_alloc( b->yy_buf_size + 2 );
 	if ( ! b->yy_ch_buf )
-		YY_FATAL_ERROR( "out of dynamic memory in yy_create_buffer()" );
+		YY_FATAL_ERROR( (char *) "out of dynamic memory in yy_create_buffer()" );
 
 	b->yy_is_our_buffer = 1;
 
@@ -1734,7 +1734,7 @@ yy_size_t size;
 
 	b = (YY_BUFFER_STATE) yy_flex_alloc( sizeof( struct yy_buffer_state ) );
 	if ( ! b )
-		YY_FATAL_ERROR( "out of dynamic memory in yy_scan_buffer()" );
+		YY_FATAL_ERROR( (char *) "out of dynamic memory in yy_scan_buffer()" );
 
 	b->yy_buf_size = size - 2;	/* "- 2" to take care of EOB's */
 	b->yy_buf_pos = b->yy_ch_buf = base;
@@ -1788,7 +1788,7 @@ int len;
 	n = len + 2;
 	buf = (char *) yy_flex_alloc( n );
 	if ( ! buf )
-		YY_FATAL_ERROR( "out of dynamic memory in yy_scan_bytes()" );
+		YY_FATAL_ERROR( (char *) "out of dynamic memory in yy_scan_bytes()" );
 
 	for ( i = 0; i < len; ++i )
 		buf[i] = bytes[i];
@@ -1797,7 +1797,7 @@ int len;
 
 	b = yy_scan_buffer( buf, n );
 	if ( ! b )
-		YY_FATAL_ERROR( "bad buffer in yy_scan_bytes()" );
+		YY_FATAL_ERROR( (char *) "bad buffer in yy_scan_bytes()" );
 
 	/* It's okay to grow etc. this buffer, and we should throw it
 	 * away when we're done.
@@ -1832,7 +1832,7 @@ int new_state;
 					(void *) yy_start_stack, new_size );
 
 		if ( ! yy_start_stack )
-			YY_FATAL_ERROR(
+			YY_FATAL_ERROR((char *) 
 			"out of memory expanding start-condition stack" );
 		}
 
@@ -1847,7 +1847,7 @@ int new_state;
 static void yy_pop_state()
 	{
 	if ( --yy_start_stack_ptr < 0 )
-		YY_FATAL_ERROR( "start-condition stack underflow" );
+		YY_FATAL_ERROR( (char *) "start-condition stack underflow" );
 
 	BEGIN(yy_start_stack[yy_start_stack_ptr]);
 	}
