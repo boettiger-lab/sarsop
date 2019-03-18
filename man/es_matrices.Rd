@@ -4,7 +4,7 @@
 \alias{es_matrices}
 \title{Matrices for the ecosystem services model}
 \usage{
-es_matrices(S_0 = 40, V = 90, C = 80, K = 10, E = 1,
+es_matrices(S_0 = 40, V = 90, C = 80, K = 10, E = 1, A = 2,
   discount = 0.95)
 }
 \arguments{
@@ -16,7 +16,9 @@ es_matrices(S_0 = 40, V = 90, C = 80, K = 10, E = 1,
 
 \item{K}{number of critical species}
 
-\item{E}{the expected number of extinctions per hear}
+\item{E}{the expected number of extinctions per year}
+
+\item{A}{number of possible actions. Default is 2,}
 
 \item{discount}{the discount factor.}
 }

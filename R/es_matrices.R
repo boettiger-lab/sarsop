@@ -7,7 +7,8 @@
 #' @param V value of the ecosystem services
 #' @param C cost incurred in protecting the ecosystem
 #' @param K number of critical species
-#' @param E the expected number of extinctions per hear
+#' @param E the expected number of extinctions per year
+#' @param A number of possible actions. Default is 2,
 #' @param discount the discount factor.
 #' @return list of  transition matrix, observation matrix, and reward matrix
 #' @importFrom stats dbinom dpois
@@ -21,23 +22,24 @@ es_matrices <-
              C = 80, # costs incurred by protection
              K = 10, # number of critical species
              E = 1,  # Expected number of extinctions per year
+             A = 2,  # Number of possible actions
       discount = 0.95  # Discount factor
   ){
 
   states <- 0:S_0
-  # Actions: protect = 1, not protect = 0
-  actions <- c(0,1)
+  actions <- seq(0, 1, length = A)
 
   ## state space is 2*n: we have 1:n species,
   ## & either have all critical species or we not
   n = length(states)
+  n_actions <- length(actions)
   ss <- 1:(2*n)
 
   ### Calculate Transition Matrix (P) and Utility Matrix (U)
 
   m <- length(ss)
-  P <- array(dim=c(m,m,2))
-  U <- array(dim=c(m,2))
+  P <- array(dim=c(m,m,n_actions))
+  U <- array(dim=c(m,n_actions))
   for(i in 1:m){
     for(k in 1:length(actions)){
       U[i,k] <- ss_utility(ss[i], actions[k], V, C, K, n)
@@ -48,8 +50,10 @@ es_matrices <-
     }
   }
 
-  P <- list(rowNorm(Matrix::Matrix(P[,,1]) ), rowNorm(Matrix::Matrix(P[,,2])))
-  transition <- array(dim = c(m,m,2))
+
+  ## Reshape things
+  P <- lapply(1:n_actions, function(i)  rowNorm(Matrix::Matrix(P[,,i]) ))
+  transition <- array(dim = c(m,m,n_actions))
   for(i in 1:length(actions)){
     transition[,,i] <- as.matrix(P[[i]])
   }
@@ -65,17 +69,11 @@ es_matrices <-
 
 
 
-
-
 # prob state -> next_state given action
 prob_transition <- function(state, next_state, action,
                             E){
   ## Exactly one species is lost every time no action is taken
   ##next_state == pmax(state - (1 - action), 0)
-
-  ## no protection means no losses
-  if(action == 1)
-    return(as.numeric(state == next_state))
 
   ## species gone are gone forever
   if(state == 0 & next_state == 0)
@@ -91,7 +89,8 @@ prob_transition <- function(state, next_state, action,
   ## Trivial since this becomes (1-E)^K
   # dbinom(n_lost, state, E)
 
-  dpois(n_lost, E)
+  dpois(n_lost, E * (1 - action))
+
 
   ## Dee et al assumes deterministic loss rate:
   ##  as.numeric(n_lost == 1)
@@ -138,7 +137,7 @@ observation_matrix <- function(states, actions,
   ## validation, with some tolerance
   stopifnot( sum( (rowSums(obs_ss) - 1)) < tol )  ## some tolerance
 
-  obs <- array(dim = c(m,m,2))
+  obs <- array(dim = c(m,m,length(actions)))
   for(i in 1:length(actions)){
     obs[,,i] <- obs_ss
   }
@@ -156,11 +155,11 @@ parse_ss <- function(x, n){
 ss_utility <- function(s_t, a_t, V, C, K, n) {
 
   S <- parse_ss(s_t, n)
-  if (a_t == 1) { ## "Protect"
+  if (a_t > 0) { ## "Protect"
     if (S$s < K) {
-      return(-C)
+      return(- C * a_t)
     } else {
-      return(V * S$r - C)
+      return(V * S$r - C * a_t)
     }
   } else if (a_t == 0) {  ## Do nothing
     if (S$s < K) {
