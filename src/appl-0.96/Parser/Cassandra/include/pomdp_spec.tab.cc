@@ -172,7 +172,7 @@ typedef enum { mc_none, mc_trans_single, mc_trans_row, mc_trans_all,
 extern int yylex();
 
 /* Forward declaration for action routines which appear at end of file */
-void yyerror(char *string);
+void yyerror(const char *string);
 void checkMatrix();
 void enterString( Constant_Block *block );
 void enterUniformMatrix( );
@@ -2594,7 +2594,7 @@ yyreturn:
 Constant_Block *aConst;
 
 /******************************************************************************/
-void yyerror(char *string)
+void yyerror(const char *string)
 {
    ERR_enter("Parser<yyparse>", currentLineNumber, PARSE_ERR,"");
 }  /* yyerror */

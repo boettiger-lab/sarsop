@@ -30,7 +30,6 @@ Suggests:
     knitr,
     tidyverse,
     covr,
-    rticles,
     spelling
 LinkingTo: BH
 VignetteBuilder: knitr
