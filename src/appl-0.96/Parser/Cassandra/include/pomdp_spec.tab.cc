@@ -825,7 +825,7 @@ do								\
     }								\
   else								\
     {								\
-      yyerror (YY_("syntax error: cannot back up")); \
+      yyerror (YY_( (char *) "syntax error: cannot back up")); \
       YYERROR;							\
     }								\
 while (YYID (0))
@@ -903,10 +903,10 @@ do {						\
 do {									  \
   if (yydebug)								  \
     {									  \
-      YYFPRINTF (stderr, "%s ", Title);					  \
+      YYFPRINTF (stderr, (char *) "%s ", Title);					  \
       yy_symbol_print (stderr,						  \
 		  Type, Value); \
-      YYFPRINTF (stderr, "\n");						  \
+      YYFPRINTF (stderr, (char *) "\n");						  \
     }									  \
 } while (YYID (0))
 
@@ -961,12 +961,12 @@ yy_symbol_print (yyoutput, yytype, yyvaluep)
 #endif
 {
   if (yytype < YYNTOKENS)
-    YYFPRINTF (yyoutput, "token %s (", yytname[yytype]);
+    YYFPRINTF (yyoutput, (char *) "token %s (", yytname[yytype]);
   else
-    YYFPRINTF (yyoutput, "nterm %s (", yytname[yytype]);
+    YYFPRINTF (yyoutput, (char *) "nterm %s (", yytname[yytype]);
 
   yy_symbol_value_print (yyoutput, yytype, yyvaluep);
-  YYFPRINTF (yyoutput, ")");
+  YYFPRINTF (yyoutput, (char *) ")");
 }
 
 /*------------------------------------------------------------------.
@@ -985,10 +985,10 @@ yy_stack_print (bottom, top)
     yytype_int16 *top;
 #endif
 {
-  YYFPRINTF (stderr, "Stack now");
+  YYFPRINTF (stderr, (char *) "Stack now");
   for (; bottom <= top; ++bottom)
-    YYFPRINTF (stderr, " %d", *bottom);
-  YYFPRINTF (stderr, "\n");
+    YYFPRINTF (stderr, (char *) " %d", *bottom);
+  YYFPRINTF (stderr, (char *) "\n");
 }
 
 # define YY_STACK_PRINT(Bottom, Top)				\
@@ -1016,7 +1016,7 @@ yy_reduce_print (yyvsp, yyrule)
   int yynrhs = yyr2[yyrule];
   int yyi;
   unsigned long int yylno = yyrline[yyrule];
-  YYFPRINTF (stderr, "Reducing stack by rule %d (line %lu):\n",
+  YYFPRINTF (stderr, (char *) "Reducing stack by rule %d (line %lu):\n",
 	     yyrule - 1, yylno);
   /* The symbols being reduced.  */
   for (yyi = 0; yyi < yynrhs; yyi++)
@@ -1193,11 +1193,11 @@ yysyntax_error (char *yyresult, int yystate, int yychar)
 # if 0
       /* This is so xgettext sees the translatable formats that are
 	 constructed on the fly.  */
-      YY_("syntax error, unexpected %s");
-      YY_("syntax error, unexpected %s, expecting %s");
-      YY_("syntax error, unexpected %s, expecting %s or %s");
-      YY_("syntax error, unexpected %s, expecting %s or %s or %s");
-      YY_("syntax error, unexpected %s, expecting %s or %s or %s or %s");
+      YY_( (char *) "syntax error, unexpected %s");
+      YY_( (char *) "syntax error, unexpected %s, expecting %s");
+      YY_( (char *) "syntax error, unexpected %s, expecting %s or %s");
+      YY_( (char *) "syntax error, unexpected %s, expecting %s or %s or %s");
+      YY_( (char *) "syntax error, unexpected %s, expecting %s or %s or %s or %s");
 # endif
       char *yyfmt;
       char const *yyf;
@@ -1410,7 +1410,7 @@ yyparse ()
      Keep to zero when no symbol should be popped.  */
   int yylen = 0;
 
-  YYDPRINTF ((stderr, "Starting parse\n"));
+  YYDPRINTF ((stderr, (char *)  "Starting parse\n"));
 
   yystate = 0;
   yyerrstatus = 0;
@@ -1456,7 +1456,7 @@ yyparse ()
 	   data in use in that stack, in bytes.  This used to be a
 	   conditional around just the two extra args, but that might
 	   be undefined if yyoverflow is a macro.  */
-	yyoverflow (YY_("memory exhausted"),
+	yyoverflow (YY_( (char *) "memory exhausted"),
 		    &yyss1, yysize * sizeof (*yyssp),
 		    &yyvs1, yysize * sizeof (*yyvsp),
 
@@ -1496,14 +1496,14 @@ yyparse ()
       yyvsp = yyvs + yysize - 1;
 
 
-      YYDPRINTF ((stderr, "Stack size increased to %lu\n",
+      YYDPRINTF ((stderr, (char *)  "Stack size increased to %lu\n",
 		  (unsigned long int) yystacksize));
 
       if (yyss + yystacksize - 1 <= yyssp)
 	YYABORT;
     }
 
-  YYDPRINTF ((stderr, "Entering state %d\n", yystate));
+  YYDPRINTF ((stderr, (char *)  "Entering state %d\n", yystate));
 
   goto yybackup;
 
@@ -1525,14 +1525,14 @@ yybackup:
   /* YYCHAR is either YYEMPTY or YYEOF or a valid look-ahead symbol.  */
   if (yychar == YYEMPTY)
     {
-      YYDPRINTF ((stderr, "Reading a token: "));
+      YYDPRINTF ((stderr, (char *)  "Reading a token: "));
       yychar = YYLEX;
     }
 
   if (yychar <= YYEOF)
     {
       yychar = yytoken = YYEOF;
-      YYDPRINTF ((stderr, "Now at end of input.\n"));
+      YYDPRINTF ((stderr, (char *)  "Now at end of input.\n"));
     }
   else
     {
@@ -1563,7 +1563,7 @@ yybackup:
     yyerrstatus--;
 
   /* Shift the look-ahead token.  */
-  YY_SYMBOL_PRINT ("Shifting", yytoken, &yylval, &yylloc);
+  YY_SYMBOL_PRINT ( (char *) "Shifting", yytoken, &yylval, &yylloc);
 
   /* Discard the shifted token unless it is eof.  */
   if (yychar != YYEOF)
@@ -2404,7 +2404,7 @@ yyerrlab:
     {
       ++yynerrs;
 #if ! YYERROR_VERBOSE
-      yyerror (YY_("syntax error"));
+      yyerror (YY_( (char *) "syntax error"));
 #else
       {
 	YYSIZE_T yysize = yysyntax_error (0, yystate, yychar);
@@ -2432,7 +2432,7 @@ yyerrlab:
 	  }
 	else
 	  {
-	    yyerror (YY_("syntax error"));
+	    yyerror (YY_( (char *) "syntax error"));
 	    if (yysize != 0)
 	      goto yyexhaustedlab;
 	  }
@@ -2455,7 +2455,7 @@ yyerrlab:
 	}
       else
 	{
-	  yydestruct ("Error: discarding",
+	  yydestruct ( (char *) "Error: discarding",
 		      yytoken, &yylval);
 	  yychar = YYEMPTY;
 	}
@@ -2511,7 +2511,7 @@ yyerrlab1:
 	YYABORT;
 
 
-      yydestruct ("Error: popping",
+      yydestruct ( (char *) "Error: popping",
 		  yystos[yystate], yyvsp);
       YYPOPSTACK (1);
       yystate = *yyssp;
@@ -2525,7 +2525,7 @@ yyerrlab1:
 
 
   /* Shift the error token.  */
-  YY_SYMBOL_PRINT ("Shifting", yystos[yyn], yyvsp, yylsp);
+  YY_SYMBOL_PRINT ( (char *) "Shifting", yystos[yyn], yyvsp, yylsp);
 
   yystate = yyn;
   goto yynewstate;
@@ -2550,14 +2550,14 @@ yyabortlab:
 | yyexhaustedlab -- memory exhaustion comes here.  |
 `-------------------------------------------------*/
 yyexhaustedlab:
-  yyerror (YY_("memory exhausted"));
+  yyerror (YY_( (char *) "memory exhausted"));
   yyresult = 2;
   /* Fall through.  */
 #endif
 
 yyreturn:
   if (yychar != YYEOF && yychar != YYEMPTY)
-     yydestruct ("Cleanup: discarding lookahead",
+     yydestruct ( (char *) "Cleanup: discarding lookahead",
 		 yytoken, &yylval);
   /* Do not reclaim the symbols of the rule which action triggered
      this YYABORT or YYACCEPT.  */
@@ -2565,7 +2565,7 @@ yyreturn:
   YY_STACK_PRINT (yyss, yyssp);
   while (yyssp != yyss)
     {
-      yydestruct ("Cleanup: popping",
+      yydestruct ( (char *) "Cleanup: popping",
 		  yystos[*yyssp], yyvsp);
       YYPOPSTACK (1);
     }

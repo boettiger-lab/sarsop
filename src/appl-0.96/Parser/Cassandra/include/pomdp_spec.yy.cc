@@ -58,11 +58,11 @@
 #define YY_USE_PROTOS
 #endif
 
-#ifdef YY_USE_CONST
+//#ifdef YY_USE_CONST
 #define yyconst const
-#else
-#define yyconst
-#endif
+//#else
+//#define yyconst
+//#endif
 
 
 #ifdef YY_USE_PROTOS
@@ -1717,10 +1717,10 @@ YY_BUFFER_STATE b;
 
 #ifndef YY_NO_SCAN_BUFFER
 #ifdef YY_USE_PROTOS
-YY_BUFFER_STATE yy_scan_buffer( const char *base, yy_size_t size )
+YY_BUFFER_STATE yy_scan_buffer( char *base, yy_size_t size )
 #else
 YY_BUFFER_STATE yy_scan_buffer( base, size )
-const char *base;
+char *base;
 yy_size_t size;
 #endif
 	{
