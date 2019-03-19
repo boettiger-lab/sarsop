@@ -54,8 +54,8 @@ S_0 = 80         # Initial number of species
 V = 90           # Value of ES
 C = 80           # Costs incurred by protection
 K = 10           # Number of critical species
-
-model <- es_matrices(S_0, V, C, K)
+discount = 0.95
+model <- es_matrices(S_0, V, C, K, discount = discount)
 ```
 
 
@@ -69,12 +69,12 @@ solution <- mdp_value_iteration(model$transition, model$reward, discount)
 We can assemble the solution and plot the optimal policy:
 
 ```{r, warnings=FALSE}
-actions <- seq(0,1,length=A) #c("do nothing", "protect region")
-df <- tibble(`Species pool` = 1:S_0, 
+actions <- c("do nothing", "protect region")
+df <- tibble(Species_pool = 1:S_0, 
              Actions = actions[solution$policy][1:S_0],
              Value = solution$V[1:S_0])
 
-df %>% ggplot(aes(`Species pool`, Actions)) + geom_point()
+df %>% ggplot(aes(Species_pool, Actions)) + geom_point()
 ```
 
 ```{r}
