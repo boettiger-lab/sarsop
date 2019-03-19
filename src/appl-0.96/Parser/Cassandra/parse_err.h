@@ -151,10 +151,10 @@ extern "C" {
 #endif
 
 int ERR_dump(void);
-void ERR_enter(	char 	*source,
-			int	lineno,
-			int     errorid,
-			char	*modificationString );
+void ERR_enter(	const char *source,
+		int	lineno,
+		int     errorid,
+		const char	*modificationString );
 void ERR_initialize(void);
 void ERR_cleanUp(void);
 

@@ -58,11 +58,11 @@
 #define YY_USE_PROTOS
 #endif
 
-#ifdef YY_USE_CONST
+//#ifdef YY_USE_CONST
 #define yyconst const
-#else
-#define yyconst
-#endif
+//#else
+//#define yyconst
+//#endif
 
 
 #ifdef YY_USE_PROTOS
@@ -253,7 +253,7 @@ void yy_init_buffer YY_PROTO(( YY_BUFFER_STATE b, FILE *file ));
 void yy_flush_buffer YY_PROTO(( YY_BUFFER_STATE b ));
 #define YY_FLUSH_BUFFER yy_flush_buffer( yy_current_buffer )
 
-YY_BUFFER_STATE yy_scan_buffer YY_PROTO(( char *base, yy_size_t size ));
+YY_BUFFER_STATE yy_scan_buffer YY_PROTO(( const char *base, yy_size_t size ));
 YY_BUFFER_STATE yy_scan_string YY_PROTO(( yyconst char *yy_str ));
 YY_BUFFER_STATE yy_scan_bytes YY_PROTO(( yyconst char *bytes, int len ));
 
@@ -629,14 +629,14 @@ char *yytext;
   Copyright 1998, 1999, Anthony R. Cassandra
 
                            All Rights Reserved
-                           
+
   Permission to use, copy, modify, and distribute this software and its
   documentation for any purpose other than its incorporation into a
   commercial product is hereby granted without fee, provided that the
   above copyright notice appear in all copies and that both that
   copyright notice and this permission notice appear in supporting
   documentation.
-  
+
   ANTHONY CASSANDRA DISCLAIMS ALL WARRANTIES WITH REGARD TO THIS SOFTWARE,
   INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR ANY
   PARTICULAR PURPOSE.  IN NO EVENT SHALL ANTHONY CASSANDRA BE LIABLE FOR
@@ -647,7 +647,7 @@ char *yytext;
   *****
 
   This module contains the patterns and actions needed by the scanner
-  generator "LEX".  
+  generator "LEX".
 */
 
 #include <stdio.h>
@@ -670,11 +670,11 @@ extern long currentLineNumber;
 extern void ERR_enter();   /* assumes calling program
                               will initialize error list */
 
-/* These must appear in consecutive order just like they are defined in 
+/* These must appear in consecutive order just like they are defined in
    the reserved_token array below.
 */
 #define NUM_RESERVED_WORDS              16
-static char *reserved_str[] = {
+static const char *reserved_str[] = {
    "discount",
    "values",
    "states",
@@ -740,8 +740,8 @@ Constant_Block *aConst;
 }
 /**********************************************************************/
 void StringToYylval()
-/*  This routine will copy a string constant from yytext to the to the 
-yylval.  
+/*  This routine will copy a string constant from yytext to the to the
+yylval.
 */
 {
    Constant_Block *aConst;
@@ -768,10 +768,10 @@ yylval.
 int CheckReserved() {
   int i;
 
-  for( i = 0; i < NUM_RESERVED_WORDS; i++ ) 
+  for( i = 0; i < NUM_RESERVED_WORDS; i++ )
      if( strcmp( reserved_str[i], yytext ) == 0 )
         return( reserved_token[ i ] );
-  
+
   return( -1 );
 
 }  /* CheckReserved */
@@ -792,11 +792,11 @@ extern int yywrap YY_PROTO(( void ));
 #endif
 
 #ifndef YY_NO_UNPUT
-static void yyunput YY_PROTO(( int c, char *buf_ptr ));
+static void yyunput YY_PROTO(( int c, const char *buf_ptr ));
 #endif
 
 #ifndef yytext_ptr
-static void yy_flex_strncpy YY_PROTO(( char *, yyconst char *, int ));
+static void yy_flex_strncpy YY_PROTO(( const char *, yyconst char *, int ));
 #endif
 
 #ifdef YY_NEED_STRLEN
@@ -1004,7 +1004,7 @@ YY_RULE_SETUP
 {
                                           IntToYylval();
                                           return (INTTOK);  /* Integer Literal */
-					}   
+					}
 	YY_BREAK
 case 2:
 YY_RULE_SETUP
@@ -1012,7 +1012,7 @@ YY_RULE_SETUP
 {
                                           FloatToYylval();
                                           return (FLOATTOK);  /* Floating Point Literal */
-					}  
+					}
 	YY_BREAK
 case 3:
 YY_RULE_SETUP
@@ -1036,35 +1036,35 @@ YY_RULE_SETUP
 case 5:
 YY_RULE_SETUP
 #line 187 "pomdp_spec.l"
-{         
+{
                                    return (ASTERICKTOK);
                                 }
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
 #line 190 "pomdp_spec.l"
-{         
+{
                                    return (MINUSTOK);
                                 }
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
 #line 193 "pomdp_spec.l"
-{         
+{
                                     return (PLUSTOK);
                                 }
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
 #line 196 "pomdp_spec.l"
-{         
+{
                                     return (COLONTOK);
                                 }
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
 #line 200 "pomdp_spec.l"
-; /* Spacedelimiter: No action */ 
+; /* Spacedelimiter: No action */
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
@@ -1079,15 +1079,15 @@ YY_RULE_SETUP
 case 12:
 YY_RULE_SETUP
 #line 206 "pomdp_spec.l"
-{  
+{
                                     currentLineNumber++; /* Newline delimiter */
                                 }
 	YY_BREAK
 case 13:
 YY_RULE_SETUP
 #line 211 "pomdp_spec.l"
-{ 
-                                  
+{
+
                                   ERR_enter("Scanner<yylex>",currentLineNumber,
                                             ILL_CHAR_ERR, yytext);
                                 }
@@ -1224,7 +1224,7 @@ case YY_STATE_EOF(INITIAL):
 		}
 
 	default:
-		YY_FATAL_ERROR(
+		YY_FATAL_ERROR((char *) 
 			"fatal flex scanner internal error--no action found" );
 	} /* end of action switch */
 		} /* end of scanning one token */
@@ -1247,7 +1247,7 @@ static int yy_get_next_buffer()
 	int ret_val;
 
 	if ( yy_c_buf_p > &yy_current_buffer->yy_ch_buf[yy_n_chars + 1] )
-		YY_FATAL_ERROR(
+		YY_FATAL_ERROR((char *) 
 		"fatal flex scanner internal error--end of buffer missed" );
 
 	if ( yy_current_buffer->yy_fill_buffer == 0 )
@@ -1291,7 +1291,7 @@ static int yy_get_next_buffer()
 		while ( num_to_read <= 0 )
 			{ /* Not enough room in the buffer - grow it. */
 #ifdef YY_USES_REJECT
-			YY_FATAL_ERROR(
+			YY_FATAL_ERROR((char *) 
 "input buffer overflow, can't enlarge buffer because scanner uses REJECT" );
 #else
 
@@ -1320,8 +1320,8 @@ static int yy_get_next_buffer()
 				b->yy_ch_buf = 0;
 
 			if ( ! b->yy_ch_buf )
-				YY_FATAL_ERROR(
-				"fatal error - scanner input buffer overflow" );
+				YY_FATAL_ERROR( 
+				(char *) "fatal error - scanner input buffer overflow" );
 
 			yy_c_buf_p = &b->yy_ch_buf[yy_c_buf_p_offset];
 
@@ -1461,7 +1461,7 @@ register char *yy_bp;
 			yy_n_chars = yy_current_buffer->yy_buf_size;
 
 		if ( yy_cp < yy_current_buffer->yy_ch_buf + 2 )
-			YY_FATAL_ERROR( "flex scanner push-back overflow" );
+			YY_FATAL_ERROR( (char *) "flex scanner push-back overflow" );
 		}
 
 	*--yy_cp = (char) c;
@@ -1618,7 +1618,7 @@ int size;
 
 	b = (YY_BUFFER_STATE) yy_flex_alloc( sizeof( struct yy_buffer_state ) );
 	if ( ! b )
-		YY_FATAL_ERROR( "out of dynamic memory in yy_create_buffer()" );
+		YY_FATAL_ERROR( (char *) "out of dynamic memory in yy_create_buffer()" );
 
 	b->yy_buf_size = size;
 
@@ -1627,7 +1627,7 @@ int size;
 	 */
 	b->yy_ch_buf = (char *) yy_flex_alloc( b->yy_buf_size + 2 );
 	if ( ! b->yy_ch_buf )
-		YY_FATAL_ERROR( "out of dynamic memory in yy_create_buffer()" );
+		YY_FATAL_ERROR( (char *) "out of dynamic memory in yy_create_buffer()" );
 
 	b->yy_is_our_buffer = 1;
 
@@ -1734,7 +1734,7 @@ yy_size_t size;
 
 	b = (YY_BUFFER_STATE) yy_flex_alloc( sizeof( struct yy_buffer_state ) );
 	if ( ! b )
-		YY_FATAL_ERROR( "out of dynamic memory in yy_scan_buffer()" );
+		YY_FATAL_ERROR( (char *) "out of dynamic memory in yy_scan_buffer()" );
 
 	b->yy_buf_size = size - 2;	/* "- 2" to take care of EOB's */
 	b->yy_buf_pos = b->yy_ch_buf = base;
@@ -1788,7 +1788,7 @@ int len;
 	n = len + 2;
 	buf = (char *) yy_flex_alloc( n );
 	if ( ! buf )
-		YY_FATAL_ERROR( "out of dynamic memory in yy_scan_bytes()" );
+		YY_FATAL_ERROR( (char *) "out of dynamic memory in yy_scan_bytes()" );
 
 	for ( i = 0; i < len; ++i )
 		buf[i] = bytes[i];
@@ -1797,7 +1797,7 @@ int len;
 
 	b = yy_scan_buffer( buf, n );
 	if ( ! b )
-		YY_FATAL_ERROR( "bad buffer in yy_scan_bytes()" );
+		YY_FATAL_ERROR( (char *) "bad buffer in yy_scan_bytes()" );
 
 	/* It's okay to grow etc. this buffer, and we should throw it
 	 * away when we're done.
@@ -1832,7 +1832,7 @@ int new_state;
 					(void *) yy_start_stack, new_size );
 
 		if ( ! yy_start_stack )
-			YY_FATAL_ERROR(
+			YY_FATAL_ERROR((char *) 
 			"out of memory expanding start-condition stack" );
 		}
 
@@ -1847,7 +1847,7 @@ int new_state;
 static void yy_pop_state()
 	{
 	if ( --yy_start_stack_ptr < 0 )
-		YY_FATAL_ERROR( "start-condition stack underflow" );
+		YY_FATAL_ERROR( (char *) "start-condition stack underflow" );
 
 	BEGIN(yy_start_stack[yy_start_stack_ptr]);
 	}
@@ -1898,10 +1898,10 @@ char msg[];
 
 #ifndef yytext_ptr
 #ifdef YY_USE_PROTOS
-static void yy_flex_strncpy( char *s1, yyconst char *s2, int n )
+static void yy_flex_strncpy( const char *s1, yyconst char *s2, int n )
 #else
 static void yy_flex_strncpy( s1, s2, n )
-char *s1;
+const char *s1;
 yyconst char *s2;
 int n;
 #endif
@@ -1937,7 +1937,7 @@ yy_size_t size;
 #endif
 	{
 		void * temp = (void *) malloc( size );
-		
+
 		checkAllocatedPointer((void *) temp);
 		return temp;
 	}
