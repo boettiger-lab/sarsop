@@ -5,7 +5,7 @@
 \title{Matrices for the ecosystem services model}
 \usage{
 es_matrices(S_0 = 40, V = 90, C = 80, K = 10, E = 1, A = 2,
-  discount = 0.95)
+  Q = 1, discount = 0.95)
 }
 \arguments{
 \item{S_0}{total / maximum number of species possible}
@@ -18,7 +18,9 @@ es_matrices(S_0 = 40, V = 90, C = 80, K = 10, E = 1, A = 2,
 
 \item{E}{the expected number of extinctions per year}
 
-\item{A}{number of possible actions. Default is 2,}
+\item{A}{number of possible actions. Default is 2 (all or nothing)}
+
+\item{Q}{cost curvature, default 1. Q > 1 increasingly hard to protect all}
 
 \item{discount}{the discount factor.}
 }
