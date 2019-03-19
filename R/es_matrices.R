@@ -8,7 +8,8 @@
 #' @param C cost incurred in protecting the ecosystem
 #' @param K number of critical species
 #' @param E the expected number of extinctions per year
-#' @param A number of possible actions. Default is 2,
+#' @param A number of possible actions. Default is 2 (all or nothing)
+#' @param Q cost curvature, default 1. Q > 1 increasingly hard to protect all
 #' @param discount the discount factor.
 #' @return list of  transition matrix, observation matrix, and reward matrix
 #' @importFrom stats dbinom dpois
@@ -23,6 +24,7 @@ es_matrices <-
              K = 10, # number of critical species
              E = 1,  # Expected number of extinctions per year
              A = 2,  # Number of possible actions
+             Q = 1,  # cost curvature
       discount = 0.95  # Discount factor
   ){
 
@@ -42,7 +44,7 @@ es_matrices <-
   U <- array(dim=c(m,n_actions))
   for(i in 1:m){
     for(k in 1:length(actions)){
-      U[i,k] <- ss_utility(ss[i], actions[k], V, C, K, n)
+      U[i,k] <- ss_utility(ss[i], actions[k], V, C, K, n, Q)
       for(j in 1:m){
         P[i,j,k] <- f_ss(ss[i], ss[j], actions[k],
                          n, states, K, E)
@@ -152,14 +154,15 @@ parse_ss <- function(x, n){
   else return(list(s = x - n, r = FALSE))
 }
 
-ss_utility <- function(s_t, a_t, V, C, K, n) {
+ss_utility <- function(s_t, a_t, V, C, K, n, Q) {
 
   S <- parse_ss(s_t, n)
   if (a_t > 0) { ## "Protect"
+    cost <- C * a_t ^ Q
     if (S$s < K) {
-      return(- C * a_t)
+      return(- cost )
     } else {
-      return(V * S$r - C * a_t)
+      return(V * S$r - cost )
     }
   } else if (a_t == 0) {  ## Do nothing
     if (S$s < K) {
@@ -175,9 +178,9 @@ ss_utility <- function(s_t, a_t, V, C, K, n) {
 ## Transitions work on idices, not state values
 f_ss <- function(ST, ST1, a_t,
                  n, states, K, E){
-  if(a_t == 1){
-    return(as.numeric(ST == ST1))
-  } else {
+  #if(a_t == 1){
+  #  return(as.numeric(ST == ST1))
+  #} else {
 
     st = parse_ss(ST, n)
     st1 = parse_ss(ST1, n)
@@ -197,7 +200,7 @@ f_ss <- function(ST, ST1, a_t,
         out <- P_trans
     }
     as.numeric(out)
-  }
+  #}
 }
 
 rowNorm <- function(M){

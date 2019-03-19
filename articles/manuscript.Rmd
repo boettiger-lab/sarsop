@@ -54,11 +54,8 @@ S_0 = 80         # Initial number of species
 V = 90           # Value of ES
 C = 80           # Costs incurred by protection
 K = 10           # Number of critical species
-E = 1            # Expected number of extinctions per year
-A = 10            # number of actions
-discount = 0.95  # Discount factor
 
-model <- es_matrices(S_0, V, C, K, E, A, discount)
+model <- es_matrices(S_0, V, C, K)
 ```
 
 
@@ -80,12 +77,13 @@ df <- tibble(`Species pool` = 1:S_0,
 df %>% ggplot(aes(`Species pool`, Actions)) + geom_point()
 ```
 
-
+```{r}
+solution$policy
+```
 
 ```{r}
 optimal <- max(which(actions[solution$policy[1:S_0]]==1))
 optimal
-#stopifnot(Sbar == optimal)
 ```
 
 
@@ -94,8 +92,8 @@ We rarely have perfect observations in natural systems.  The optimal decision in
 ```{r}
 dir.create("sarsop-cache")
 alpha <- sarsop(model$transition, model$observation, model$reward, discount, 
-                timeout = 1000,
-                precision = 1e-9,
+                timeout = 600,
+                precision = -1,
                 log_dir = "sarsop-cache")
 ```
 
@@ -112,7 +110,7 @@ df %>% filter(state <= S_0) %>% ggplot(aes(state, actions[policy])) + geom_point
 **This makes us more cautious**
 
 ```{r}
-max(which(df$policy[1:S_0]==2))
+max(which(actions[df$policy[1:S_0]]==1))
 ```
 
 
