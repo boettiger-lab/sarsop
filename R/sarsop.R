@@ -63,7 +63,9 @@ sarsop <- function(transition,
     return(read_policyx(file = outfile))
   }
 
-
+  if(!dir.exists(log_dir)){
+    dir.create(log_dir, FALSE, TRUE)
+  }
 
   ## Consider more robust normalization.  Check the write-out precision in write_pomdp
   initial = normalize(state_prior)

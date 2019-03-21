@@ -5,7 +5,7 @@
 \title{Matrices for the ecosystem services model}
 \usage{
 es_matrices(S_0 = 40, V = 90, C = 80, K = 10, E = 1, A = 2,
-  Q = 1, discount = 0.95)
+  Q = 1, discount = 0.95, obs_prob = 0.5)
 }
 \arguments{
 \item{S_0}{total / maximum number of species possible}
@@ -23,6 +23,8 @@ es_matrices(S_0 = 40, V = 90, C = 80, K = 10, E = 1, A = 2,
 \item{Q}{cost curvature, default 1. Q > 1 increasingly hard to protect all}
 
 \item{discount}{the discount factor.}
+
+\item{obs_prob}{probability of observing a species given that it is in the species pool}
 }
 \value{
 list of  transition matrix, observation matrix, and reward matrix

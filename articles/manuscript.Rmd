@@ -34,12 +34,15 @@ knitr::opts_chunk$set(fig.width = 7)
 
 ## Ecosystem Services
 
-@Dee2017 presents a compelling dynamic model for examining the extent to which ecosystem services can motivate the protection of biodiversity.  Their approach uses stochastic dynamic programming (SDP) to determine an optimal threshold number of species to protect.  When it is uncertain which species are critical for providing these ecosystem services (either directly or indirectly -- e.g. by being cirtical to the persistence of the species directly associated with the service), the optimal number to protect will be substantially higher than the true number of core species.  
+@Dee2017 presents a novel dynamic model for examining the extent to which ecosystem services can motivate the protection of biodiversity. In the simplest model considered by @Dee2017, ecosystem services are provided by a core subset $K$ of a much larger species pool, $S$.  This model assumes that the conservation planner does not know precisely which $K$ species are essential -- as this may include not only species directly responsible for the ecosystem service, but also includes any species which is indespensible to those directly responsible (food sources, mutualists, etc).  Equivalently, even if species identies are known, management options may not be able to target individual species but instead be limited to either choosing to protect or not protect the entire area, such as by restricting development, fishing, or other potential impacts. 
+
+Their approach uses stochastic dynamic programming (SDP) to determine an optimal threshold number of species to protect.  When it is uncertain which species are critical for providing these ecosystem services (either directly or indirectly -- e.g. by being cirtical to the persistence of the species directly associated with the service), the optimal number to protect will be substantially higher than the true number of core species.  
 
 
 
 
 In the basic model considered by @Dee2017, a region begins with $S_0$ who risk local extinction if no conservation action is taken.  Conservation involves a fixed annual cost $C$ and protects all species in the region from extinction that year (timestep). Without protection, we will assume a Poisson random number of species will go extinct in the next time step with mean $E$, (a generalization of @Dee2017 in which precisely one species goes extinct each year).  A subset $K$ of these species provides an ecosystem service with value $V$.  The decision-maker knows the size of this critical subset $K$ but cannot target these species alone. Instead, the decision-maker can only observe the total size of the species pool remaining each year, $S_t$, and choose whether to start prioritizing conservation investment in this region to preserve the ecosystem service.  
+
 It is possible to formulate this problem in terms of a transition matrix over a state space, where a position in state-space is defined by the tuple of the number of remaining species $S_t \in [0, S_0]$ and an indicator $\mathbb{I}_{k \in S_t}$ denoting whether the critical $K$ species are in the set of current species $S_t$ or not. This generaliztion allows us to solve the case of perfect observations about the state, the number of species $S_t$ still persisting in the region of concern, using existing implementation of the standard Stochastic Dynamic Programming techniques, such as value iteration, for solving such Markov Decision Process problems.
 
 ```{r message = FALSE}
@@ -50,18 +53,19 @@ library(sarsop)      # POMDP solution (focal package)
 
 
 ```{r}
-S_0 = 80         # Initial number of species
+S_0 = 100         # Initial number of species
 V = 90           # Value of ES
 C = 80           # Costs incurred by protection
 K = 10           # Number of critical species
 discount = 0.95
-model <- es_matrices(S_0, V, C, K, discount = discount)
+obs_prob = 0.5
+model <- es_matrices(S_0, V, C, K, discount = discount, obs_prob = obs_prob )
 ```
 
 
 The R package `MDPToolbox` [@Marescot2013; @MDPtoolbox] provides an implementation of the SDP value iteration routine:
 
-```{r}
+```{r, results="hide"}
 solution <- mdp_value_iteration(model$transition, model$reward, discount)
 ```
 
@@ -69,7 +73,7 @@ solution <- mdp_value_iteration(model$transition, model$reward, discount)
 We can assemble the solution and plot the optimal policy:
 
 ```{r, warnings=FALSE}
-actions <- c("do nothing", "protect region")
+actions <- c("do nothing", "protect")
 df <- tibble(Species_pool = 1:S_0, 
              Actions = actions[solution$policy][1:S_0],
              Value = solution$V[1:S_0])
@@ -77,12 +81,9 @@ df <- tibble(Species_pool = 1:S_0,
 df %>% ggplot(aes(Species_pool, Actions)) + geom_point()
 ```
 
-```{r}
-solution$policy
-```
 
 ```{r}
-optimal <- max(which(actions[solution$policy[1:S_0]]==1))
+optimal <- max(which(solution$policy[1:S_0]==2))
 optimal
 ```
 
@@ -90,10 +91,9 @@ optimal
 We rarely have perfect observations in natural systems.  The optimal decision in this problem is driven by the need to keep the ratio of total species relative to critical species, $K/S_t$, below the discounted cost-benefit ratio.  This assumes perfect knowledge of the current number of species $S_t$ and K (or at equivalently perfect knowledge of the fraction of critical species out of the total species remaining in the regional species pool, $K/S_t$).  In practice, we are unlikely to know this number
 
 ```{r}
-dir.create("sarsop-cache")
 alpha <- sarsop(model$transition, model$observation, model$reward, discount, 
-                timeout = 600,
-                precision = -1,
+                timeout = 60,
+                precision = 0,
                 log_dir = "sarsop-cache")
 ```
 
@@ -104,17 +104,80 @@ df <- compute_policy(alpha, model$transition, model$observation, model$reward)
 
 
 ```{r}
-df %>% filter(state <= S_0) %>% ggplot(aes(state, actions[policy])) + geom_point()
+df  %>%
+  mutate(est_state = state / obs_prob) %>%
+  filter(est_state <= S_0) %>% 
+  ggplot(aes(est_state, actions[policy])) + geom_point()
 ```
 
 **This makes us more cautious**
 
 ```{r}
-max(which(actions[df$policy[1:S_0]]==1))
+max(which(df$policy[1:S_0]==2)) / obs_prob
 ```
 
 
+Certain that we start with the critical species:
 
+```{r}
+n <- (S_0+1)*2
+state_prior = c(rep(1, n/2), rep(0,n/2)) / (n/2)
+  
+
+alpha <- sarsop(model$transition, model$observation, model$reward, discount, 
+                state_prior = state_prior,
+                timeout = 120,
+                precision = 0.1,
+                log_dir = "sarsop-cache")
+```
+
+
+```{r}
+df <- compute_policy(alpha, model$transition, model$observation, model$reward)
+```
+
+
+```{r}
+df  %>%
+  mutate(est_state = state / obs_prob) %>%
+  filter(est_state <= S_0) %>% 
+  ggplot(aes(est_state, actions[policy])) + geom_point()
+```
+
+
+```{r}
+max(which(df$policy[1:S_0]==2))/ obs_prob
+```
+
+
+Binomial prior
+
+```{r}
+n <- S_0+1
+state_prior = c(dbinom(1:n, 70, obs_prob), rep(0,n)) 
+  
+alpha <- sarsop(model$transition, model$observation, model$reward, discount, 
+                state_prior = state_prior,
+                timeout = 120,
+                precision = 0.01,
+                log_dir = "sarsop-cache")
+
+df <- compute_policy(alpha, model$transition, model$observation, model$reward)
+```
+
+
+```{r}
+df  %>%
+  mutate(est_state = state / obs_prob) %>%
+  filter(est_state <= S_0) %>% 
+  ggplot(aes(est_state, actions[policy])) + geom_point()
+
+```
+
+
+```{r}
+max(which(df$policy[1:S_0]==2)) / obs_prob
+```
 
 
 If there is no stochasticity in extinction process, a closed form solution is possible, derived in @Dee2017:
@@ -122,7 +185,7 @@ If there is no stochasticity in extinction process, a closed form solution is po
 $$\bar s \leq \frac{K \left( \tfrac{V}{C} - \delta \right) }{1 - \delta}$$
 
 
-```{r include=FALSE}
+```{r}
 ## Only holds for no stochasticity in extinction
 if(V > C){
   Sbar <- ceiling((K * ((V / C) - discount)) / (1 - discount))

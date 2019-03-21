@@ -11,6 +11,7 @@
 #' @param A number of possible actions. Default is 2 (all or nothing)
 #' @param Q cost curvature, default 1. Q > 1 increasingly hard to protect all
 #' @param discount the discount factor.
+#' @param obs_prob probability of observing a species given that it is in the species pool
 #' @return list of  transition matrix, observation matrix, and reward matrix
 #' @importFrom stats dbinom dpois
 #' @importFrom Matrix Matrix rowSums
@@ -25,49 +26,71 @@ es_matrices <-
              E = 1,  # Expected number of extinctions per year
              A = 2,  # Number of possible actions
              Q = 1,  # cost curvature
-      discount = 0.95  # Discount factor
+      discount = 0.95,  # Discount factor
+      obs_prob = 0.5
   ){
 
   states <- 0:S_0
   actions <- seq(0, 1, length = A)
+  obs <- 0:(S_0-2)
 
-  ## state space is 2*n: we have 1:n species,
-  ## & either have all critical species or we not
-  n = length(states)
-  n_actions <- length(actions)
-  ss <- 1:(2*n)
-
-  ### Calculate Transition Matrix (P) and Utility Matrix (U)
-
-  m <- length(ss)
-  P <- array(dim=c(m,m,n_actions))
-  U <- array(dim=c(m,n_actions))
-  for(i in 1:m){
-    for(k in 1:length(actions)){
-      U[i,k] <- ss_utility(ss[i], actions[k], V, C, K, n, Q)
-      for(j in 1:m){
-        P[i,j,k] <- f_ss(ss[i], ss[j], actions[k],
-                         n, states, K, E)
-      }
-    }
-  }
-
-
-  ## Reshape things
-  P <- lapply(1:n_actions, function(i)  rowNorm(Matrix::Matrix(P[,,i]) ))
-  transition <- array(dim = c(m,m,n_actions))
-  for(i in 1:length(actions)){
-    transition[,,i] <- as.matrix(P[[i]])
-  }
-
-  #state_prior = rep(1, m) / m # initial belief
-  observation <- observation_matrix(states, actions,
-                                    prob_obs = 0.5, tol = 1e-9)
-
-
+  U <- utility_matrix(states, actions, V, C, K, Q)
+  P <- transition_matrix(states, actions, K, E)
+  transition <- list_matrix(P) ## Reshape things
+  observation <- observation_matrix(states, actions, obs, prob_obs = obs_prob)
   list("transition" = transition, "observation" = observation, "reward" = U)
 }
 
+## turn 3D array to list of 2D matrices:
+list_matrix <- function(P){
+  A <- dim(P)[3]
+  m <- dim(P)[1]
+  P <- lapply(1:A, function(i) rowNorm(Matrix::Matrix( P[,,i]) ))
+  transition <- array(dim = c(m, m, A))
+  for(i in 1:A){
+    transition[,,i] <- as.matrix(P[[i]])
+  }
+  transition
+}
+
+utility_matrix <- function(states, actions, V, C, K, Q){
+  S_0 <- max(states)
+  A <- length(actions)
+  ## state space is 2*n: we have 1:n species, & either have all critical species or we not
+  n = length(states)
+  ss <- 1:(2*n)
+
+  ### Calculate Transition Matrix (P) and Utility Matrix (U)
+  m <- length(ss)
+  U <- array(dim=c(m, A))
+  for(i in 1:m){
+    for(k in 1:A){
+      U[i,k] <- ss_utility(ss[i], actions[k],
+                           V, C, K, S_0, Q)
+    }
+  }
+  U
+}
+
+
+transition_matrix <- function(states, actions, K, E){
+  S_0 <- max(states)
+  A <- length(actions)
+  ## state space is 2*n: we have 1:n species, & either have all critical species or we not
+  n = length(states)
+  ss <- 1:(2*n)
+  m <- length(ss)
+  P <- array(dim=c(m, m, A))
+  for(i in 1:m){
+    for(k in 1:A){
+      for(j in 1:m){
+        P[i,j,k] <- f_ss(ss[i], ss[j], actions[k],
+                   S_0, states, K, E)
+      }
+    }
+  }
+  P
+}
 
 
 
@@ -118,20 +141,25 @@ prob_critical <- function(state, next_state, action, K){
 
 
 ## Observation matrix
-observation_matrix <- function(states, actions,
-                               prob_obs = 0.5, tol = 1e-9){
+observation_matrix <- function(states, actions, obs = states,
+                               prob_obs = 0.5, tol = 1e-6){
 
-  n <- length(states)
-  m <- 2*n
-  obs1 <- array(0,dim = c(n,n))
+  n_s <- length(states)
+  n_o <- length(obs)
 
-  for(i in 1:n){
+
+  obs1 <- array(0, dim = c(n_s, n_o))
+
+  for(i in 1:n_s){
     #   obs1[i,] <- c(1, rep(0, n-1))
-    obs1[,i] <- dbinom(states, states[i]+10, prob_obs)
+    ## if there are really Y species, and I have prob_obs of seeing each
+    ## one, what is the probability I observe X species?
+    obs1[i,] <- dbinom(obs, states[i], prob_obs)
   }
 
+
   obs1 <- rowNorm(obs1)
-  zeros <- array(0,dim = c(n,n))
+  zeros <- array(0,dim = c(n_s,n_o))
   obs_ss <- cbind(
     rbind(obs1, zeros),
     rbind(zeros, obs1))
@@ -139,7 +167,8 @@ observation_matrix <- function(states, actions,
   ## validation, with some tolerance
   stopifnot( sum( (rowSums(obs_ss) - 1)) < tol )  ## some tolerance
 
-  obs <- array(dim = c(m,m,length(actions)))
+  obs <- array(dim = c(2*n_s,2*n_o,length(actions)))
+
   for(i in 1:length(actions)){
     obs[,,i] <- obs_ss
   }
@@ -149,14 +178,15 @@ observation_matrix <- function(states, actions,
 
 ## Define a 1-D state-space from all combinations
 # of number of species + binary indicator of critical species present
-parse_ss <- function(x, n){
+parse_ss <- function(x, S_0){
+  n <- S_0 + 1
   if(x <= n) return(list(s = x, r = TRUE))
   else return(list(s = x - n, r = FALSE))
 }
 
-ss_utility <- function(s_t, a_t, V, C, K, n, Q) {
+ss_utility <- function(s_t, a_t, V, C, K, S_0, Q) {
 
-  S <- parse_ss(s_t, n)
+  S <- parse_ss(s_t, S_0)
   if (a_t > 0) { ## "Protect"
     cost <- C * a_t ^ Q
     if (S$s < K) {
@@ -177,13 +207,13 @@ ss_utility <- function(s_t, a_t, V, C, K, n, Q) {
 
 ## Transitions work on idices, not state values
 f_ss <- function(ST, ST1, a_t,
-                 n, states, K, E){
+                 S_0, states, K, E){
   #if(a_t == 1){
   #  return(as.numeric(ST == ST1))
   #} else {
 
-    st = parse_ss(ST, n)
-    st1 = parse_ss(ST1, n)
+    st = parse_ss(ST, S_0)
+    st1 = parse_ss(ST1, S_0)
 
     P_trans <- prob_transition(states[st$s], states[st1$s], a_t, E)
     P_crit <- prob_critical(states[st$s], states[st1$s], a_t, K)
@@ -204,6 +234,8 @@ f_ss <- function(ST, ST1, a_t,
 }
 
 rowNorm <- function(M){
-  N <- Matrix::rowSums(M)
-  M / N
+  N <- Matrix::rowSums(Matrix::Matrix(M))
+  i <- N != 0
+  M[i,] <- M[i,] / N[i]
+  M
 }
