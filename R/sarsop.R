@@ -52,7 +52,9 @@ sarsop <- function(transition,
                    ...){
 
   ## unique id based on arguments specified in function call
-  id <- digest::digest(match.call())
+  id <- digest::digest(list(transition, observation, reward, discount,
+                            state_prior, verbose, log_dir, log_data,
+                            cache, ...))
 
   infile <- paste0(log_dir, "/", id,  ".pomdpx")
   outfile <-  paste0(log_dir, "/", id,  ".policyx")
