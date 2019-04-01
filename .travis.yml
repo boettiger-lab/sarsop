@@ -10,12 +10,12 @@ matrix:
     - dist: xenial
       warnings_are_errors: false
     - os: osx
-      osx_image: xcode10.0
+      osx_image: xcode10.2
       warnings_are_errors: false
     - os: osx
       osx_image: xcode9.0
       warnings_are_errors: false
-
+## Note that xcode10.1 broken. 10.0 and 9.0 are fine
 
 after_success:
     - Rscript -e 'covr::codecov(quiet = FALSE)'
