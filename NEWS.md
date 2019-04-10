@@ -1,4 +1,15 @@
-# sarsop 0.6.0
+
+# v0.6.1 
+### Released 2019-04-10
+
+* patch memoization
+* resolve several compiler warnings
+* use BH package for boost headers instead of packaging with appl code
+
+
+# v0.6.0
+
+### Released 2018-11-29
 
 * Added a `NEWS.md` file to track changes to the package.
 * Uses a memoization strategy in caching sarsop results.  This deprecates
