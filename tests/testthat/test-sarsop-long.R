@@ -25,9 +25,20 @@ f <- function(x, h){
 m <- fisheries_matrices(states, actions, obs, reward_fn, f,
                         sigma_g, sigma_m, noise = "lognormal")
 
+system.time({
 alpha <- sarsop(m$transition, m$observation, m$reward,
-                discount, precision = .1, timeout = 10)
+                discount, precision = .1, timeout = 200, log_dir = ".")
+})
 df <- compute_policy(alpha, m$transition, m$observation, m$reward)
+
+
+
+system.time({
+  alpha <- sarsop(m$transition, m$observation, m$reward,
+                  discount, precision = .1, timeout = 200, log_dir = ".")
+})
+df <- compute_policy(alpha, m$transition, m$observation, m$reward)
+
 
 
 })

@@ -1,7 +1,7 @@
 Package: sarsop
 Type: Package
 Title: Approximate POMDP Planning Software
-Version: 0.6.0
+Version: 0.6.1
 Authors@R: c(
     person("Carl", "Boettiger", 
             email = "cboettig@gmail.com", 
