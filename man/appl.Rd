@@ -10,19 +10,51 @@
 \alias{pomdpconvert}
 \title{APPL wrappers}
 \usage{
-pomdpsol(model, output = tempfile(), precision = 0.001,
-  timeout = NULL, fast = FALSE, randomization = FALSE,
-  memory = NULL, improvementConstant = NULL, timeInterval = NULL,
-  stdout = tempfile(), stderr = tempfile(), spinner = TRUE)
+pomdpsol(
+  model,
+  output = tempfile(),
+  precision = 0.001,
+  timeout = NULL,
+  fast = FALSE,
+  randomization = FALSE,
+  memory = NULL,
+  improvementConstant = NULL,
+  timeInterval = NULL,
+  stdout = tempfile(),
+  stderr = tempfile(),
+  spinner = TRUE
+)
 
-polgraph(model, policy, output = tempfile(), max_depth = 3,
-  max_branches = 10, min_prob = 0.001, stdout = "", spinner = TRUE)
+polgraph(
+  model,
+  policy,
+  output = tempfile(),
+  max_depth = 3,
+  max_branches = 10,
+  min_prob = 0.001,
+  stdout = "",
+  spinner = TRUE
+)
 
-pomdpsim(model, policy, output = tempfile(), steps = 100,
-  simulations = 3, stdout = "", spinner = TRUE)
+pomdpsim(
+  model,
+  policy,
+  output = tempfile(),
+  steps = 100,
+  simulations = 3,
+  stdout = "",
+  spinner = TRUE
+)
 
-pomdpeval(model, policy, output = tempfile(), steps = 100,
-  simulations = 3, stdout = "", spinner = TRUE)
+pomdpeval(
+  model,
+  policy,
+  output = tempfile(),
+  steps = 100,
+  simulations = 3,
+  stdout = "",
+  spinner = TRUE
+)
 
 pomdpconvert(model, stdout = "", spinner = TRUE)
 }

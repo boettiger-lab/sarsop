@@ -19,7 +19,7 @@ README.md
 ^src/pomdpsim$
 ^src/pomdpsol$
 ^windows
-^inst/bin
+^inst/bin$
 ^\.travis\.yml$
 ^inst/notebook
 ^inst/doc/*\.pdf
@@ -31,3 +31,5 @@ inst/doc/*.png
 ^codecov\.yml$
 ^docs
 ^articles$
+^\.github$
+out\.policy$

@@ -4,9 +4,14 @@
 \alias{compute_policy}
 \title{compute_policy}
 \usage{
-compute_policy(alpha, transition, observation, reward,
+compute_policy(
+  alpha,
+  transition,
+  observation,
+  reward,
   state_prior = rep(1, dim(observation)[[1]])/dim(observation)[[1]],
-  a_0 = 1)
+  a_0 = 1
+)
 }
 \arguments{
 \item{alpha}{the matrix of alpha vectors returned by \code{\link{sarsop}}}

@@ -4,8 +4,11 @@
 \alias{meta_from_log}
 \title{meta from log}
 \usage{
-meta_from_log(parameters, log_dir = ".", metafile = paste0(log_dir,
-  "/meta.csv"))
+meta_from_log(
+  parameters,
+  log_dir = ".",
+  metafile = paste0(log_dir, "/meta.csv")
+)
 }
 \arguments{
 \item{parameters}{a data.frame with the desired parameter values as given in metafile}
