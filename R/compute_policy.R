@@ -12,7 +12,8 @@
 #' if(assert_has_appl()){
 #' alpha <- sarsop(m$transition, m$observation, m$reward, 0.95, precision = 10)
 #' compute_policy(alpha, m$transition, m$observation, m$reward)
-#' }}
+#' }
+#' }
 #'
 compute_policy <- function(alpha, transition, observation, reward,
                            state_prior =  rep(1, dim(observation)[[1]]) / dim(observation)[[1]], a_0 = 1){
