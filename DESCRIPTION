@@ -32,6 +32,5 @@ Suggests:
     covr,
     spelling
 LinkingTo: BH
-VignetteBuilder: knitr
 Encoding: UTF-8
 Language: en-US

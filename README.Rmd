@@ -31,7 +31,7 @@ library(tidyverse) # for plotting
 
 ## Problem definition
 
-Our problem is defined by a state space, `states`, representing the true fish stock size (in arbitrary units),  and an action space, `actions` representing the number of fish that will be harvested (or attempted to harvest).  For simplicitly, we will permit any action from 0 harvest to the maximum possible state size.  
+Our problem is defined by a state space, `states`, representing the true fish stock size (in arbitrary units),  and an action space, `actions` representing the number of fish that will be harvested (or attempted to harvest).  For simplicity, we will permit any action from 0 harvest to the maximum possible state size.  
 
 A stock recruitment function, `f` describes the expected future state given the current state.  The true future state will be a stochastic draw with this mean.
 
@@ -81,7 +81,7 @@ m <- fisheries_matrices(states, actions, observations, reward_fn,
 ## POMDP Solution
 
 In the POMDP problem, the true state is unknown, but measured imperfectly.  We introduce
-an observation matrix to indicate the probabilty of observing a particular state $y$ given
+an observation matrix to indicate the probability of observing a particular state $y$ given
 a true state $x$. In principle this could depend on the action taken as well, though for 
 simplicity we assume only a log-normal measurement error independent of the action chosen.
 
@@ -149,7 +149,7 @@ sim$state_posterior %>%
 
 # Developer Notes
 
-Unfortunately the appl source code is a bit dated and not suitable for using as a shared library. It builds with lot of warnings and on Windows it only builds with MS Visual Studio. This package tries to make things as easy as possible for the user by bunding the appl executables and wrap them with `system` calls in R.  This package also provides higher-level functions for POMDP analysis.
+Unfortunately the appl source code is a bit dated and not suitable for using as a shared library. It builds with lot of warnings and on Windows it only builds with MS Visual Studio. This package tries to make things as easy as possible for the user by bundling the appl executables and wrap them with `system` calls in R.  This package also provides higher-level functions for POMDP analysis.
 
 ## Thanks
 
