@@ -18,7 +18,7 @@ using namespace momdp;
 AlphaVectorPolicy::AlphaVectorPolicy(SharedPointer<MOMDP> problem) : valueAction(0)
 {
 	this->problem = problem;
-	this->policyFile = policyFile;
+	//this->policyFile = policyFile;
 	alphaPlanePoolSet = new AlphaPlanePoolSet(NULL);
 	alphaPlanePoolSet->setProblem(problem);
 	alphaPlanePoolSet->initialize();
@@ -44,13 +44,13 @@ int AlphaVectorPolicy::getValueAction() {
 
 bool AlphaVectorPolicy::readFromFile(const std::string& inFileName)
 {
-    
+
     char tag[MaxStr], contents[MaxStr], tagname[MaxStr], attrname[MaxStr], value[MaxStr];
     float x1, y1, z1, x2, y2, z2, t0, t1;
     int linum=0;
     FILE *infile=0, *outfile=0;
 
-    infile = fopen(inFileName.c_str(),"r");    
+    infile = fopen(inFileName.c_str(),"r");
     if(infile==0)
     {
 	cerr << "ERROR: couldn't open " << inFileName << " for reading " << endl;
@@ -69,7 +69,7 @@ bool AlphaVectorPolicy::readFromFile(const std::string& inFileName)
 	cerr << "ERROR:\n\tExpected Policy tag as root" << endl;
 	exit(EXIT_FAILURE);
     }
-    
+
     xml_grab_attrib( tag, attrname, value, MaxStr );	/* Get any attributes within tag. */
     while(value[0] != '\0'){
 	if(string(attrname)=="type" && string(value)!="value"){
@@ -80,8 +80,8 @@ bool AlphaVectorPolicy::readFromFile(const std::string& inFileName)
     }
     xml_parse( infile, tag, contents, MaxStr, &linum );
     xml_grab_tag_name( tag, tagname, MaxStr );	/* Get tag name. */
-    
-    
+
+
     if(string(tagname)!="AlphaVector"){
 	cerr << "ERROR:\n\tExpected AlphaVector tag" << endl;
 	exit(EXIT_FAILURE);
@@ -159,7 +159,7 @@ bool AlphaVectorPolicy::readFromFile(const std::string& inFileName)
 	}
 
 	//check if vector is dense or sparse
-	if(string(tagname)=="Vector"){ 	    
+	if(string(tagname)=="Vector"){
 	    FOR(i, vectorLength){
 		char  dvalue[200];
 		if(fscanf(infile, "%s", &dvalue)==EOF){
@@ -223,7 +223,7 @@ int AlphaVectorPolicy::getBestActionLookAhead(BeliefWithState& b, REAL_VALUE& ma
 
 	DEBUG_TRACE(cout << "getBestActionLookAhead" << endl; );
 
-	for(Actions::iterator aIter = problem->actions->begin(); aIter != problem->actions->end(); aIter ++) 
+	for(Actions::iterator aIter = problem->actions->begin(); aIter != problem->actions->end(); aIter ++)
 	{
 		int a = aIter.index();
 		DEBUG_TRACE(cout << "a " << a << endl; );
@@ -231,13 +231,13 @@ int AlphaVectorPolicy::getBestActionLookAhead(BeliefWithState& b, REAL_VALUE& ma
 		double sum = 0.0;
 		double immediateReward = problem->rewards->getReward(b, a);
 
-		if (problem->XStates->size() == 1) 
+		if (problem->XStates->size() == 1)
 		{
 			DEBUG_TRACE(cout << "spv1 " << endl; );
 			spv.resize(1);
 			spv.push_back(0, 1.0);
-		} 
-		else 
+		}
+		else
 		{
 			DEBUG_TRACE(cout << "spv2 " << endl; );
 			problem->getObsStateProbVector(spv, b, a); // P(Xn|cn.s,a)
@@ -246,14 +246,14 @@ int AlphaVectorPolicy::getBestActionLookAhead(BeliefWithState& b, REAL_VALUE& ma
 		DEBUG_TRACE( cout << "spv " << endl; );
 		DEBUG_TRACE( spv.write(cout) << endl; );
 
-		FOR(Xn, spv.size()) 
+		FOR(Xn, spv.size())
 		{
 			DEBUG_TRACE(cout << "Xn " << Xn << endl; );
 			double sprob = spv(Xn);
-			if (sprob > OBS_IS_ZERO_EPS) 
+			if (sprob > OBS_IS_ZERO_EPS)
 			{
 				problem->getJointUnobsStateProbVector(*jspv, &b, a, Xn);
-				
+
 				DEBUG_TRACE( cout << "jspv " << endl; );
 				DEBUG_TRACE( jspv->write(cout) << endl; );
 
@@ -261,18 +261,18 @@ int AlphaVectorPolicy::getBestActionLookAhead(BeliefWithState& b, REAL_VALUE& ma
 				//problem->getStatenObsProbVectorFast(ospv, a, Xn, jspv);
 				problem->getObsProbVectorFast(opv, a, Xn, *jspv); // only the joint prob is useful for later but we calculate the observation prob P(o|Xn,cn.s,a)
 				//problem->getObsProbVector(opv, cn.s, a, Xn);
-				
+
 				DEBUG_TRACE( cout << "opv " << endl; );
 				DEBUG_TRACE( opv.write(cout) << endl; );
 
 
 
-				FOR(o, opv.size()) 
+				FOR(o, opv.size())
 				{
 					DEBUG_TRACE(cout << "o " << o << endl; );
 
 					double oprob = opv(o);
-					if (oprob > OBS_IS_ZERO_EPS) 
+					if (oprob > OBS_IS_ZERO_EPS)
 					{
 						double obsProb = oprob * sprob; // P(o,Xn|cn.s,a) = P(Xn|cn.s,a) * P(o|Xn,cn.s,a)
 						//nextb = problem->getNextBeliefStvalFast(sp, a, o, Xn, jspv);
@@ -288,13 +288,13 @@ int AlphaVectorPolicy::getBestActionLookAhead(BeliefWithState& b, REAL_VALUE& ma
 
 						DEBUG_TRACE( cout << "childLB " << childLB << endl; );
 						DEBUG_TRACE( cout << "sum " << sum << endl; );
-						
+
 						// nextb deletion will be handled by smart pointers
-						
+
 					}
 				}
 			}
-		} 
+		}
 		sum *= problem->getDiscount();
 		sum += immediateReward;
 
@@ -331,39 +331,39 @@ int AlphaVectorPolicy::getBestActionLookAhead(std::vector<belief_vector>& belYs,
 			FOR (xn, problem->XStates->size())
 			{
 				// for a particular x'
-				if (!((problem->obsProb->getMatrix(a, xn))->isColumnEmpty(o))) 
+				if (!((problem->obsProb->getMatrix(a, xn))->isColumnEmpty(o)))
 				{
 					SparseVector jspv_sum;  // sum of P(x',y' | x, b_{y|x}, a)  * b_x(x) over values of x
 					jspv_sum.resize(problem->YStates->size());
 					belief_vector next_belY; // for P(x',y',o | b_x, b_{y|x}, a) and P(y' | x',  b_x, b_{y|x}, a, o)
-			
+
 					bool nonzero_p_xn = false;  // flag to indicate if P(x',y' | b_x, b_{y|x}, a) == 0 for this particular combination of x', o, and a, and for all y
 					// loop over x
 					FOR (xc, problem->XStates->size())
 					{
-						if (!(belX(xc) == 0)) 
+						if (!(belX(xc) == 0))
 						{
 							// for a particular x
 							// skip all the calculations to add to jspv_sum if *(momdpProblem->XTrans->getMatrix(a, xc)) is all zero for column xn
-							if (!((problem->XTrans->getMatrix(a, xc))->isColumnEmpty(xn))) 
+							if (!((problem->XTrans->getMatrix(a, xc))->isColumnEmpty(xn)))
 							{
 								DenseVector tmp, tmp1;
-								DenseVector Bc; 
+								DenseVector Bc;
 								SparseVector jspv;
-								
+
 								copy(Bc, belYs[xc]);
-		
+
 								emult_column( tmp, *(problem->XTrans->getMatrix(a, xc)), xn, Bc );
-				
+
 								mult( tmp1, *(problem->YTrans->getMatrixTr(a, xc, xn)), tmp );
 								copy(jspv, tmp1);  // P(x',y' | x, b_{y|x}, a) for a particular x and x'
-				
+
 								// multiply with belX(xc) and add to sum over x values
 								jspv *= belX(xc);
 								jspv_sum += jspv;
 
 								if (nonzero_p_xn == false) nonzero_p_xn = true;
-							} 
+							}
 						}
 					}
 
@@ -373,26 +373,26 @@ int AlphaVectorPolicy::getBestActionLookAhead(std::vector<belief_vector>& belYs,
 
 						// check that it's not an all-zero vector!!
 						if (!(next_belY.data.size() == 0)) {
-	
+
 							// the normalization factor is P(x',o | b_x, b_{y|x}, a)
-							double jp_xn_and_o = next_belY.norm_1(); 
-	
+							double jp_xn_and_o = next_belY.norm_1();
+
 							// normalize to get P(y'| x', b_x, b_{y|x}, a, o)
 							next_belY *= (1.0/next_belY.norm_1());
-		
+
 							nextStB->sval = xn;
-		
+
 							//nextStB->bvec = &next_belY;
 							*nextStB->bvec = next_belY;
-	
+
 							//get value at (x', P(y'| x', b_x, b_{y|x}, a, o))
-							double childLB = inner_prod(*alphaPlanePoolSet->getBestAlphaPlane1(*nextStB)->alpha, *nextStB->bvec); 
-	
+							double childLB = inner_prod(*alphaPlanePoolSet->getBestAlphaPlane1(*nextStB)->alpha, *nextStB->bvec);
+
 							//multiply V(x', P(y'| x', b_x, b_{y|x}, a, o)) with P(x',o | b_x, b_{y|x}, a) and add to summation over x'
-							observationValue += jp_xn_and_o * childLB; 
+							observationValue += jp_xn_and_o * childLB;
 						}
-					}		
-				} 
+					}
+				}
 				// else don't need to do anything, i.e. add 0 to observationValue
 			}
 			// add to actionValue
@@ -403,7 +403,7 @@ int AlphaVectorPolicy::getBestActionLookAhead(std::vector<belief_vector>& belYs,
 
 		FOR (xc, problem->XStates->size())
 		{
-			if (!(belX(xc) == 0)) 
+			if (!(belX(xc) == 0))
 			{
 				currStB->sval = xc;
 
@@ -421,7 +421,7 @@ int AlphaVectorPolicy::getBestActionLookAhead(std::vector<belief_vector>& belYs,
 		}
 		else
 		{
-			if (actionValue > bestValue) 
+			if (actionValue > bestValue)
 			{
 				bestValue = actionValue;
 				bestAction = a;
@@ -451,39 +451,39 @@ int AlphaVectorPolicy::getBestActionLookAhead(SharedPointer<belief_vector>& belY
 			FOR (xn, problem->XStates->size())
 			{
 				// for a particular x'
-				if (!((problem->obsProb->getMatrix(a, xn))->isColumnEmpty(o))) 
+				if (!((problem->obsProb->getMatrix(a, xn))->isColumnEmpty(o)))
 				{
 					SparseVector jspv_sum;  // sum of P(x',y' | x, b_{y|x}, a)  * b_x(x) over values of x
 					jspv_sum.resize(problem->YStates->size());
 					belief_vector next_belY; // for P(x',y',o | b_x, b_{y|x}, a) and P(y' | x',  b_x, b_{y|x}, a, o)
-			
+
 					bool nonzero_p_xn = false;  // flag to indicate if P(x',y' | b_x, b_{y|x}, a) == 0 for this particular combination of x', o, and a, and for all y
 					// loop over x
 					FOR (xc, problem->XStates->size())
 					{
-						if (!(belX(xc) == 0)) 
+						if (!(belX(xc) == 0))
 						{
 							// for a particular x
 							// skip all the calculations to add to jspv_sum if *(momdpProblem->XTrans->getMatrix(a, xc)) is all zero for column xn
-							if (!((problem->XTrans->getMatrix(a, xc))->isColumnEmpty(xn))) 
+							if (!((problem->XTrans->getMatrix(a, xc))->isColumnEmpty(xn)))
 							{
 								DenseVector tmp, tmp1;
-								DenseVector Bc; 
+								DenseVector Bc;
 								SparseVector jspv;
 
 								copy(Bc, *belY);
-								
+
 								emult_column( tmp, *(problem->XTrans->getMatrix(a, xc)), xn, Bc );
-				
+
 								mult( tmp1, *(problem->YTrans->getMatrixTr(a, xc, xn)), tmp );
 								copy(jspv, tmp1);  // P(x',y' | x, b_{y|x}, a) for a particular x and x'
-				
+
 								// multiply with belX(xc) and add to sum over x values
 								jspv *= belX(xc);
 								jspv_sum += jspv;
 
 								if (nonzero_p_xn == false) nonzero_p_xn = true;
-							} 
+							}
 						}
 					}
 
@@ -493,26 +493,26 @@ int AlphaVectorPolicy::getBestActionLookAhead(SharedPointer<belief_vector>& belY
 
 						// check that it's not an all-zero vector!!
 						if (!(next_belY.data.size() == 0)) {
-	
+
 							// the normalization factor is P(x',o | b_x, b_{y|x}, a)
-							double jp_xn_and_o = next_belY.norm_1(); 
-	
+							double jp_xn_and_o = next_belY.norm_1();
+
 							// normalize to get P(y'| x', b_x, b_{y|x}, a, o)
 							next_belY *= (1.0/next_belY.norm_1());
-		
+
 							nextStB->sval = xn;
-		
+
 							//nextStB->bvec = &next_belY;
 							*nextStB->bvec = next_belY;
-	
+
 							//get value at (x', P(y'| x', b_x, b_{y|x}, a, o))
-							double childLB = inner_prod(*alphaPlanePoolSet->getBestAlphaPlane1(*nextStB)->alpha, *nextStB->bvec); 
-	
+							double childLB = inner_prod(*alphaPlanePoolSet->getBestAlphaPlane1(*nextStB)->alpha, *nextStB->bvec);
+
 							//multiply V(x', P(y'| x', b_x, b_{y|x}, a, o)) with P(x',o | b_x, b_{y|x}, a) and add to summation over x'
-							observationValue += jp_xn_and_o * childLB; 
+							observationValue += jp_xn_and_o * childLB;
 						}
-					}		
-				} 
+					}
+				}
 				// else don't need to do anything, i.e. add 0 to observationValue
 			}
 			// add to actionValue
@@ -523,12 +523,12 @@ int AlphaVectorPolicy::getBestActionLookAhead(SharedPointer<belief_vector>& belY
 
 		FOR (xc, problem->XStates->size())
 		{
-			if (!(belX(xc) == 0)) 
+			if (!(belX(xc) == 0))
 			{
 				currStB->sval = xc;
 
-				*currStB->bvec = *belY; 	
-				
+				*currStB->bvec = *belY;
+
 				actionValue += (belX(xc) * problem->rewards->getReward(*currStB, a));
 			}
 		}
@@ -540,7 +540,7 @@ int AlphaVectorPolicy::getBestActionLookAhead(SharedPointer<belief_vector>& belY
 		}
 		else
 		{
-			if (actionValue > bestValue) 
+			if (actionValue > bestValue)
 			{
 				bestValue = actionValue;
 				bestAction = a;
@@ -561,7 +561,7 @@ int AlphaVectorPolicy::getBestActionLookAhead_alternative(std::vector<belief_vec
 
 	SharedPointer<BeliefWithState> currStB (new BeliefWithState());
 	SharedPointer<BeliefWithState> nextStB;
-	
+
 
 	FOR (a, problem->getNumActions())
 	{
@@ -593,22 +593,22 @@ int AlphaVectorPolicy::getBestActionLookAhead_alternative(std::vector<belief_vec
 
 							double oprob = opv(o);
 							if (oprob > OBS_IS_ZERO_EPS)
-							{ 
+							{
 								//problem->getNextBeliefStval(nextStB, currStB, a, o, xn);
 								nextStB = problem->beliefTransition->nextBelief(currStB, a, o, xn);
 								//get value at {xn, next belief}
-								double childLB = inner_prod(*alphaPlanePoolSet->getBestAlphaPlane1(*nextStB)->alpha, *nextStB->bvec); 
+								double childLB = inner_prod(*alphaPlanePoolSet->getBestAlphaPlane1(*nextStB)->alpha, *nextStB->bvec);
 								//multiply by  StatenObs_pv(o), add to xValue
-								//xValue +=  StatenObs_pv(o) * childLB; 
-								xValue +=  oprob * sprob * childLB; 
-								
-							}	
+								//xValue +=  StatenObs_pv(o) * childLB;
+								xValue +=  oprob * sprob * childLB;
+
+							}
 						}
 					}
 				}
 
 				xValue = problem->rewards->getReward(*currStB, a) + problem->getDiscount() * xValue;
-				actionValue += (belX(xc) * xValue); 
+				actionValue += (belX(xc) * xValue);
 			}
 		}
 
@@ -618,7 +618,7 @@ int AlphaVectorPolicy::getBestActionLookAhead_alternative(std::vector<belief_vec
 		}
 		else
 		{
-			if (actionValue > bestValue) 
+			if (actionValue > bestValue)
 			{
 				bestValue = actionValue;
 				bestAction = a;
@@ -626,12 +626,12 @@ int AlphaVectorPolicy::getBestActionLookAhead_alternative(std::vector<belief_vec
 
 		}
 
-	}	
+	}
 	return bestAction;
 }
 
 // SYL07282010 replaced with code which follows RSS09 paper
-// this function implements: for each action, for each possible (x,b_y), do one-step-lookahead, then weigh the resultant values by belX(x). 
+// this function implements: for each action, for each possible (x,b_y), do one-step-lookahead, then weigh the resultant values by belX(x).
 int AlphaVectorPolicy::getBestActionLookAhead_alternative(SharedPointer<belief_vector>& b, DenseVector& belX)
 {
 
@@ -655,7 +655,7 @@ int AlphaVectorPolicy::getBestActionLookAhead_alternative(SharedPointer<belief_v
 
 				xValue = 0;
 				currStB->sval = xc;
-				
+
 
 				problem->getObsStateProbVector(spv, *currStB, a);
 
@@ -673,22 +673,22 @@ int AlphaVectorPolicy::getBestActionLookAhead_alternative(SharedPointer<belief_v
 
 							double oprob = opv(o);
 							if (oprob > OBS_IS_ZERO_EPS)
-							{ 
+							{
 								//problem->getNextBeliefStval(nextStB, currStB, a, o, xn);
 								nextStB = problem->beliefTransition->nextBelief(currStB, a, o, xn);
 								//get value at {xn, next belief}
-								double childLB = inner_prod(*alphaPlanePoolSet->getBestAlphaPlane1(*nextStB)->alpha, *nextStB->bvec); 
+								double childLB = inner_prod(*alphaPlanePoolSet->getBestAlphaPlane1(*nextStB)->alpha, *nextStB->bvec);
 								//multiply by  StatenObs_pv(o), add to xValue
-								//xValue +=  StatenObs_pv(o) * childLB; 
-								xValue +=  oprob * sprob * childLB; 
-								
-							}	
+								//xValue +=  StatenObs_pv(o) * childLB;
+								xValue +=  oprob * sprob * childLB;
+
+							}
 						}
 					}
 				}
 
 				xValue = problem->rewards->getReward(*currStB, a) + problem->getDiscount() * xValue;
-				actionValue += (belX(xc) * xValue); 
+				actionValue += (belX(xc) * xValue);
 			}
 		}
 		if (a == 0)
@@ -697,7 +697,7 @@ int AlphaVectorPolicy::getBestActionLookAhead_alternative(SharedPointer<belief_v
 		}
 		else
 		{
-			if (actionValue > bestValue) 
+			if (actionValue > bestValue)
 			{
 				bestValue = actionValue;
 				bestAction = a;
@@ -705,12 +705,12 @@ int AlphaVectorPolicy::getBestActionLookAhead_alternative(SharedPointer<belief_v
 
 		}
 
-	}	
+	}
 	return bestAction;
 }
 
 
-// note that this function implements: for each possible (x,b_y), lookup the action and value, weigh the value by belX(x), then choose the action corresponding to the highest weighed value 
+// note that this function implements: for each possible (x,b_y), lookup the action and value, weigh the value by belX(x), then choose the action corresponding to the highest weighed value
 int AlphaVectorPolicy::getBestAction(SharedPointer<belief_vector>& b, DenseVector& belX)
 {
 	int maxAction;
@@ -723,7 +723,7 @@ int AlphaVectorPolicy::getBestAction(SharedPointer<belief_vector>& b, DenseVecto
 
 			SharedPointer<AlphaPlane> bestAlpha = alphaPlanePoolSet->set[xc]->getBestAlphaPlane1(b);;
 			double xvalue = inner_prod(*bestAlpha->alpha, *b);
-			xvalue *= belX(xc) ; 
+			xvalue *= belX(xc) ;
 			if(xvalue > maxValue)
 			{
 				maxValue = xvalue;
@@ -735,7 +735,7 @@ int AlphaVectorPolicy::getBestAction(SharedPointer<belief_vector>& b, DenseVecto
 }
 
 // SYL07282010 added
-// note that this function implements: for each possible (x,b_{y|x}), lookup the action and value, weigh the value by belX(x), then choose the action corresponding to the highest weighed value 
+// note that this function implements: for each possible (x,b_{y|x}), lookup the action and value, weigh the value by belX(x), then choose the action corresponding to the highest weighed value
 int AlphaVectorPolicy::getBestAction(std::vector<belief_vector>& belYs, DenseVector& belX)
 {
 	int maxAction;
@@ -753,7 +753,7 @@ int AlphaVectorPolicy::getBestAction(std::vector<belief_vector>& belYs, DenseVec
 			//SharedPointer<AlphaPlane> bestAlpha = alphaPlanePoolSet->set[xc]->getBestAlphaPlane1(b);
 			double xvalue = inner_prod(*bestAlpha->alpha, *Bc);
 			//double xvalue = inner_prod(*bestAlpha->alpha, *b);
-			xvalue *= belX(xc) ; 
+			xvalue *= belX(xc) ;
 			if(xvalue > maxValue)
 			{
 				maxValue = xvalue;

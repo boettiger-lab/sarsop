@@ -98,7 +98,7 @@ State FactoredPomdp::createState(TiXmlElement* varChild)
 	int numOfStates = atoi(valueConciseNum);
 
 	for (int i = 0; i < numOfStates; i++) {
-	    char buffer[10]; //Not expecting the number of states to be more than 10 digits
+	    char buffer[25]; //Not expecting the number of states to be more than 10 digits -- NOPE, compiler says be safer with more!
 	    sprintf(buffer, "s%d", i); //We require all states to be prefixed with 's'
 	    tokens.push_back(buffer);
 	}
@@ -127,7 +127,7 @@ ObsAct FactoredPomdp::createObservation(TiXmlElement* varChild) {
 	    = varChild->FirstChild("NumValues")->ToElement()->GetText();
 	int numOfObs = atoi(valueConciseNum);
 	for (int i = 0; i < numOfObs; i++) {
-	    char buffer[10]; //Not expecting the number of observations to be more than 10 digits
+	    char buffer[25]; //Not expecting the number of observations to be more than 10 digits -- NOPE
 	    sprintf(buffer, "o%d", i); //We require all obs to be prefixed with 'o'
 	    tokens.push_back(buffer);
 	}
@@ -157,7 +157,7 @@ ObsAct FactoredPomdp::createAction(TiXmlElement* varChild) {
 	    = varChild->FirstChild("NumValues")->ToElement()->GetText();
 	int numOfAct = atoi(valueConciseNum);
 	for (int i = 0; i < numOfAct; i++) {
-	    char buffer[10]; //Not expecting the number of actions to be more than 10 digits
+	    char buffer[25]; //Not expecting the number of actions to be more than 10 digits
 	    sprintf(buffer, "a%d", i); //We require all actions to be prefixed with 'a'
 	    tokens.push_back(buffer);
 	}
