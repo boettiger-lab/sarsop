@@ -40,6 +40,7 @@ m <- fisheries_matrices()
 if(assert_has_appl()){
 alpha <- sarsop(m$transition, m$observation, m$reward, 0.95, precision = 10)
 compute_policy(alpha, m$transition, m$observation, m$reward)
-}}
+}
+}
 
 }

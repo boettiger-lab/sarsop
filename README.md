@@ -25,7 +25,7 @@ library(tidyverse) # for plotting
 Our problem is defined by a state space, `states`, representing the true
 fish stock size (in arbitrary units), and an action space, `actions`
 representing the number of fish that will be harvested (or attempted to
-harvest). For simplicitly, we will permit any action from 0 harvest to
+harvest). For simplicity, we will permit any action from 0 harvest to
 the maximum possible state size.
 
 A stock recruitment function, `f` describes the expected future state
@@ -87,7 +87,7 @@ m <- fisheries_matrices(states, actions, observations, reward_fn,
 
 In the POMDP problem, the true state is unknown, but measured
 imperfectly. We introduce an observation matrix to indicate the
-probabilty of observing a particular state \(y\) given a true state
+probability of observing a particular state \(y\) given a true state
 \(x\). In principle this could depend on the action taken as well,
 though for simplicity we assume only a log-normal measurement error
 independent of the action chosen.
@@ -99,7 +99,7 @@ log_dir <- "inst/extdata/vignette"
 alpha <- sarsop(m$transition, m$observation, m$reward, discount, 
                 log_dir = log_dir,
                 precision = .1, timeout = 200) # run much longer for more precise curve
-#> load time: 2.23 sec, init time: 6.38 sec, run time: 230.21 sec, final precision: 0.125493 end_condition:   Preset timeout reached
+#> load time: 0.48 sec, init time: 3.85 sec, run time: 235.81 sec, final precision: 0.114097 end_condition:   Preset timeout reached
 ```
 
 `sarsop` logs solution files in the specified directory, along with a
@@ -169,15 +169,14 @@ sim$state_posterior %>%
 Unfortunately the appl source code is a bit dated and not suitable for
 using as a shared library. It builds with lot of warnings and on Windows
 it only builds with MS Visual Studio. This package tries to make things
-as easy as possible for the user by bunding the appl executables and
+as easy as possible for the user by bundling the appl executables and
 wrap them with `system` calls in R. This package also provides
 higher-level functions for POMDP analysis.
 
 ## Thanks
 
 Mykel Kochenderfer and Markus Herrmann have been helpful in providing
-windows builds using MS Visual
-    Studio:
+windows builds using MS Visual Studio:
 
   - <http://web.stanford.edu/group/sisl/resources/appl-0.96-win-win32.zip>
   - <http://web.stanford.edu/group/sisl/resources/appl-0.96-win-x64.zip>
