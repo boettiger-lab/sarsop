@@ -19,7 +19,7 @@ struct IndexProbTuple{
     double prob;
 } typedef IndexProbTuple;
 
-FactoredPomdp::FactoredPomdp() 
+FactoredPomdp::FactoredPomdp()
 {
     preprocessBeliefTablesDone = false;
 }
@@ -39,7 +39,7 @@ FactoredPomdp::~FactoredPomdp() {
 /////////////////////////////////
 // USEFUL GENERIC METHODS
 // TOKENIZER
-void FactoredPomdp::Tokenize(const string& str, vector<string>& tokens, const string& delimiters) 
+void FactoredPomdp::Tokenize(const string& str, vector<string>& tokens, const string& delimiters)
 {
 
     // Skip delimiters at beginning.
@@ -47,7 +47,7 @@ void FactoredPomdp::Tokenize(const string& str, vector<string>& tokens, const st
     // Find first "non-delimiter".
     string::size_type pos = str.find_first_of(delimiters, lastPos);
 
-    while (string::npos != pos || string::npos != lastPos) 
+    while (string::npos != pos || string::npos != lastPos)
     {
 	// Found a token, add it to the vector.
 	tokens.push_back(str.substr(lastPos, pos - lastPos));
@@ -64,7 +64,7 @@ void FactoredPomdp::Tokenize(const string& str, vector<string>& tokens, const st
 //////////////////////////////////////////////////
 //Useful Methods For Variables///////////////////
 
-State FactoredPomdp::createState(TiXmlElement* varChild) 
+State FactoredPomdp::createState(TiXmlElement* varChild)
 {
 
     string vnamePrev = varChild->Attribute("vnamePrev");
@@ -263,7 +263,7 @@ void FactoredPomdp::printXMLWarningHeader(TiXmlBase* base){
     cerr << "  " << filename <<":Line " << base->Row() <<":"<< endl << "  ";
 }
 
-Function FactoredPomdp::createFunction(TiXmlElement* pFunction, int whichFunction) 
+Function FactoredPomdp::createFunction(TiXmlElement* pFunction, int whichFunction)
 {
     // note that state function, observation function, and reward function have slighly different structure
     const char* pvtable;
@@ -279,7 +279,7 @@ Function FactoredPomdp::createFunction(TiXmlElement* pFunction, int whichFunctio
     string vnameCurr = pFunction->FirstChild("Var")->ToElement()->GetText();
 
     // check if there is error in <Var>
-    switch (whichFunction) 
+    switch (whichFunction)
     {
 
 	case BELIEFFUNCTION:
@@ -359,10 +359,10 @@ Function FactoredPomdp::createFunction(TiXmlElement* pFunction, int whichFunctio
 	Tokenize(instance, insttokens);
 
 	// first, check if the number of parameters in <Instance> is matches the number of parents
-	// the number for REWARDFUNCTION is exactly the same but it has an additional one 
+	// the number for REWARDFUNCTION is exactly the same but it has an additional one
 	// for STATEFUNCTION AND OBSERVATION FUNCTION
 	// second, check if <Instance> contains correct input corresponding to the parents
-	switch (whichFunction) 
+	switch (whichFunction)
 	{
 	    case OBSERVFUNCTION:
 		for (unsigned int i=0; i < parentTokens.size(); i++) {
@@ -400,9 +400,9 @@ Function FactoredPomdp::createFunction(TiXmlElement* pFunction, int whichFunctio
 		}//end of for
 
 		// check the last input in <Instance> which corresponds to vnameCurr
-		if (insttokens[insttokens.size()-1] != "*" && insttokens[insttokens.size()-1] != "-") 
+		if (insttokens[insttokens.size()-1] != "*" && insttokens[insttokens.size()-1] != "-")
 		{
-		    if (!checkInstanceMatchesParent(insttokens[insttokens.size() -1],vnameCurr)) 
+		    if (!checkInstanceMatchesParent(insttokens[insttokens.size() -1],vnameCurr))
 		    {
 			printXMLErrorHeader(pInstance);
 			cerr<<"In Function: " << vnameCurr << endl;
@@ -535,13 +535,13 @@ Function FactoredPomdp::createFunction(TiXmlElement* pFunction, int whichFunctio
 	    }
 	}else {
 
-	    // tokenize the prob table 
+	    // tokenize the prob table
 	    vector<string> probttokens;
 	    Tokenize(table, probttokens);
 
 
 	    // if the tokens contain 'identity', the input file has a bug
-	    for (unsigned int i=0; i < probttokens.size(); i++) {    
+	    for (unsigned int i=0; i < probttokens.size(); i++) {
 		if (probttokens[i] == "identity" || (probttokens[i] == "uniform")) {
 		    printXMLErrorHeader(pNextSibling->FirstChild(pvtable));
 		    cerr << "The keyword \"" << probttokens[i] << "\" must be used without other arguments\n";
@@ -619,7 +619,7 @@ Function FactoredPomdp::createFunction(TiXmlElement* pFunction, int whichFunctio
 
 unsigned int FactoredPomdp::start() {
     ofstream debugfile;
-    if (DEBUGREADXMLINPUT) 
+    if (DEBUGREADXMLINPUT)
     {
 	debugfile.open("debug_ReadXMLInput.txt");
     }
@@ -644,7 +644,7 @@ unsigned int FactoredPomdp::start() {
     TiXmlHandle hDoc(&doc); // the handler
     bool loadOkay = doc.LoadFile();
 
-    if (!loadOkay) 
+    if (!loadOkay)
     {
 	cerr << "ERROR\n  Could not load pomdpX file"<<endl ;
 	cerr << "  Line"<< doc.ErrorRow() <<":"<< doc.ErrorDesc() << endl;
@@ -799,7 +799,7 @@ unsigned int FactoredPomdp::start() {
 	}
 	if (mymap.find(actionList[i].getVName()) == mymap.end()) {
 	    mymap[actionList[i].getVName()] = &actionList[i];
-	} else {	       
+	} else {
 	    cerr << "ERROR\n  There seems to be repeated variable names for: "
 		<< actionList[i].getVName() << endl;
 	    cerr << "  Check pomdpX file for repeated variable names." << endl;
@@ -1074,7 +1074,7 @@ unsigned int FactoredPomdp::start() {
 bool FactoredPomdp::checkFunctionProbabilities(Function* f, TiXmlElement* xmlNode, string whichFunction){
     vector<vector<int> > commonIndices;
     vector<double> probs;
-    if (f->sparseT->errorInProbabilities(commonIndices, probs)) 
+    if (f->sparseT->errorInProbabilities(commonIndices, probs))
     {
 	//flush error output immediately, in case we encounter a file with large number of error
 	printXMLWarningHeader(xmlNode);
@@ -1238,7 +1238,7 @@ const set<string> FactoredPomdp::getRewardFunctionCurrentTimeSliceVars(Function*
     }
     //if observation uses current time slice variable, add those variable
     for(vector<string>::iterator it=obsVariable.begin();it!=obsVariable.end();it++){
-	Function obsFunction = *mapFunc[*it]; 
+	Function obsFunction = *mapFunc[*it];
 	vector<string> parents = obsFunction.getParents();
 	for (unsigned int j=0; j<parents.size(); j++) {
 	    if ((checkStateNameExists(parents[j]))) {
@@ -1264,6 +1264,7 @@ const bool FactoredPomdp::isPreviousTimeSlice(string name) const{
     }
     cerr << "Not a State variable" << endl;
     assert(false);
+  return false;
 }
 
 const bool FactoredPomdp::isCurrentTimeSlice(string name) const{
@@ -1278,10 +1279,11 @@ const bool FactoredPomdp::isCurrentTimeSlice(string name) const{
     }
     cerr << "Not a State variable" << endl;
     assert(false);
+  return false;
 }
 
 
-void FactoredPomdp::convertFast() 
+void FactoredPomdp::convertFast()
 {
     DEBUG_LOG (cout << "convert fast" << endl; );
 
@@ -1482,7 +1484,7 @@ void FactoredPomdp::convertFastStateTrans() {
 
 
     vector<SharedPointer<SparseMatrix> > cOst;
-    for (unsigned int i = 0; i < cOstPre.size(); i++) 
+    for (unsigned int i = 0; i < cOstPre.size(); i++)
     {
 	cOst.push_back(cOstPre[i].convertSparseMatrix());
 	if (DEBUGFASTCONVERSIONSTATE) {
@@ -1531,7 +1533,7 @@ void FactoredPomdp::convertFastStateTrans() {
 //////////////////////////////////////////////////////////////
 // for conversion of R(x,y,x',y',a,o) to R(x,y,a)
 
-SharedPointer<SparseTable> FactoredPomdp::preprocessRewardTable() 
+SharedPointer<SparseTable> FactoredPomdp::preprocessRewardTable()
 {
     ofstream debugfile;
     if (DEBUGFACTOREDCONVERSIONREWARD) {
@@ -1555,7 +1557,7 @@ SharedPointer<SparseTable> FactoredPomdp::preprocessRewardTable()
 	functionsDepend.push_back(rewardFunctionList[i]);
 
 	//merge reward table with the functions it depends on
-	SharedPointer<SparseTable> rewardTable = mergeTables(&functionsDepend, BELIEFFUNCTION, debugfile, DEBUGFACTOREDCONVERSIONREWARD); 
+	SharedPointer<SparseTable> rewardTable = mergeTables(&functionsDepend, BELIEFFUNCTION, debugfile, DEBUGFACTOREDCONVERSIONREWARD);
 	rewardTable->write(debugfile);
 
 	debugfile << "after reducing common indexes that are not matched with unique indexes" << endl;
@@ -1624,7 +1626,7 @@ void FactoredPomdp::convertFastObsTrans() {
 	    vector<IndexProbTuple> temp = observations;
 	    int lastSize = temp.size();	//last size of end states vector before repeating
 
-	    //multiple the number of end state by number of entries in this row 
+	    //multiple the number of end state by number of entries in this row
 	    //repeat the possible end states if there are more than 1 entries for this row in this table
 	    for(int i=1;i<entries.size();i++){
 		observations.insert(observations.end(), temp.begin(), temp.end());
@@ -1767,11 +1769,11 @@ void FactoredPomdp::convertFastRewardTrans() {
     double reward = 0;
 
     map<string, int> variableValues = getStartActionSVarValues();
-    do{  
+    do{
 	//vector storing reward from individual tables to be merged
 	double reward = 0;
 	for(vector<Function>::iterator rewardFunc=rewardFunctionList.begin();rewardFunc!=rewardFunctionList.end();rewardFunc++){
-	    //look up in reward table, and merge the lookup results into reward 
+	    //look up in reward table, and merge the lookup results into reward
 
 	    SharedPointer<SparseTable> rewardTable = rewardFunc->sparseT;
 	    //assemble commom index for this table using current variable values
@@ -1805,9 +1807,9 @@ void FactoredPomdp::convertFastRewardTrans() {
     debugfile.close();
 }//end of convertFastRewardTrans()
 
-void FactoredPomdp::convertFastBelief() 
+void FactoredPomdp::convertFastBelief()
 {
-    ofstream debugfile;  
+    ofstream debugfile;
     if (DEBUGFASTCONVERSIONBELIEF)
 	debugfile.open("debug_FactoredPomdp_convertFastBelief.txt");
     if (DEBUGFASTCONVERSIONBELIEF)
@@ -1835,18 +1837,18 @@ void FactoredPomdp::convertFastBelief()
 	prob = 1.0;
 	vector<int> commonIndex = finalBeliefTable->getIterPosition();
 	//startState from 0
-	for (unsigned int j = 0; j < commonIndex.size(); j++) 
+	for (unsigned int j = 0; j < commonIndex.size(); j++)
 	{
 	    startState += commonIndex[j] * fastPositionCIIndexMap[j];
 	}
 
-	for (unsigned int j = 0; j < se.uniqueIndex.size(); j++) 
+	for (unsigned int j = 0; j < se.uniqueIndex.size(); j++)
 	{
 	    endState += se.uniqueIndex[j].index * fastPositionUIIndexMap[j];
 	    prob *= se.uniqueIndex[j].value;
 	}//end of for
 
-	if (startState != endState) 
+	if (startState != endState)
 	{
 	    cerr << "for initial belief state, the entries should have common indexes correspoding to unique indexes" << endl;
 	    assert(false);
@@ -1956,11 +1958,11 @@ SharedPointer<SparseTable>  FactoredPomdp::mergeSparseTables(vector<SharedPointe
     }//end of for
 
     SharedPointer<SparseTable>  resultTable = stList[0];
-    for (unsigned int i = 1; i < stList.size(); i++) 
+    for (unsigned int i = 1; i < stList.size(); i++)
     {
 	resultTable = SparseTable::join(*resultTable,*stList[i], whichFunction);
 
-	if (printDebugFile) 
+	if (printDebugFile)
 	{
 	    debugfile << "Intermediate table " << i << endl;
 	    resultTable->write(debugfile);
@@ -1990,11 +1992,11 @@ SharedPointer<SparseTable>  FactoredPomdp::mergeTables(vector<Function>* functio
     SharedPointer<SparseTable>  resultTable =  (*functionList)[0].sparseT;
     //SharedPointer<SparseTable>  resultTable(new SparseTable(*(*functionList)[0].sparseT));
     resultTable->sortEntries();
-    for (unsigned int i = 1; i < functionList->size(); i++) 
+    for (unsigned int i = 1; i < functionList->size(); i++)
     {
 	resultTable = SparseTable::join(*resultTable,*(*functionList)[i].sparseT, whichFunction);
 
-	if (printDebugFile) 
+	if (printDebugFile)
 	{
 	    debugfile << "Intermediate table " << i << endl;
 	    resultTable->write(debugfile);
@@ -2019,13 +2021,13 @@ void FactoredPomdp::expandFactoredStateTable(SharedPointer<SparseTable> sf) {
 
 	    StateObsAct* soa = mymap[stateList[i].getVNameCurr()];
 	    State* s = static_cast<State*> (soa);
-	    numCIValues.push_back(s->getValueEnum().size()); 
+	    numCIValues.push_back(s->getValueEnum().size());
 
 	}//end of if
     }//end of for
 
     SharedPointer<SparseTable> expandedTable (new SparseTable(cIheader, sf->uIheader, numCIValues, sf->numUIValues));
-    vector<int> newCI = expandedTable->getIterBegin(); 
+    vector<int> newCI = expandedTable->getIterBegin();
     do{
 	//get the CI of old table to copy from
 	vector<int> oldCI;
@@ -2035,11 +2037,11 @@ void FactoredPomdp::expandFactoredStateTable(SharedPointer<SparseTable> sf) {
 	//copy and repeat old sparse entries in expanded table
 	vector<SparseEntry>& curRow = sf->getSparseEntries(oldCI);
 	for(int j=0;j<curRow.size();j++){
-	    expandedTable->add(newCI, curRow[j]); 
+	    expandedTable->add(newCI, curRow[j]);
 	}
     }while(expandedTable->getNextCI(newCI));
 
-    sf = expandedTable; 
+    sf = expandedTable;
 }//end of expandFactoredSparseTable
 
 void FactoredPomdp::resortFactoredStateTables(ofstream& debugfile, bool printDebugFile, const int MIXEDTYPE) {
@@ -2102,7 +2104,7 @@ const void FactoredPomdp::defineCanonicalNames() {
     // for random ordering
     for (unsigned int j = 0; j < finalStateTable->cIheader.size(); j++) {
 	// note that all in current time slices are not added
-	if (checkActionNameExists(finalStateTable->cIheader[j])) 
+	if (checkActionNameExists(finalStateTable->cIheader[j]))
 	    canonicalNamePrev.push_back(finalStateTable->cIheader[j]);
 	else if (isPreviousTimeSlice(finalStateTable->cIheader[j]))
 	    canonicalNamePrev.push_back(finalStateTable->cIheader[j]);
@@ -2237,7 +2239,7 @@ void FactoredPomdp::mapFactoredBeliefIndexesToValue(SharedPointer<SparseTable> s
     factoredPositionCIIndexMap.clear();
     factoredPositionUIIndexMap.clear();
 
-    // start from 0 
+    // start from 0
     for (unsigned int j = 0; j < st->cIheader.size(); j++) {
 
 	StateObsAct* soa = mymap[st->cIheader[j]];
@@ -2280,7 +2282,7 @@ void FactoredPomdp::convertFactoredStateReparamTrans() {
     // Conversion to the old matrices
     // TXtr[a][x](x',y),
     // compressed old state transition transposed, (pre-conversion to c matrix)
-    vvPreSparseMatrix cOstXTrPre = createVvPreSparseMatrix(numActions, numMergedStatesX, numMergedStatesX, numMergedStatesY); 
+    vvPreSparseMatrix cOstXTrPre = createVvPreSparseMatrix(numActions, numMergedStatesX, numMergedStatesX, numMergedStatesY);
     // TX[a][x](y,x')
     vvPreSparseMatrix cOstXPre = createVvPreSparseMatrix(numActions, numMergedStatesX, numMergedStatesY, numMergedStatesX); // compressed old state transition, (pre-conversion to c matrix)
 
@@ -2299,8 +2301,8 @@ void FactoredPomdp::convertFactoredStateReparamTrans() {
     }//end of for
 
     int action;
-    int startStateX; 
-    int startStateY; 
+    int startStateX;
+    int startStateY;
     int startStateX_prime;
 
     // these are for checking terminal states
@@ -2314,9 +2316,9 @@ void FactoredPomdp::convertFactoredStateReparamTrans() {
     // end
     map<string, int> variableValues = getStartActionXYVarValues();
     action = startStateX = startStateX_prime = startStateY = 0;
-    do{  
+    do{
 	//merging the end state here
-	vector<EndState> endStates; 
+	vector<EndState> endStates;
 	for(vector<Function>::iterator stateFunc=stateFunctionList.begin();stateFunc!=stateFunctionList.end();stateFunc++){
 	    //look up in each state table, and merge the lookup results into endStateX and endStateY
 
@@ -2342,7 +2344,7 @@ void FactoredPomdp::convertFactoredStateReparamTrans() {
 	    vector<EndState> temp = endStates;
 	    int lastSize = temp.size();	//last size of end states vector before repeating
 
-	    //multiple the number of end state by number of entries in this row 
+	    //multiple the number of end state by number of entries in this row
 	    //repeat the possible end states if there are more than 1 entries for this row in this table
 	    for(int i=1;i<entries.size();i++){
 		endStates.insert(endStates.end(), temp.begin(), temp.end());
@@ -2354,7 +2356,7 @@ void FactoredPomdp::convertFactoredStateReparamTrans() {
 		double probXmul, probYmul;		//probability multiplier for this entry
 		int endStateXinc, endStateYinc;		//state number increment for this entry
 		probXmul= probYmul= 1;
-		endStateXinc = endStateYinc = 0; 
+		endStateXinc = endStateYinc = 0;
 
 		//merge the end state X and Y
 		for (unsigned int j = 0; j < se.uniqueIndex.size(); j++) {
@@ -2538,7 +2540,7 @@ void FactoredPomdp::printSparseMatrix(string title, vvSparseMatrix M, ofstream& 
 }
 
 
-void FactoredPomdp::convertFactoredStateTrans() 
+void FactoredPomdp::convertFactoredStateTrans()
 {
     ofstream debugfile;
     if (DEBUGFACTOREDCONVERSIONSTATE) {
@@ -2551,13 +2553,13 @@ void FactoredPomdp::convertFactoredStateTrans()
     // Conversion to the old matrices
     // TXtr[a][x](x',y),
     // compressed old state transition transposed, (pre-conversion to c matrix)
-    vvPreSparseMatrix cOstXTrPre = createVvPreSparseMatrix(numActions, numMergedStatesX, numMergedStatesX, numMergedStatesY); 
+    vvPreSparseMatrix cOstXTrPre = createVvPreSparseMatrix(numActions, numMergedStatesX, numMergedStatesX, numMergedStatesY);
     // TX[a][x](y,x')
-    vvPreSparseMatrix cOstXPre = createVvPreSparseMatrix(numActions, numMergedStatesX, numMergedStatesY, numMergedStatesX); 
+    vvPreSparseMatrix cOstXPre = createVvPreSparseMatrix(numActions, numMergedStatesX, numMergedStatesY, numMergedStatesX);
     //TYtr[a][x](y',y)
-    vvPreSparseMatrix cOstYTrPre = createVvPreSparseMatrix(numActions, numMergedStatesX, numMergedStatesY, numMergedStatesY); 
+    vvPreSparseMatrix cOstYTrPre = createVvPreSparseMatrix(numActions, numMergedStatesX, numMergedStatesY, numMergedStatesY);
     //TY[a][x](y,y')
-    vvPreSparseMatrix cOstYPre = createVvPreSparseMatrix(numActions, numMergedStatesX, numMergedStatesY, numMergedStatesY) ; 
+    vvPreSparseMatrix cOstYPre = createVvPreSparseMatrix(numActions, numMergedStatesX, numMergedStatesY, numMergedStatesY) ;
 
     int action, startStateX, startStateY;
 
@@ -2574,9 +2576,9 @@ void FactoredPomdp::convertFactoredStateTrans()
     //enumerate thru all the variable values
     map<string, int> variableValues = getStartActionXYVarValues();
     action = startStateX = startStateY = 0;
-    do{  
+    do{
 	//merging the end state here
-	vector<EndState> endStates; 
+	vector<EndState> endStates;
 	for(vector<Function>::iterator stateFunc=stateFunctionList.begin();stateFunc!=stateFunctionList.end();stateFunc++){
 	    //look up in each state table, and merge the lookup results into endStateX and endStateY
 
@@ -2602,7 +2604,7 @@ void FactoredPomdp::convertFactoredStateTrans()
 	    vector<EndState> temp = endStates;
 	    int lastSize = temp.size();	//last size of end states vector before repeating
 
-	    //multiple the number of end state by number of entries in this row 
+	    //multiple the number of end state by number of entries in this row
 	    //repeat the possible end states if there are more than 1 entries for this row in this table
 	    for(int i=1;i<entries.size();i++){
 		endStates.insert(endStates.end(), temp.begin(), temp.end());
@@ -2614,7 +2616,7 @@ void FactoredPomdp::convertFactoredStateTrans()
 		double probXmul, probYmul;		//probability multiplier for this entry
 		int endStateXinc, endStateYinc;		//state number increment for this entry
 		probXmul= probYmul= 1;
-		endStateXinc = endStateYinc = 0; 
+		endStateXinc = endStateYinc = 0;
 
 		//merge the end state X and Y
 		for (unsigned int j = 0; j < se.uniqueIndex.size(); j++) {
@@ -2661,7 +2663,7 @@ void FactoredPomdp::convertFactoredStateTrans()
 	    //end for checking terminal states
 	}
     }while(getNextActionXYVarValues(variableValues,action,startStateX,startStateY));
-    //}}}	
+    //}}}
 
     //TX[a][x](y,x')
 vvSparseMatrix cOstX = helperPreSparseMatrixToSparseMatrix(cOstXPre);
@@ -2760,9 +2762,9 @@ void FactoredPomdp::convertFactoredObsTrans()
     //enumerate thru all the variable values
     map<string, int> variableValues = getStartActionXYVarValues();
     action = endStateX = endStateY = 0;
-    do{  
+    do{
 	//merging the observations here
-	vector<IndexProbTuple> observations; 
+	vector<IndexProbTuple> observations;
 	for(vector<Function>::iterator obsFunc=observFunctionList.begin();obsFunc!=observFunctionList.end();obsFunc++){
 	    //look up in each observation table, and merge the lookup results into index and probability
 
@@ -2785,7 +2787,7 @@ void FactoredPomdp::convertFactoredObsTrans()
 	    vector<IndexProbTuple> temp = observations;
 	    int lastSize = temp.size();	//last size of end states vector before repeating
 
-	    //multiple the number of end state by number of entries in this row 
+	    //multiple the number of end state by number of entries in this row
 	    //repeat the possible end states if there are more than 1 entries for this row in this table
 	    for(int i=1;i<entries.size();i++){
 		observations.insert(observations.end(), temp.begin(), temp.end());
@@ -2920,13 +2922,13 @@ void FactoredPomdp::convertFactoredNoObservationsVariables() {
 
 
 
-vvSparseMatrix FactoredPomdp::helperPreSparseMatrixToSparseMatrix(vvPreSparseMatrix precm) 
+vvSparseMatrix FactoredPomdp::helperPreSparseMatrixToSparseMatrix(vvPreSparseMatrix precm)
 {
     vvSparseMatrix results;
-    for (unsigned int i = 0; i < precm.size(); i++) 
+    for (unsigned int i = 0; i < precm.size(); i++)
     {
 	vector<SharedPointer<SparseMatrix> > temp;
-	for (unsigned int j = 0; j < precm[i].size(); j++) 
+	for (unsigned int j = 0; j < precm[i].size(); j++)
 	{
 	    temp.push_back(precm[i][j].convertSparseMatrix());
 	}
@@ -2935,7 +2937,7 @@ vvSparseMatrix FactoredPomdp::helperPreSparseMatrixToSparseMatrix(vvPreSparseMat
     return results;
 }
 
-vector<vvSparseMatrix > FactoredPomdp::helperPreSparseMatrixToSparseMatrix(vector<vvPreSparseMatrix >precm) 
+vector<vvSparseMatrix > FactoredPomdp::helperPreSparseMatrixToSparseMatrix(vector<vvPreSparseMatrix >precm)
 {
     vector<vvSparseMatrix > results;
     for (unsigned int i = 0; i < precm.size(); i++) {
@@ -2946,7 +2948,7 @@ vector<vvSparseMatrix > FactoredPomdp::helperPreSparseMatrixToSparseMatrix(vecto
 		temp.push_back(precm[i][j][k].convertSparseMatrix());
 	    }
 	    temp_vec.push_back(temp);
-	}  
+	}
 	results.push_back(temp_vec);
     }//end of for
     return results;
@@ -2974,14 +2976,14 @@ void FactoredPomdp::convertFactoredRewardTrans() {
     int action;
     int startStateX;
     int startStateY;
-    double reward; 
+    double reward;
     map<string, int> variableValues = getStartActionXYVarValues();
     action = startStateX = startStateY = 0;
-    do{  
+    do{
 	//vector storing reward from individual tables to be merged
 	double reward = 0;
 	for(vector<Function>::iterator rewardFunc=rewardFunctionList.begin();rewardFunc!=rewardFunctionList.end();rewardFunc++){
-	    //look up in each reward table, and merge the lookup results into reward 
+	    //look up in each reward table, and merge the lookup results into reward
 	    SharedPointer<SparseTable> rewardTable = rewardFunc->sparseT;
 	    //assemble commom index for this table using current variable values
 	    vector<int> commonIndex;
@@ -3017,7 +3019,7 @@ void FactoredPomdp::convertFactoredRewardTrans() {
     debugfile.close();
 }//end of convertFactoredRewardTrans()
 
-void FactoredPomdp::convertFactoredTerminalStateReward() 
+void FactoredPomdp::convertFactoredTerminalStateReward()
 {
     ofstream debugfile;
     if (DEBUGFACTOREDCONVERSIONTERMINAL) {
@@ -3087,7 +3089,7 @@ void FactoredPomdp::convertFactoredBeliefCommon(ofstream& debugfile, bool printD
 
 void FactoredPomdp::convertFactoredBelief() {
 
-    ofstream debugfile;  
+    ofstream debugfile;
     if (DEBUGFACTOREDCONVERSIONBELIEF)
 	debugfile.open("debug_FactoredPomdp_convertFactoredBelief.txt");
     if (DEBUGFACTOREDCONVERSIONBELIEF)
@@ -3160,7 +3162,7 @@ void FactoredPomdp::convertFactoredBelief() {
     }
 
     for (unsigned int i=0 ; i < vec_cvY.size(); i++) {
-	if (fabs(vec_cvY[i]) > 0.000001)    
+	if (fabs(vec_cvY[i]) > 0.000001)
 	    cvY.push_back(i, vec_cvY[i]);
     }
 
@@ -3186,7 +3188,7 @@ void FactoredPomdp::convertFactoredBelief() {
 
 void FactoredPomdp::convertFactoredBeliefReparam() {
 
-    ofstream debugfile;  
+    ofstream debugfile;
     if (DEBUGFACTOREDCONVERSIONBELIEF)
 	debugfile.open("debug_FactoredPomdp_convertFactoredBelief.txt");
     if (DEBUGFACTOREDCONVERSIONBELIEF)
@@ -3269,7 +3271,7 @@ void FactoredPomdp::convertFactoredBeliefReparam() {
 
     for (unsigned int i=0 ; i < vec_cvY.size(); i++) {
 	for (unsigned int j=0; j < vec_cvY[0].size(); j++) {
-	    if (fabs(vec_cvY[i][j]) > 0.000001)    
+	    if (fabs(vec_cvY[i][j]) > 0.000001)
 		cvY[i].push_back(j, vec_cvY[i][j]);
 	}
     }
@@ -3297,7 +3299,7 @@ void FactoredPomdp::convertFactoredBeliefReparam() {
 
 
 
-void FactoredPomdp::preprocessBeliefTables(ofstream& debugfile, bool printDebugFile) 
+void FactoredPomdp::preprocessBeliefTables(ofstream& debugfile, bool printDebugFile)
 {
     if(preprocessBeliefTablesDone)
     {
@@ -3325,8 +3327,8 @@ void FactoredPomdp::preprocessBeliefTables(ofstream& debugfile, bool printDebugF
 	vector<string> parents = processedBeliefFunctionList[i].getParents();
 	SharedPointer<SparseTable> old = processedBeliefFunctionList[i].sparseT;
 	vector<string> newParent;
-	vector<int> newNumCIValues; 
-	if (!((parents.size() == 1) && (parents[0] == "null"))) { 
+	vector<int> newNumCIValues;
+	if (!((parents.size() == 1) && (parents[0] == "null"))) {
 	    //parent is not null
 	    newParent = processedBeliefFunctionList[i].getParents();
 	    newNumCIValues = old->numCIValues; //only copy if there is non-null parent
@@ -3346,7 +3348,7 @@ void FactoredPomdp::preprocessBeliefTables(ofstream& debugfile, bool printDebugF
 	vector<int> newCI;
 	while(old->getNext(se)){
 	    newCI = old->getIterPosition(); 	//copy original CI if parent is not null
-	    if( (parents.size() == 1) && (parents[0] == "null") ){ 
+	    if( (parents.size() == 1) && (parents[0] == "null") ){
 		newCI.clear(); 	//don't use original CI if parent is null
 	    }
 	    newCI.push_back(se.uniqueIndex[0].index);
@@ -3458,13 +3460,13 @@ SharedPointer<SparseTable> FactoredPomdp::expandObsRewSparseTable(SharedPointer<
 
     SharedPointer<SparseTable> newSt (new SparseTable(cIheader, uIheader, numCIValues, numUIValues));
 
-    SparseEntry se; 
+    SparseEntry se;
     //
     //expand table
 
     vector<int> newStPos = newSt->getIterBegin();
     bool hasNext = true;
-    while(hasNext){ 
+    while(hasNext){
 	//get the portion old CI from front portion of the new CI
 	vector<int> oldStPos;
 	for(int i=0;i<st->cIheader.size();i++){
@@ -3487,7 +3489,7 @@ SharedPointer<SparseTable> FactoredPomdp::expandObsRewSparseTable(SharedPointer<
 //////////////////////////////////////////////////////////////
 // for conversion of R(x,y,x',y',a,o) to R(x,y,a)
 
-void FactoredPomdp::preprocessRewardFunction() 
+void FactoredPomdp::preprocessRewardFunction()
 {
     ofstream debugfile;
     if (DEBUGFACTOREDCONVERSIONREWARD) {
@@ -3511,7 +3513,7 @@ void FactoredPomdp::preprocessRewardFunction()
 	functionsDepend.push_back(rewardFunctionList[i]);
 
 	//merge reward table with the functions it depends on
-	SharedPointer<SparseTable> rewardTable = mergeTables(&functionsDepend, BELIEFFUNCTION, debugfile, DEBUGFACTOREDCONVERSIONREWARD); 
+	SharedPointer<SparseTable> rewardTable = mergeTables(&functionsDepend, BELIEFFUNCTION, debugfile, DEBUGFACTOREDCONVERSIONREWARD);
 	rewardTable->write(debugfile);
 
 	debugfile << "after reducing common indexes that are not matched with unique indexes" << endl;
@@ -3711,7 +3713,7 @@ bool FactoredPomdp::getNextActionXYVarValues(map<string, int> &curValues, int &a
 	ObsAct act = actionList[i];
 	if(curValues[act.getVName()] >= act.getValueEnum().size() -1){
 	    //at last value of this variable, reset to 0 and try to increment next variable
-	    curValues[act.getVName()]=0;  
+	    curValues[act.getVName()]=0;
 	}
 	else{
 	    curValues[act.getVName()]++;
@@ -3732,8 +3734,8 @@ bool FactoredPomdp::getNextActionXXpYVarValues(map<string, int> &curValues, int 
 	if (!s.getObserved()) {
 	    if(curValues[s.getVNamePrev()] >= s.getValueEnum().size()-1){
 		//at last value of this variable, reset to 0 and try to increment next variable
-		curValues[s.getVNamePrev()]=0;  
-		curValues[s.getVNameCurr()]=0;  
+		curValues[s.getVNamePrev()]=0;
+		curValues[s.getVNameCurr()]=0;
 	    }
 	    else{
 		curValues[s.getVNamePrev()]++;
@@ -3753,7 +3755,7 @@ bool FactoredPomdp::getNextActionXXpYVarValues(map<string, int> &curValues, int 
 	    //try to increment unobserved state first
 	    if(curValues[s.getVNamePrev()] >= s.getValueEnum().size() -1){
 		//at last value of this variable, reset to 0 and try to increment next variable
-		curValues[s.getVNamePrev()]=0;  
+		curValues[s.getVNamePrev()]=0;
 	    }
 	    else{
 		curValues[s.getVNamePrev()]++;
@@ -3771,7 +3773,7 @@ bool FactoredPomdp::getNextActionXXpYVarValues(map<string, int> &curValues, int 
 	    //try to increment unobserved state first
 	    if(curValues[s.getVNameCurr()] >= s.getValueEnum().size() -1){
 		//at last value of this variable, reset to 0 and try to increment next variable
-		curValues[s.getVNameCurr()]=0;  
+		curValues[s.getVNameCurr()]=0;
 	    }
 	    else{
 		curValues[s.getVNameCurr()]++;
@@ -3787,7 +3789,7 @@ bool FactoredPomdp::getNextActionXXpYVarValues(map<string, int> &curValues, int 
 	ObsAct act = actionList[i];
 	if(curValues[act.getVName()] >= act.getValueEnum().size() -1){
 	    //at last value of this variable, reset to 0 and try to increment next variable
-	    curValues[act.getVName()]=0;  
+	    curValues[act.getVName()]=0;
 	}
 	else{
 	    curValues[act.getVName()]++;
@@ -3808,8 +3810,8 @@ bool FactoredPomdp::getNextXYVarValues(map<string, int> &curValues, int &stateX,
 	if (!s.getObserved()) {
 	    if(curValues[s.getVNamePrev()] >= s.getValueEnum().size()-1){
 		//at last value of this variable, reset to 0 and try to increment next variable
-		curValues[s.getVNamePrev()]=0;  
-		curValues[s.getVNameCurr()]=0;  
+		curValues[s.getVNamePrev()]=0;
+		curValues[s.getVNameCurr()]=0;
 	    }
 	    else{
 		curValues[s.getVNamePrev()]++;
@@ -3829,8 +3831,8 @@ bool FactoredPomdp::getNextXYVarValues(map<string, int> &curValues, int &stateX,
 	    //try to increment unobserved state first
 	    if(curValues[s.getVNamePrev()] >= s.getValueEnum().size() -1){
 		//at last value of this variable, reset to 0 and try to increment next variable
-		curValues[s.getVNamePrev()]=0;  
-		curValues[s.getVNameCurr()]=0;  
+		curValues[s.getVNamePrev()]=0;
+		curValues[s.getVNameCurr()]=0;
 	    }
 	    else{
 		curValues[s.getVNamePrev()]++;
@@ -3856,7 +3858,7 @@ bool FactoredPomdp::getNextActionSVarValues(map<string, int> &curValues, int &ac
 	ObsAct act = actionList[i];
 	if(curValues[act.getVName()] >= act.getValueEnum().size() -1){
 	    //at last value of this variable, reset to 0 and try to increment next variable
-	    curValues[act.getVName()]=0;  
+	    curValues[act.getVName()]=0;
 	}
 	else{
 	    curValues[act.getVName()]++;
@@ -3876,8 +3878,8 @@ bool FactoredPomdp::getNextSVarValues(map<string, int> &curValues,int &stateNum)
 	State s = stateList[i];
 	if(curValues[s.getVNamePrev()] >= s.getValueEnum().size()-1){
 	    //at last value of this variable, reset to 0 and try to increment next variable
-	    curValues[s.getVNamePrev()]=0;  
-	    curValues[s.getVNameCurr()]=0;  
+	    curValues[s.getVNamePrev()]=0;
+	    curValues[s.getVNameCurr()]=0;
 	}
 	else{
 	    curValues[s.getVNamePrev()]++;

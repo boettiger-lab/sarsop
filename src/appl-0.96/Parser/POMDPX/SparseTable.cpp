@@ -40,7 +40,7 @@ double SparseRow::sumProbability(){
 }
 
 SparseTable::SparseTable(vector<string> cIheader, vector<string> uIheader, vector<int> numCIValues, vector<int> numUIValues): cIheader(cIheader), uIheader(uIheader), numCIValues(numCIValues), numUIValues(numUIValues) {
-     numOfRows = 1; 
+     numOfRows = 1;
 
      //have a row for every combination of common index
      //in future, split common index into major column and minor column,
@@ -75,8 +75,8 @@ SparseTable::SparseTable(SparseTable& B){
      uIheader = B.uIheader;
      numCIValues=  B.numCIValues;
      numUIValues=  B.numUIValues;
-     numOfRows = 1; 
-     
+     numOfRows = 1;
+
      //have a row for every combination of common index
      //in future, split common index into major column and minor column,
      //and only have rows for major columns
@@ -136,7 +136,7 @@ bool SparseTable::errorInProbabilities(vector<vector<int> >& commonIndices, vect
 
 	  if ((fabs(prob - 1.0) > 0.000001)) {
 	       probs.push_back(prob);
-	       commonIndices.push_back(getCommonIndex(i)); 
+	       commonIndices.push_back(getCommonIndex(i));
 	       error=true;
 	  }
      }
@@ -152,7 +152,7 @@ bool SparseTable::getNext(SparseEntry& se){
 	  //if no more entries on current row
 	  rowPosition = 0;
 	  if(getNextCI(position)){
-	       curRow = &getSparseEntries(position); 
+	       curRow = &getSparseEntries(position);
 	  }
 	  else{
 	       //reached the end, no more common index position
@@ -162,10 +162,10 @@ bool SparseTable::getNext(SparseEntry& se){
 
      se =  (*curRow)[rowPosition];
      rowPosition++;
-     return true; 
+     return true;
 }
 
-//get the next common index given current 
+//get the next common index given current
 bool SparseTable::getNextCI(vector<int>& CI){
      assert(CI.size() == cIheader.size());
      bool success = false;
@@ -223,7 +223,7 @@ int SparseTable::getTableIndex(vector<int> commonIndex){
 
      for(int i=commonIndex.size()-1;i>=0;i--){
 	  assert(mapOut[i] <= commonIndex.size());
-	  index += commonIndex[mapOut[i]] * increment; 
+	  index += commonIndex[mapOut[i]] * increment;
 	  increment *= numCIValues[mapOut[i]];
      }
      if(index >= numOfRows){
@@ -272,7 +272,7 @@ bool SparseTable::checkNoMissingEntries(vector<int>& commonIndex){
 	       commonIndex = getCommonIndex(i);
 	       return false;
 	  }
-     }	
+     }
      return true;
 }
 
@@ -351,7 +351,7 @@ SharedPointer<SparseTable> SparseTable::joinHeader(SparseTable& A, SparseTable& 
      B.sortEntries();
 
      // sort the second table
-     for (unsigned int j = 0; j < indexes.size(); j++) 
+     for (unsigned int j = 0; j < indexes.size(); j++)
      {
 	  pos = A.findPosition(indexes[j]);
 	  A.swapCIHeaders(j, pos);
@@ -430,7 +430,7 @@ SharedPointer<SparseTable> SparseTable::join(SparseTable& A, SparseTable& B, int
 
 	  //reward and terminal function joins by addition
 	  if ((whichFunction == REWARDFUNCTION) || (whichFunction == TERMINALFUNCTION)) {
-	       
+
 	       double sum = 0;
 	       for(int i=0;i<aEntries.size();i++){
 		    sum += aEntries[i].uniqueIndex[0].value;
@@ -438,7 +438,7 @@ SharedPointer<SparseTable> SparseTable::join(SparseTable& A, SparseTable& B, int
 	       for(int i=0;i<bEntries.size();i++){
 		    sum += bEntries[i].uniqueIndex[0].value;
 	       }
-	       
+
 	       //only add entry if it is non-zero
 	       //or if it is specified in terminal reward function
 	       if(sum!=0.0 ||  (whichFunction == TERMINALFUNCTION && (!aEntries.empty() || !bEntries.empty()))){
@@ -461,7 +461,7 @@ SharedPointer<SparseTable> SparseTable::join(SparseTable& A, SparseTable& B, int
 	       }
 	  }
      }
-     while(C->getNextCI(Cpos));	
+     while(C->getNextCI(Cpos));
      return C;
 }
 
@@ -522,6 +522,7 @@ unsigned int SparseTable::findPosition(string word) {
 	       return i;
      }
      assert(false); //should never reach here
+  return 0;
 }
 
 bool SparseTable::containsCI(string word) {

@@ -5,6 +5,10 @@
  * $Header: /home/l/cvsroot/motion/proj/appl/src/Parser/include/pomdp_spec.yy.cc,v 2.28 2009/01/07 05:10:06 duyanzhu Exp $
  */
 
+#if __cplusplus > 199711L
+#define register      // Deprecated in C++11.
+#endif  // #if __cplusplus > 199711L
+
 #define FLEX_SCANNER
 #define YY_FLEX_MAJOR_VERSION 2
 #define YY_FLEX_MINOR_VERSION 5
@@ -1224,7 +1228,7 @@ case YY_STATE_EOF(INITIAL):
 		}
 
 	default:
-		YY_FATAL_ERROR((char *) 
+		YY_FATAL_ERROR((char *)
 			"fatal flex scanner internal error--no action found" );
 	} /* end of action switch */
 		} /* end of scanning one token */
@@ -1247,7 +1251,7 @@ static int yy_get_next_buffer()
 	int ret_val;
 
 	if ( yy_c_buf_p > &yy_current_buffer->yy_ch_buf[yy_n_chars + 1] )
-		YY_FATAL_ERROR((char *) 
+		YY_FATAL_ERROR((char *)
 		"fatal flex scanner internal error--end of buffer missed" );
 
 	if ( yy_current_buffer->yy_fill_buffer == 0 )
@@ -1291,7 +1295,7 @@ static int yy_get_next_buffer()
 		while ( num_to_read <= 0 )
 			{ /* Not enough room in the buffer - grow it. */
 #ifdef YY_USES_REJECT
-			YY_FATAL_ERROR((char *) 
+			YY_FATAL_ERROR((char *)
 "input buffer overflow, can't enlarge buffer because scanner uses REJECT" );
 #else
 
@@ -1320,7 +1324,7 @@ static int yy_get_next_buffer()
 				b->yy_ch_buf = 0;
 
 			if ( ! b->yy_ch_buf )
-				YY_FATAL_ERROR( 
+				YY_FATAL_ERROR(
 				(char *) "fatal error - scanner input buffer overflow" );
 
 			yy_c_buf_p = &b->yy_ch_buf[yy_c_buf_p_offset];
@@ -1832,7 +1836,7 @@ int new_state;
 					(void *) yy_start_stack, new_size );
 
 		if ( ! yy_start_stack )
-			YY_FATAL_ERROR((char *) 
+			YY_FATAL_ERROR((char *)
 			"out of memory expanding start-condition stack" );
 		}
 
