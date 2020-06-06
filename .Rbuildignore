@@ -34,3 +34,4 @@ inst/doc/*.png
 ^\.github$
 ^out\.policy$
 ^cran-comments\.md$
+^CRAN-RELEASE$
