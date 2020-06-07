@@ -68,9 +68,9 @@ representation, then we allocate the rest of the memory.
 
 /* Intermediate variables */
 
-I_Matrix *IP;  /* Transition Probabilities */
-
-I_Matrix *IR;  /* Observation Probabilities (POMDP only) */
+/* These two are already defined elsewhere, creates error in gcc-10 */
+//I_Matrix *IP;
+//I_Matrix *IR;
 
 I_Matrix IQ;  /* Immediate action-state pair values (both MDP and POMDP) */
 
