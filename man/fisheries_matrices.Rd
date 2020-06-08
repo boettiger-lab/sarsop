@@ -4,10 +4,16 @@
 \alias{fisheries_matrices}
 \title{fisheries_matrices}
 \usage{
-fisheries_matrices(states = 0:20, actions = states,
-  observed_states = states, reward_fn = function(x, a) pmin(x, a),
-  f = ricker(1, 15), sigma_g = 0.1, sigma_m = 0.1,
-  noise = c("rescaled-lognormal", "lognormal", "uniform", "normal"))
+fisheries_matrices(
+  states = 0:20,
+  actions = states,
+  observed_states = states,
+  reward_fn = function(x, a) pmin(x, a),
+  f = ricker(1, 15),
+  sigma_g = 0.1,
+  sigma_m = 0.1,
+  noise = c("rescaled-lognormal", "lognormal", "uniform", "normal")
+)
 }
 \arguments{
 \item{states}{sequence of possible states}

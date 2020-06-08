@@ -4,9 +4,19 @@
 \alias{write_momdpx}
 \title{write_momdpx}
 \usage{
-write_momdpx(P_full, P_par, O, R, gamma, b_full, b_par = rep(1/dim(O)[1],
-  dim(O)[1]), file = "input.pomdpx", digits = 4, digits2 = 10,
-  format = "f")
+write_momdpx(
+  P_full,
+  P_par,
+  O,
+  R,
+  gamma,
+  b_full,
+  b_par = rep(1/dim(O)[1], dim(O)[1]),
+  file = "input.pomdpx",
+  digits = 4,
+  digits2 = 10,
+  format = "f"
+)
 }
 \arguments{
 \item{P_full}{transition matrix for fully observable states}

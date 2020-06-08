@@ -5,9 +5,17 @@
 \alias{compare_pomdp}
 \title{hindcast_pomdp}
 \usage{
-hindcast_pomdp(transition, observation, reward, discount, obs, action,
+hindcast_pomdp(
+  transition,
+  observation,
+  reward,
+  discount,
+  obs,
+  action,
   state_prior = rep(1, dim(observation)[[1]])/dim(observation)[[1]],
-  alpha = NULL, ...)
+  alpha = NULL,
+  ...
+)
 }
 \arguments{
 \item{transition}{Transition matrix, dimension n_s x n_s x n_a}

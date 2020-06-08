@@ -4,9 +4,18 @@
 \alias{sarsop}
 \title{sarsop}
 \usage{
-sarsop(transition, observation, reward, discount, state_prior = rep(1,
-  dim(observation)[[1]])/dim(observation)[[1]], verbose = TRUE,
-  log_dir = tempdir(), log_data = NULL, cache = TRUE, ...)
+sarsop(
+  transition,
+  observation,
+  reward,
+  discount,
+  state_prior = rep(1, dim(observation)[[1]])/dim(observation)[[1]],
+  verbose = TRUE,
+  log_dir = tempdir(),
+  log_data = NULL,
+  cache = TRUE,
+  ...
+)
 }
 \arguments{
 \item{transition}{Transition matrix, dimension n_s x n_s x n_a}

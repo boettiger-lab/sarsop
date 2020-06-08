@@ -11,7 +11,8 @@
 assert_has_appl <- function(){
   model <- system.file("models", "example.pomdp", package = "sarsop")
   path <- exec_path("pomdpsol")
-  args <- paste(model, "--timeout 0.01 --fast")
+  args <- paste(model, "--timeout 0.01 --fast", "--output",
+                tempfile(fileext = ".policy"))
   res <- processx::run(path, strsplit(args, " ")[[1]],
                        spinner = FALSE, error_on_status = FALSE)
   res$status == 0

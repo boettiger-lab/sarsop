@@ -4,9 +4,20 @@
 \alias{sim_pomdp}
 \title{sim_pomdp}
 \usage{
-sim_pomdp(transition, observation, reward, discount, state_prior = rep(1,
-  dim(observation)[[1]])/dim(observation)[[1]], x0, a0 = 1, Tmax = 20,
-  policy = NULL, alpha = NULL, reps = 1, ...)
+sim_pomdp(
+  transition,
+  observation,
+  reward,
+  discount,
+  state_prior = rep(1, dim(observation)[[1]])/dim(observation)[[1]],
+  x0,
+  a0 = 1,
+  Tmax = 20,
+  policy = NULL,
+  alpha = NULL,
+  reps = 1,
+  ...
+)
 }
 \arguments{
 \item{transition}{Transition matrix, dimension n_s x n_s x n_a}

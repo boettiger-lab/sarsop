@@ -1,23 +1,33 @@
 Package: sarsop
 Type: Package
 Title: Approximate POMDP Planning Software
-Version: 0.6.1
+Version: 0.6.2
 Authors@R: c(
     person("Carl", "Boettiger", 
             email = "cboettig@gmail.com", 
             role = c("cre", "aut"),
             comment = c(ORCID = "0000-0002-1642-628X")),
-    person("Jeroen", "Ooms", email = "jeroen.ooms@stat.ucla.edu", role = c("aut")),
-    person("Milad", "Memarzadeh", role = "aut"))
+    person("Jeroen", "Ooms", role = c("aut")),
+    person("Milad", "Memarzadeh", role = "aut"),
+    person("Hanna", "Kurniawati", role = "ctb"),
+    person("David", "Hsu", role = "ctb"),
+    person("Hanna", "Kurniawati", role = "ctb"),
+    person("Wee", "Sun Lee", role = "ctb"),
+    person("Yanzhu", "Du", role = "ctb"),
+    person("Xan", "Huang", role = "ctb"),
+    person("Trey", "Smith", role = "ctb"),
+    person("Tony", "Cassandra", role = "ctb"),
+    person("Lee", "Thomason", role = "ctb")
+    )
 Description: A toolkit for Partially Observed Markov Decision Processes (POMDP). Provides
     bindings to C++ libraries implementing the algorithm SARSOP (Successive Approximations
-    of the Reachable Space under Optimal Policies and described in Kurniawati (2008),
+    of the Reachable Space under Optimal Policies and described in Kurniawati et al (2008),
     <doi:10.15607/RSS.2008.IV.009>.  This package also provides a high-level interface
     for generating, solving and simulating POMDP problems and their solutions.
 License: GPL-2
 URL: https://github.com/boettiger-lab/sarsop
 BugReports: https://github.com/boettiger-lab/sarsop/issues
-RoxygenNote: 6.1.1
+RoxygenNote: 7.1.0
 Imports: 
     xml2,
     parallel,
@@ -32,6 +42,5 @@ Suggests:
     covr,
     spelling
 LinkingTo: BH
-VignetteBuilder: knitr
 Encoding: UTF-8
 Language: en-US

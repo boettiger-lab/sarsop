@@ -1,4 +1,8 @@
 
+<!-- badges: start -->
+
+[![R build
+status](https://github.com/boettiger-lab/sarsop/workflows/R-CMD-check/badge.svg)](https://github.com/boettiger-lab/sarsop/actions)
 [![Build
 Status](https://travis-ci.org/boettiger-lab/sarsop.svg?branch=master)](https://travis-ci.org/boettiger-lab/sarsop)
 [![AppVeyor build
@@ -10,6 +14,7 @@ state and is being actively
 developed.](http://www.repostatus.org/badges/latest/active.svg)](http://www.repostatus.org/#active)
 [![CRAN\_Status\_Badge](http://www.r-pkg.org/badges/version/sarsop)](https://cran.r-project.org/package=sarsop)
 [![DOI](https://zenodo.org/badge/56890962.svg)](https://zenodo.org/badge/latestdoi/56890962)
+<!-- badges: end -->
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
@@ -25,7 +30,7 @@ library(tidyverse) # for plotting
 Our problem is defined by a state space, `states`, representing the true
 fish stock size (in arbitrary units), and an action space, `actions`
 representing the number of fish that will be harvested (or attempted to
-harvest). For simplicitly, we will permit any action from 0 harvest to
+harvest). For simplicity, we will permit any action from 0 harvest to
 the maximum possible state size.
 
 A stock recruitment function, `f` describes the expected future state
@@ -87,7 +92,7 @@ m <- fisheries_matrices(states, actions, observations, reward_fn,
 
 In the POMDP problem, the true state is unknown, but measured
 imperfectly. We introduce an observation matrix to indicate the
-probabilty of observing a particular state \(y\) given a true state
+probability of observing a particular state \(y\) given a true state
 \(x\). In principle this could depend on the action taken as well,
 though for simplicity we assume only a log-normal measurement error
 independent of the action chosen.
@@ -99,7 +104,6 @@ log_dir <- "inst/extdata/vignette"
 alpha <- sarsop(m$transition, m$observation, m$reward, discount, 
                 log_dir = log_dir,
                 precision = .1, timeout = 200) # run much longer for more precise curve
-#> load time: 2.23 sec, init time: 6.38 sec, run time: 230.21 sec, final precision: 0.125493 end_condition:   Preset timeout reached
 ```
 
 `sarsop` logs solution files in the specified directory, along with a
@@ -169,15 +173,38 @@ sim$state_posterior %>%
 Unfortunately the appl source code is a bit dated and not suitable for
 using as a shared library. It builds with lot of warnings and on Windows
 it only builds with MS Visual Studio. This package tries to make things
-as easy as possible for the user by bunding the appl executables and
+as easy as possible for the user by bundling the appl executables and
 wrap them with `system` calls in R. This package also provides
 higher-level functions for POMDP analysis.
 
 ## Thanks
 
-Mykel Kochenderfer and Markus Herrmann have been helpful in providing
-windows builds using MS Visual
-    Studio:
+The underlying algorithm, SARSOP: Successive Approximations of the
+Reachable Space under Optimal Policies was designed and described by
+Hanna Kurniawati, David Hsu, and Wee Sun Lee, in Department of Computer
+Science, National University of Singapore in 2008, see
+<doi:10.15607/RSS.2008.IV.009>. Kurniawati et al acknowledge Yanzhu Du
+and Xan Huang for helping with the software implementation in C++, which
+at the time of that publication, was available at
+`http://motion.comp.nus.edu.sg/projects/pomdp/pomdp.html`. That
+implementation has since moved (in 2017, after this R package wrapper
+was first implemented in 2016) to the GitHub repository:
+<https://github.com/AdaCompNUS/sarsop>. The C++ implementation, “APPL”
+acknowledges contributions based on an early version of ZMDP by Trey
+Smith (`http://www.cs.cmu.edu/~trey/zmdp/`). ZMDP in turn uses code from
+pomdp-solve by Tony Cassandra
+(`http://www.cassandra.org/pomdp/code/index.shtml)`. The POMDPX parser
+uses TinyXML by Lee Thomason (`http://www.grinninglizard.com/tinyxml/`).
+Part of APPL makes use of code based on an early version of ZMDP
+released under Apache License 2.0. The POMDPX parser makes use of
+TinyXML released under zlib License. The rest of APPL is released under
+GNU General Public License V2.
 
-  - <http://web.stanford.edu/group/sisl/resources/appl-0.96-win-win32.zip>
-  - <http://web.stanford.edu/group/sisl/resources/appl-0.96-win-x64.zip>
+Jeroen Ooms developed the original R package compilation setup, Mykel
+Kochenderfer and Markus Herrmann have been helpful in providing windows
+builds using MS Visual Studio. Milad Memarzadeh wrote the R POMDPX
+parsers and contributed to pacakge development. Carl Boettiger developed
+and maintains the R package. The C++ library here is modified from the
+original only to conform to modern C++ development standards and avoid
+compilation errors or warnings under `gcc-8` and `gcc-9`, as well as
+modern `clang` compilers.
