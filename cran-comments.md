@@ -27,5 +27,6 @@
 
 This is necessary and unavoidable element required to execute the
 original SARSOP software so that it may be easily and portably distributed
-within this package.
+within this package. Also, my apologies about the gcc-10 error in the 
+initial submission, that has now been rectified.  
 
