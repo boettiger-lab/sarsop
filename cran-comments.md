@@ -27,6 +27,14 @@
 
 This is necessary and unavoidable element required to execute the
 original SARSOP software so that it may be easily and portably distributed
-within this package. Also, my apologies about the gcc-10 error in the 
-initial submission, that has now been rectified.  
+within this package. Also, my apologies about the gcc-10 warnings earlier in the 
+initial submission, that has now been rectified. 
+
+Your debian check system will throw one warning which I believe is a false
+positive:
+
+>  /usr/include/x86_64-linux-gnu/bits/stdio2.h:100:10: warning: '%s' directive argument is null [-Wformat-overflow=]
+
+Note that this is referring to the stdio2.h header installed on your check
+machine, and does not refer to my package.
 
