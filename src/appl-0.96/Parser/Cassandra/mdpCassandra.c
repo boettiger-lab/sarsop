@@ -39,11 +39,11 @@ the global variables for the problem for use in all the other files.
 
 #define EPSILON  0.00001  /* tolerance for sum of probs == 1 */
 
-/* To indicate whether we are using an MDP or POMDP. 
+/* To indicate whether we are using an MDP or POMDP.
 */
 Problem_Type gProblemType = UNKNOWN_problem_type;
 
-/* The discount factor to be used with the problem.  
+/* The discount factor to be used with the problem.
 */
 REAL_VALUE gDiscount = DEFAULT_DISCOUNT_FACTOR;
 
@@ -60,9 +60,9 @@ int gNumObservations = 0;   /* remains zero for MDPs */
 /*  We need two sets of variable for the probabilities and values.  The first
 is an intermediate representation which is filled in as the MDP file
 is parsed, and the other is the final sparse reprsentation which is
-found by converting the interemediate representation.  As aresult, we 
+found by converting the interemediate representation.  As aresult, we
 only need to allocate the intermediate memory while parsing. After parsing
-is completed and we are ready to convert it into the final sparse 
+is completed and we are ready to convert it into the final sparse
 representation, then we allocate the rest of the memory.
 */
 
@@ -89,7 +89,7 @@ Matrix Q;  /* Immediate values for state action pairs.  These are
 especially when doing simulation type experiments.  The belief
 state is for POMDPs and the initial state for an MDP */
 
-REAL_VALUE *gInitialBelief; 
+REAL_VALUE *gInitialBelief;
 int gInitialState = INVALID_STATE;
 
 /***************************************************************************/
@@ -115,13 +115,13 @@ int transformBeliefState( REAL_VALUE *pi,
 
 							 for( cur_state = 0; cur_state < gNumStates; cur_state++ ) {
 
-								 for( j = P[a]->row_start[cur_state]; 
+								 for( j = P[a]->row_start[cur_state];
 									 j < P[a]->row_start[cur_state] +  P[a]->row_length[cur_state];
 									 j++ ) {
 
 										 next_state = P[a]->col[j];
 
-										 pi_hat[next_state] += pi[cur_state] * P[a]->mat_val[j] 
+										 pi_hat[next_state] += pi[cur_state] * P[a]->mat_val[j]
 										 * getEntryMatrix( R[a], next_state, obs );
 
 								 } /* for j */
@@ -173,7 +173,7 @@ int readMDP( char *filename ) {
 	FILE *file;
 
 	if( filename == NULL ) {
-		fprintf( stderr, "<NULL> MDP filename: %s.\n", filename );
+		fprintf( stderr, "<NULL> MDP filename.\n" );
 		return( 0 );
 	}
 
@@ -183,7 +183,7 @@ int readMDP( char *filename ) {
 	}
 
 	if( readMDPFile( file ) == 0 ) {
-		fprintf( stderr, 
+		fprintf( stderr,
 			"MDP file '%s' was not successfully parsed!\n", filename );
 		return( 0 );
 	}
@@ -191,7 +191,7 @@ int readMDP( char *filename ) {
 	fclose( file );
 
 	/* After the file has been parsed, we should have everything we need
-	in the final representation.  
+	in the final representation.
 	*/
 	return( 1 );
 }  /* readMDP */
@@ -199,9 +199,9 @@ int readMDP( char *filename ) {
 void allocateIntermediateMDP() {
 	/*
 	Assumes that the gProblemType has been set and that the variables
-	gNumStates, gNumActions, and gNumObservation have the appropriate 
+	gNumStates, gNumActions, and gNumObservation have the appropriate
 	values.  It will allocate the memory that will be needed to store
-	the problem.  This allocates the space for the intermediate 
+	the problem.  This allocates the space for the intermediate
 	representation representation for the transitions and observations,
 	the latter for POMDPs only.
 	*/
@@ -257,7 +257,7 @@ int verifyIntermediateMDP() {
 	observation matrices do indeed specify probabilities.
 
 	There is a similar routine in the parser.y file, which is nicer
-	when parsing a POMDP file, but this routine is needed when we 
+	when parsing a POMDP file, but this routine is needed when we
 	are creating the POMDP through a program.  In this case there
 	will be no parsing and thus no logging of errors.
 	*/
@@ -328,7 +328,7 @@ void computeRewards() {
 			sum = 0.0;
 
 			/* Note: 'j' is not a state. It is an index into an array */
-			for( j = P[a]->row_start[i]; 
+			for( j = P[a]->row_start[i];
 				j < P[a]->row_start[i] +  P[a]->row_length[i];
 				j++ ) {
 
@@ -339,13 +339,13 @@ void computeRewards() {
 						inner_sum = 0.0;
 
 						/* Note: 'z' is not a state. It is an index into an array */
-						for( z = R[a]->row_start[next_state]; 
+						for( z = R[a]->row_start[next_state];
 							z < (R[a]->row_start[next_state] +  R[a]->row_length[next_state]);
 							z++ ) {
 
 								obs = R[a]->col[z];
 
-								inner_sum += R[a]->mat_val[z] 
+								inner_sum += R[a]->mat_val[z]
 								* getImmediateReward( a, i, next_state, obs );
 						}  /* for z */
 					}  /* if POMDP */
@@ -369,14 +369,14 @@ void convertMatrices() {
 	It will assume that the intermediate representations for the transition
 	and observation matrices have been allocated and had their values set.
 	It also assumes that the special immediate reward representation
-	has been set.  
+	has been set.
 
 	This routine will do two functions.  It will convert the intermediate
-	sparse representations for the transitions and observations to the 
+	sparse representations for the transitions and observations to the
 	actual true sparse representation.  It will also compute the action-state
 	immeidate reward pairs as an expectation over next states and possibly
 	observations from the special immediate reward representation.  This
-	will be the final step toward the use of the MDP/POMDP model in 
+	will be the final step toward the use of the MDP/POMDP model in
 	computation.
 	*/
 
@@ -465,34 +465,34 @@ int writeMDP( char *filename ) {
 
 	for( a = 0; a < gNumActions; a++ )
 		for( i = 0; i < gNumStates; i++ )
-			for( j = P[a]->row_start[i]; 
+			for( j = P[a]->row_start[i];
 				j < P[a]->row_start[i] +  P[a]->row_length[i];
-				j++ ) 
+				j++ )
 				fprintf( file, "T: %d : %d : %d %.6f\n",
 				a, i, P[a]->col[j], P[a]->mat_val[j] );
 
 	if( gProblemType == POMDP_problem_type )
 		for( a = 0; a < gNumActions; a++ )
 			for( j = 0; j < gNumStates; j++ )
-				for( obs = R[a]->row_start[j]; 
+				for( obs = R[a]->row_start[j];
 					obs < R[a]->row_start[j] +  R[a]->row_length[j];
-					obs++ ) 
+					obs++ )
 					fprintf( file, "O: %d : %d : %d %.6f\n",
 					a, j, R[a]->col[obs], R[a]->mat_val[obs] );
 
 	if( gProblemType == POMDP_problem_type )
 		for( a = 0; a < gNumActions; a++ )
-			for( i = Q->row_start[a]; 
+			for( i = Q->row_start[a];
 				i < Q->row_start[a] +  Q->row_length[a];
-				i++ ) 
+				i++ )
 				fprintf( file, "R: %d : %d : * : * %.6f\n",
 				a, Q->col[i], Q->mat_val[i] );
 
 	else
 		for( a = 0; a < gNumActions; a++ )
-			for( i = Q->row_start[a]; 
+			for( i = Q->row_start[a];
 				i < Q->row_start[a] +  Q->row_length[a];
-				i++ ) 
+				i++ )
 				fprintf( file, "R: %d : %d : * %.6f\n",
 				a, Q->col[i], Q->mat_val[i] );
 
@@ -504,7 +504,7 @@ int writeMDP( char *filename ) {
 void deallocateMDP() {
 	int a;
 
-	for( a = 0; a < gNumActions; a++ ) 
+	for( a = 0; a < gNumActions; a++ )
 	{
 		if(P!=NULL)
 		{
@@ -527,7 +527,7 @@ void deallocateMDP() {
 	}
 
 
-	if( gProblemType == POMDP_problem_type ) 
+	if( gProblemType == POMDP_problem_type )
 	{
 		if(R!= NULL)
 		{
@@ -537,7 +537,7 @@ void deallocateMDP() {
 		{
 			free( gInitialBelief );
 		}
-		
+
 	}
 
 	destroyMatrix( Q );
@@ -559,17 +559,17 @@ void displayMDPSlice( int state ) {
 	printf( "MDP slice for state: %d\n", state );
 
 	for( a = 0; a < gNumActions; a++ )
-		for( j = P[a]->row_start[state]; 
+		for( j = P[a]->row_start[state];
 			j < P[a]->row_start[state] +  P[a]->row_length[state];
-			j++ ) 
+			j++ )
 			printf( "\tP( s=%d | s=%d, a=%d ) = %.6f\n",
 			P[a]->col[j], state, a, P[a]->mat_val[j] );
 
 	if( gProblemType == POMDP_problem_type )
 		for( a = 0; a < gNumActions; a++ )
-			for( obs = R[a]->row_start[state]; 
+			for( obs = R[a]->row_start[state];
 				obs < R[a]->row_start[state] +  R[a]->row_length[state];
-				obs++ ) 
+				obs++ )
 				printf( "\tP( o=%d | s=%d, a=%d ) = %.6f\n",
 				R[a]->col[obs], state, a, R[a]->mat_val[obs] );
 
@@ -597,7 +597,7 @@ void checkAllocatedPointer(void * ptr)
 		GlobalMemLimit = getPlatformMemoryLimit();
 	}
 
-	
+
 
 	//printf ("limit %lu memusage %lu \n", memLimit, memUsage);
 
