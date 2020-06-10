@@ -1,6 +1,6 @@
 /********** tell emacs we use -*- c++ -*- style comments *******************
  $Revision: 2.28 $  $Author: duyanzhu $  $Date: 2009/01/07 05:10:04 $
-   
+
  @file    decision-tree.c
  @brief   No brief
 
@@ -22,9 +22,9 @@
 
 #ifdef __cplusplus
 extern "C" {
-#endif 
+#endif
 
- 
+
 
 #include <stdlib.h>
 #include <string.h>
@@ -32,6 +32,8 @@ extern "C" {
 #include <stdio.h>
 
 #include "decision-tree.h"
+
+ extern void checkAllocatedPointer(void * ptr);
 
 /**********************************************************************
  * MACROS
@@ -102,7 +104,7 @@ static DTNode* dtNewNodeVal(REAL_VALUE val)
 
   out = (DTNode*) malloc(sizeof(DTNode));
   checkAllocatedPointer((void *)out);
-  
+
   out->type = DT_VAL;
   out->data.val = val;
 
@@ -215,7 +217,7 @@ static DTNode* dtConvertToTable(DTNode* in, int numEntries)
   default:
     assert(0 /* never reach this point */);
   }
-  
+
   return out;
 }
 
@@ -401,7 +403,7 @@ void dtDebugPrint(const char* header)
 
 #ifdef __cplusplus
 }
-#endif 
+#endif
 
 /***************************************************************************
  * REVISION HISTORY:

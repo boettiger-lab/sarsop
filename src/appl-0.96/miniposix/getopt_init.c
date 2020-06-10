@@ -73,3 +73,8 @@ __getopt_clean_environment (char **env)
       }
 }
 #endif	/* USE_NONOPTION_FLAGS */
+
+
+// Avoids: "Warning: ISO C forbids an empty translation unit"
+typedef int make_iso_compilers_happy;
+

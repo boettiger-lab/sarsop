@@ -32,6 +32,7 @@ manipulating a sparse representation of a matrix.
 #include <assert.h>
 
 #include "sparse-matrix.h"
+extern void checkAllocatedPointer(void * ptr);
 
 /**********************************************************************/
 /********************  Routines for row linked lists  *****************/
@@ -63,7 +64,7 @@ void destroyRow( I_Matrix_Row_Node row ) {
 	} /* while */
 }  /* destroyRow */
 /**********************************************************************/
-I_Matrix_Row_Node removeRowNode( I_Matrix_Row_Node row, 
+I_Matrix_Row_Node removeRowNode( I_Matrix_Row_Node row,
 								int col, int *count ) {
 									/*
 									Remove the node with column == col, if it exists.  It decrements
@@ -107,7 +108,7 @@ I_Matrix_Row_Node removeRowNode( I_Matrix_Row_Node row,
 
 }  /* removeRowNode */
 /**********************************************************************/
-I_Matrix_Row_Node addEntryToRow( I_Matrix_Row_Node row, 
+I_Matrix_Row_Node addEntryToRow( I_Matrix_Row_Node row,
 								int col, REAL_VALUE value,
 								int *count, int accumulate ) {
 									/*
@@ -117,11 +118,11 @@ I_Matrix_Row_Node addEntryToRow( I_Matrix_Row_Node row,
 									new node into the list just before the first column number that is
 									highest.  This way, the list always remains sorted by column
 									number.  The pointer to the int 'count' will be incremented only if
-									we add it to the list, not when we simply replace a value.  *count 
+									we add it to the list, not when we simply replace a value.  *count
 									should be the length of the list sent in, but this routine does not
 									check to make sure it is.
 
-									The accumulate flag will specify whether we should replace the 
+									The accumulate flag will specify whether we should replace the
 									current value (if any) or add the value to the existing value.
 									This can be used to build up probabilities in a matrix piecemeal.
 									*/
@@ -157,7 +158,7 @@ I_Matrix_Row_Node addEntryToRow( I_Matrix_Row_Node row,
 									cur_node = row;
 									while( cur_node != NULL ) {
 
-										/* Case if we should simply replace (or accumulate) 
+										/* Case if we should simply replace (or accumulate)
 										the current value */
 										if( cur_node->column == col ) {
 
@@ -239,30 +240,30 @@ void destroyIMatrix( I_Matrix i_matrix ) {
 
 }  /* destroyIMatrix */
 /**********************************************************************/
-int addEntryToIMatrix( I_Matrix i_matrix, int row, 
+int addEntryToIMatrix( I_Matrix i_matrix, int row,
 					  int col, REAL_VALUE value ) {
 
-						  assert(( i_matrix != NULL) 
+						  assert(( i_matrix != NULL)
 							  && (row >=0) && ( row < i_matrix->num_rows ));
 
-						  i_matrix->row[row] = addEntryToRow( i_matrix->row[row], col, value, 
+						  i_matrix->row[row] = addEntryToRow( i_matrix->row[row], col, value,
 							  &(i_matrix->row_length[row]), 0 );
 
 						  return( 1 );
 }  /* addEntryToIMatrix */
 /**********************************************************************/
-int accumulateEntryInIMatrix( I_Matrix i_matrix, int row, 
+int accumulateEntryInIMatrix( I_Matrix i_matrix, int row,
 							 int col, REAL_VALUE value ) {
 								 /*
-								 This routine is the same as addEntryToIMatrix() except it will call 
+								 This routine is the same as addEntryToIMatrix() except it will call
 								 the addEntryToRow() routine with the accumulate flag set.  Thus, if
-								 there is a value already at this row and column, the new value will 
+								 there is a value already at this row and column, the new value will
 								 be the sum of the old and the new value.
 								 */
-								 assert(( i_matrix != NULL) 
+								 assert(( i_matrix != NULL)
 									 && (row >=0) && ( row < i_matrix->num_rows ));
 
-								 i_matrix->row[row] = addEntryToRow( i_matrix->row[row], col, value, 
+								 i_matrix->row[row] = addEntryToRow( i_matrix->row[row], col, value,
 									 &(i_matrix->row_length[row]), 1 );
 
 								 return( 1 );
@@ -295,12 +296,12 @@ void displayIMatrix( I_Matrix i_matrix ) {
 	int i;
 
 	for( i = 0; i < i_matrix->num_rows; i++ ) {
-		printf( "(len=%d, sum =%.1f)Row=%d: ", i_matrix->row_length[i], 
+		printf( "(len=%d, sum =%.1f)Row=%d: ", i_matrix->row_length[i],
 			sumIMatrixRowValues( i_matrix, i ), i );
 		displayRow( i_matrix->row[i] );
 
 	}  /* for i */
-	
+
 } /* displayIMatrix */
 
 /**********************************************************************/
@@ -315,13 +316,13 @@ Matrix newMatrix( int num_rows, int num_non_zero ) {
 	matrix->num_rows = num_rows;
 	matrix->num_non_zero = num_non_zero;
 
-	matrix->mat_val = (REAL_VALUE *) 
+	matrix->mat_val = (REAL_VALUE *)
 		calloc( num_non_zero, sizeof( REAL_VALUE ));
-	matrix->col = (int *) 
+	matrix->col = (int *)
 		calloc( num_non_zero, sizeof( int ));
-	matrix->row_start = (int *) 
+	matrix->row_start = (int *)
 		calloc( num_rows, sizeof( int ));
-	matrix->row_length = (int *) 
+	matrix->row_length = (int *)
 		calloc( num_rows, sizeof( int ));
 
 	return( matrix );
@@ -333,10 +334,10 @@ void destroyMatrix( Matrix matrix ) {
 	{
 		if(matrix->row_length != NULL)
 			free( matrix->row_length );
-		
+
 		if(matrix->row_start != NULL)
 			free( matrix->row_start );
-		
+
 		if(matrix->col != NULL)
 			free( matrix->col );
 
@@ -359,7 +360,7 @@ Matrix transformIMatrix( I_Matrix i_matrix ) {
 	int index = 0;  /* holds the position in the mat_val and col arrays */
 
 	/* Allocate the appropriate amount of memory */
-	matrix = newMatrix( i_matrix->num_rows, 
+	matrix = newMatrix( i_matrix->num_rows,
 		countEntriesInIMatrix( i_matrix ));
 
 	/* Now go through and set the values */
@@ -401,7 +402,7 @@ void displayMatrix( Matrix matrix ) {
 	int i, j;
 
 	for( i = 0; i < matrix->num_rows; i++ ) {
-		printf( "(len=%d, sum=%.1f)Row=%d: ", matrix->row_length[i], 
+		printf( "(len=%d, sum=%.1f)Row=%d: ", matrix->row_length[i],
 			sumRowValues( matrix, i ), i );
 
 
