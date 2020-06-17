@@ -7,18 +7,13 @@
 #' @return a data.frame with the rows of the matching metadata.
 #' @export
 #'
-#' @examples \dontrun{
+#' @examples \donttest{ # takes > 5s
 #'
 #' source(system.file("examples/fisheries-ex.R", package = "sarsop"))
 #' log = tempfile()
 #' alpha <- sarsop(transition, observation, reward, discount, precision = 10,
-#'                 log_dir = log, log_data = log_data)
+#'                 log_dir = log)
 #'
-#' ## Get metadata for all logged solutions matching the desired query
-#' meta <- meta_from_log(parameters = data.frame(model = "ricker", r = 0.1), log_dir = log)
-#' alphas <- alphas_from_log(meta, log_dir = log)
-#' fs <- f_from_log(meta)
-#' models <- models_from_log(meta, log_dir = log)
 #' }
 meta_from_log <- function(parameters, log_dir = ".", metafile = paste0(log_dir, "/meta.csv")){
   meta <- utils::read.csv(metafile)
@@ -40,16 +35,13 @@ meta_from_log <- function(parameters, log_dir = ".", metafile = paste0(log_dir, 
 #'  entry in the provided metadata (as returned by \code{\link{sarsop}}).
 #' @export
 #'
-#' @examples \dontrun{
+#' @examples \donttest{ # takes > 5s
 #'
 #' source(system.file("examples/fisheries-ex.R", package = "sarsop"))
 #' log = tempfile()
 #' alpha <- sarsop(transition, observation, reward, discount, precision = 10,
-#'                 log_dir = log, log_data = log_data)
+#'                 log_dir = log)
 #'
-#' ## Get metadata for all logged solutions matching the desired query
-#' meta <- meta_from_log(parameters = data.frame(model = "ricker", r = 0.1), log_dir = log)
-#' alphas <- alphas_from_log(meta, log_dir = log)
 #' }
 alphas_from_log <- function(meta, log_dir = "."){
   lapply(1:dim(meta)[[1]], function(i){
@@ -74,18 +66,13 @@ alphas_from_log <- function(meta, log_dir = "."){
 #'  which is specific to the fisheries example
 #' @export
 #'
-#' @examples \dontrun{
+#' @examples \donttest{ # takes > 5s
 #'
 #' source(system.file("examples/fisheries-ex.R", package = "sarsop"))
 #' log = tempfile()
 #' alpha <- sarsop(transition, observation, reward, discount, precision = 10,
-#'                 log_dir = log, log_data = log_data)
+#'                 log_dir = log)
 #'
-#' ## Get metadata for all logged solutions matching the desired query
-#' meta <- meta_from_log(parameters = data.frame(model = "ricker", r = 0.1), log_dir = log)
-#' alphas <- alphas_from_log(meta, log_dir = log)
-#' fs <- f_from_log(meta)
-#' models <- models_from_log(meta)
 #' }
 
 models_from_log <- function(meta, reward_fn = function(x,h) pmin(x,h)){
@@ -152,18 +139,13 @@ bh <- function(r, K)
 #'
 #' @export
 #'
-#' @examples \dontrun{
+#' @examples \donttest{ # takes > 5s
 #'
 #' source(system.file("examples/fisheries-ex.R", package = "sarsop"))
 #' log = tempfile()
 #' alpha <- sarsop(transition, observation, reward, discount, precision = 10,
-#'                 log_dir = log, log_data = log_data)
+#'                 log_dir = log)
 #'
-#' ## Get metadata for all logged solutions matching the desired query
-#' meta <- meta_from_log(parameters = data.frame(model = "ricker", r = 0.1), log_dir = log)
-#' alphas <- alphas_from_log(meta, log_dir = log)
-#' fs <- f_from_log(meta)
-#' models <- models_from_log(meta)
 #' }
 f_from_log <- function(meta){
   lapply(1:dim(meta)[[1]], function(i){

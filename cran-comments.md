@@ -30,6 +30,11 @@ original SARSOP software so that it may be easily and portably distributed
 within this package. Also, my apologies about the gcc-10 warnings earlier in the 
 initial submission, that has now been rectified. 
 
-Thanks for explaining the NULL error on studio2.h call as well, this has now
-also been fixed!
+This submission now includes the names of all contributors mentioned in
+any of the source files in the DESCRIPTION as contributor and copyright holder;
+and as recommended, an `inst/COPYRIGHTS` file has also been included. 
+
+All slow examples now use donttest instead of dontrun.
+
+
 
