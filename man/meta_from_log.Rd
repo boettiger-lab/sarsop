@@ -21,7 +21,7 @@ meta_from_log(
 a data.frame with the rows of the matching metadata.
 }
 \description{
-meta from log
+load metadata from a log file
 }
 \examples{
 \donttest{ # takes > 5s

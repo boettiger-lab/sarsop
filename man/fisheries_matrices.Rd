@@ -36,7 +36,7 @@ fisheries_matrices(
 list of transition matrix, observation matrix, and reward matrix
 }
 \description{
-initialize the transition, observation, and reward matrices given
+Initialize the transition, observation, and reward matrices given
  a transition function, reward function, and state space
 }
 \details{

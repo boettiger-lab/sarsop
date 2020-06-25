@@ -18,7 +18,7 @@ a list with a matrix of alpha vectors for each
  entry in the provided metadata (as returned by \code{\link{sarsop}}).
 }
 \description{
-alphas_from_log
+Read alpha vectors from a log file.
 }
 \examples{
 \donttest{ # takes > 5s

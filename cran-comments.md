@@ -36,5 +36,7 @@ and as recommended, an `inst/COPYRIGHTS` file has also been included.
 
 All slow examples now use donttest instead of dontrun.
 
+Function descriptions in .Rd files have been extended where appropriate.  
+
 
 

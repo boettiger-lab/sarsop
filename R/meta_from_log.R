@@ -1,5 +1,6 @@
 #' meta from log
 #'
+#' load metadata from a log file
 #' @param parameters a data.frame with the desired parameter values as given in metafile
 #' @param log_dir path to log directory
 #' @param metafile path to metafile index, assumed to be meta.csv in log_dir
@@ -27,6 +28,7 @@ meta_from_log <- function(parameters, log_dir = ".", metafile = paste0(log_dir, 
 
 #' alphas_from_log
 #'
+#' Read alpha vectors from a log file.
 #' @inheritParams meta_from_log
 #' @param meta a data frame containing the log metadata
 #'  for each set of alpha vectors desired, see
@@ -56,6 +58,7 @@ alphas_from_log <- function(meta, log_dir = "."){
 
 #' model from log
 #'
+#' Read model details from log file
 #' @inheritParams alphas_from_log
 #' @param reward_fn a function f(x,a) giving the reward for taking action
 #'  a given a system in state x.
@@ -131,6 +134,7 @@ bh <- function(r, K)
 
 #' f from log
 #'
+#' Read transition function from log
 #' @inheritParams alphas_from_log
 #' @return the growth function associated with the model indicated.
 #' @details note this function is unique to the fisheries example problem and assumes that

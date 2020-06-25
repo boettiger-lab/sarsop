@@ -15,7 +15,7 @@ for each set of alpha vectors desired, see
 the growth function associated with the model indicated.
 }
 \description{
-f from log
+Read transition function from log
 }
 \details{
 note this function is unique to the fisheries example problem and assumes that

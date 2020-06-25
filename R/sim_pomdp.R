@@ -1,5 +1,6 @@
-#' sim_pomdp
+#' simulate a POMDP
 #'
+#' Simulate a POMDP given the appropriate matrices.
 #' @inheritParams sarsop
 #' @inheritParams compute_policy
 #' @param x0 initial state

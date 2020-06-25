@@ -20,7 +20,7 @@ which itself is a list of the three matrices: transition, observation, and
 reward, defining the pomdp problem.
 }
 \description{
-model from log
+Read model details from log file
 }
 \details{
 assumes transition can be determined by the f_from_log function,

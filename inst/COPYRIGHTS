@@ -8,7 +8,7 @@ MIT License:
 - Anthony R Cassandra (1998-1999) for the `cassandra` parser
 
 GPL-2:
-- Ulrich Drepper (1987-2004) for `getopt.c`
+- Ulrich Drepper (1987-2004) for `getopt.c`, Copyright (C) Free Software Foundation Inc.
 - Sarsop. (2008) Hanna Kurniawati, David Hsu, and Wee Sun Lee
 - Sarsop controller (2008) Le Trong Dao
 - APPL contributors: Yanzhu Du, Amit Jain, Huang Xan, Rong Nan
@@ -23,7 +23,7 @@ Apache Version 2:
 
 
 RSA MD:
-- Benjamin Grüdelbach, RSA Data security. (1991-1992) `md5.cpp`
+- Benjamin Grüdelbach, Copyright (C) RSA Data Security Inc. (1991-1992) `md5.cpp`
 
 
 All R code is copyright Carl Boettiger (2016-2020) under GPL v2 Licence.

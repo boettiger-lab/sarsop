@@ -1,5 +1,6 @@
 #' compute_policy
 #'
+#' Derive the corresponding policy function from the alpha vectors
 #' @inheritParams sarsop
 #' @param alpha the matrix of alpha vectors returned by \code{\link{sarsop}}
 #' @param a_0 previous action. Belief in state depends not only on observation, but on prior belief of the state and subsequent action that had been taken.

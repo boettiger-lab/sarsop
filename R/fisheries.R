@@ -2,7 +2,7 @@
 
 #' fisheries_matrices
 #'
-#' initialize the transition, observation, and reward matrices given
+#' Initialize the transition, observation, and reward matrices given
 #'  a transition function, reward function, and state space
 #' @param states sequence of possible states
 #' @param actions sequence of possible actions

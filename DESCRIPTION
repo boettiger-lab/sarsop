@@ -22,9 +22,12 @@ Authors@R: c(
     person("Le", "Trong Dao", role = c("ctb", "cph")),
     person("Amit", "Jain", role= c("ctb", "cph")),
     person("Rong", "Nan", role = c("ctb", "cph")),
-    person("Ulrich", "Drepper", role = c("ctb", "cph")),
+    person("Ulrich", "Drepper", role = c("ctb")),
+    person("", "Free Software Foundation", role = "cph"),
     person("Tyge", "Lovset", role = c("ctb", "cph")),
-    person("Yves", "Berquin", role = c("ctb", "cph"))
+    person("Yves", "Berquin", role = c("ctb", "cph")),
+    person("Benjamin", "Grüdelbach", role = "ctb"),
+    person("", "RSA Data Security, Inc.", role = "cph")
     )
 Description: A toolkit for Partially Observed Markov Decision Processes (POMDP). Provides
     bindings to C++ libraries implementing the algorithm SARSOP (Successive Approximations
