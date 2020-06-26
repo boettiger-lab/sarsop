@@ -27,6 +27,16 @@
 
 This is necessary and unavoidable element required to execute the
 original SARSOP software so that it may be easily and portably distributed
-within this package. Also, my apologies about the gcc-10 error in the 
-initial submission, that has now been rectified.  
+within this package. Also, my apologies about the gcc-10 warnings earlier in the 
+initial submission, that has now been rectified. 
+
+This submission now includes the names of all contributors mentioned in
+any of the source files in the DESCRIPTION as contributor and copyright holder;
+and as recommended, an `inst/COPYRIGHTS` file has also been included. 
+
+All slow examples now use donttest instead of dontrun.
+
+Function descriptions in .Rd files have been extended where appropriate.  
+
+
 

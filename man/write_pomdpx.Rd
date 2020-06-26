@@ -2,7 +2,7 @@
 % Please edit documentation in R/write_pomdpx.R
 \name{write_pomdpx}
 \alias{write_pomdpx}
-\title{write_pomdpx}
+\title{write pomdpx files}
 \usage{
 write_pomdpx(
   P,
@@ -39,7 +39,9 @@ since normalizing requires additional precision}
 doesn't seem to know scientific notation}
 }
 \description{
-write_pomdpx
+A POMDPX file specifies a POMDP problem in terms of the transition,
+observation, and reward matrices, the discount factor, and the initial
+belief.
 }
 \examples{
 m <- fisheries_matrices()

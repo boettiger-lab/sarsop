@@ -1,5 +1,6 @@
 #' @importFrom utils read.csv write.table
 # @importFrom readr read_csv write_csv
+#' @noRd
 solutions_log <- function(id,
                           metafile = "meta.csv",
                           status,

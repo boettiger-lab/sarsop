@@ -1,6 +1,6 @@
 #' hindcast_pomdp
 #'
-#' Compare historical actions to what pomdp recommendation would have been
+#' Compare historical actions to what pomdp recommendation would have been.
 #' @inheritParams sarsop
 #' @inheritParams compute_policy
 #' @param obs a given sequence of observations

@@ -1,6 +1,8 @@
-#' write_pomdpx
+#' write pomdpx files
 #'
-#' @inheritParams pomdp
+#' A POMDPX file specifies a POMDP problem in terms of the transition,
+#' observation, and reward matrices, the discount factor, and the initial
+#' belief.
 #' @param P transition matrix
 #' @param O observation matrix
 #' @param R reward

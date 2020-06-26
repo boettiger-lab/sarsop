@@ -31,7 +31,7 @@ over states}
 a data frame providing the optimal policy (choice of action) and corresponding value of the action for each possible belief state
 }
 \description{
-compute_policy
+Derive the corresponding policy function from the alpha vectors
 }
 \examples{
 

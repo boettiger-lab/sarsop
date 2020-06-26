@@ -42,7 +42,7 @@ a list, containing: a data frame with columns for time, obs, action, and optimal
 and an array containing the posterior belief distribution at each time t
 }
 \description{
-Compare historical actions to what pomdp recommendation would have been
+Compare historical actions to what pomdp recommendation would have been.
 }
 \examples{
 m <- fisheries_matrices()

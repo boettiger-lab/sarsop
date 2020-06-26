@@ -33,7 +33,7 @@
 #' @export
 #' @importFrom digest digest
 #' @examples
-#' \dontrun{ ## Takes > 5s
+#' \donttest{ ## Takes > 5s
 #' ## Use example code to generate matrices for pomdp problem:
 #' source(system.file("examples/fisheries-ex.R", package = "sarsop"))
 #' alpha <- sarsop(transition, observation, reward, discount, precision = 10)

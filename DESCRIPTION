@@ -5,23 +5,33 @@ Version: 0.6.2
 Authors@R: c(
     person("Carl", "Boettiger", 
             email = "cboettig@gmail.com", 
-            role = c("cre", "aut"),
+            role = c("cre", "aut", "cph"),
             comment = c(ORCID = "0000-0002-1642-628X")),
     person("Jeroen", "Ooms", role = c("aut")),
     person("Milad", "Memarzadeh", role = "aut"),
-    person("Hanna", "Kurniawati", role = "ctb"),
-    person("David", "Hsu", role = "ctb"),
-    person("Hanna", "Kurniawati", role = "ctb"),
-    person("Wee", "Sun Lee", role = "ctb"),
+    person("Hanna", "Kurniawati", role = c("ctb", "cph")),
+    person("David", "Hsu", role = c("ctb", "cph")),
+    person("Hanna", "Kurniawati", role = c("ctb", "cph")),
+    person("Wee", "Sun Lee", role = c("ctb", "cph")),
     person("Yanzhu", "Du", role = "ctb"),
     person("Xan", "Huang", role = "ctb"),
-    person("Trey", "Smith", role = "ctb"),
-    person("Tony", "Cassandra", role = "ctb"),
-    person("Lee", "Thomason", role = "ctb")
+    person("Trey", "Smith", role = c("ctb", "cph")),
+    person("Tony", "Cassandra", role = c("ctb", "cph")),
+    person("Lee", "Thomason", role = c("ctb", "cph")),
+    person("Carl", "Kindman", role = c("ctb", "cph")),
+    person("Le", "Trong Dao", role = c("ctb", "cph")),
+    person("Amit", "Jain", role= c("ctb", "cph")),
+    person("Rong", "Nan", role = c("ctb", "cph")),
+    person("Ulrich", "Drepper", role = c("ctb")),
+    person("", "Free Software Foundation", role = "cph"),
+    person("Tyge", "Lovset", role = c("ctb", "cph")),
+    person("Yves", "Berquin", role = c("ctb", "cph")),
+    person("Benjamin", "Grüdelbach", role = "ctb"),
+    person("", "RSA Data Security, Inc.", role = "cph")
     )
 Description: A toolkit for Partially Observed Markov Decision Processes (POMDP). Provides
     bindings to C++ libraries implementing the algorithm SARSOP (Successive Approximations
-    of the Reachable Space under Optimal Policies and described in Kurniawati et al (2008),
+    of the Reachable Space under Optimal Policies) and described in Kurniawati et al (2008),
     <doi:10.15607/RSS.2008.IV.009>.  This package also provides a high-level interface
     for generating, solving and simulating POMDP problems and their solutions.
 License: GPL-2

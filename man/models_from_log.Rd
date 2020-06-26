@@ -20,24 +20,19 @@ which itself is a list of the three matrices: transition, observation, and
 reward, defining the pomdp problem.
 }
 \description{
-model from log
+Read model details from log file
 }
 \details{
 assumes transition can be determined by the f_from_log function,
  which is specific to the fisheries example
 }
 \examples{
-\dontrun{
+\donttest{ # takes > 5s
 
 source(system.file("examples/fisheries-ex.R", package = "sarsop"))
 log = tempfile()
 alpha <- sarsop(transition, observation, reward, discount, precision = 10,
-                log_dir = log, log_data = log_data)
+                log_dir = log)
 
-## Get metadata for all logged solutions matching the desired query
-meta <- meta_from_log(parameters = data.frame(model = "ricker", r = 0.1), log_dir = log)
-alphas <- alphas_from_log(meta, log_dir = log)
-fs <- f_from_log(meta)
-models <- models_from_log(meta)
 }
 }

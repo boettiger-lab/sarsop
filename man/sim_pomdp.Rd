@@ -2,7 +2,7 @@
 % Please edit documentation in R/sim_pomdp.R
 \name{sim_pomdp}
 \alias{sim_pomdp}
-\title{sim_pomdp}
+\title{simulate a POMDP}
 \usage{
 sim_pomdp(
   transition,
@@ -50,7 +50,7 @@ if the observation process is independent of the action taken)}
 a data frame with columns for time, state, obs, action, and (discounted) value.
 }
 \description{
-sim_pomdp
+Simulate a POMDP given the appropriate matrices.
 }
 \details{
 simulation assumes the following order of updating: For system in state[t] at
