@@ -1,3 +1,9 @@
+This update should address all current issues in CRAN checks:
+Solaris ERROR, the clang WARNINGs on Fedora,
+and the NOTE regarding Matrix export.  
+
+
+
 ## Test environments
 
 * local R installation, ubuntu 20.04, R 4.0.0
