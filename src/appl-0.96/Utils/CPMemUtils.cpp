@@ -1,4 +1,5 @@
 #include "CPMemUtils.h"
+#include "CPTimer.h"
 
 unsigned long getPhysicalMemorySize()
 {
@@ -24,7 +25,7 @@ unsigned long getPhysicalMemorySize()
 	*/
 
 	return 1024 * 1024 * 1024;
- 
+
 #else
 
 #ifdef _MSC_VER
@@ -45,7 +46,7 @@ unsigned long getPhysicalMemorySize()
 	//return ((unsigned long)s_info.totalram) * ((unsigned long)s_info.mem_unit);
 	unsigned long int pageSize = sysconf (_SC_PAGESIZE);
 	unsigned long int pageNum = sysconf (_SC_PHYS_PAGES);
-	
+
 	// HACK: Cygwin running under PAE-enabled windows report page size of 65536
 #ifdef __CYGWIN__
 	pageSize = 4096;

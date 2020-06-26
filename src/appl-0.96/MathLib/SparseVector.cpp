@@ -405,7 +405,7 @@ main_loop_done:
 	    while( (otherIter != x.data.end()) && (iter->index > otherIter->index))
 	    {
 		REAL_VALUE toTruncate = otherIter->value;
-		toTruncate *=2^20; // TODO:: this truncation is different from the BeliefEntryTruncate function used in the hash generation function, fix it?
+		toTruncate *= 1048576; // 2^20 TODO:: this truncation is different from the BeliefEntryTruncate function used in the hash generation function, fix it?
 		toTruncate = floor(toTruncate);
 
 		del += fabs(toTruncate);
@@ -415,11 +415,11 @@ main_loop_done:
 	    if((otherIter != x.data.end()) && (iter->index == otherIter->index))
 	    {
 		REAL_VALUE toTruncate = iter->value;
-		toTruncate *=2^20;
+		toTruncate *= 1048576;
 		toTruncate = floor(toTruncate);
 
 		REAL_VALUE toTruncate2 = otherIter->value;
-		toTruncate2 *=2^20;
+		toTruncate2 *=1048576;
 		toTruncate2 = floor(toTruncate);
 
 		del += fabs(toTruncate - toTruncate2);
@@ -428,7 +428,7 @@ main_loop_done:
 	    else
 	    {
 		REAL_VALUE toTruncate = iter->value;
-		toTruncate *=2^20;
+		toTruncate *=1048576;
 		toTruncate = floor(toTruncate);
 
 
@@ -565,7 +565,7 @@ main_loop_done:
 
 	    double toTruncate = iter->value;
 	    int len2 = sizeof (toTruncate);
-	    toTruncate *=2^20;
+	    toTruncate *= 1048576;
 	    toTruncate = floor(toTruncate);
 	    md5.MD5Update (&context, (unsigned char *)&(toTruncate), len2);
 
