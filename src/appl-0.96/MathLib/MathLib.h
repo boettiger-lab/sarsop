@@ -14,7 +14,7 @@
 
 using namespace std;
 using namespace momdp;
-namespace momdp 
+namespace momdp
 {
 
 	class MathLib
@@ -32,7 +32,7 @@ namespace momdp
 
 	inline REAL_VALUE BeliefEntryTruncate(REAL_VALUE input)
 	{
-		input *= 10^BELIEF_DECIMAL_PRECISION;
+		input *= pow(10, BELIEF_DECIMAL_PRECISION);
 		input += 0.5;
 		input = floor(input);
 		return input;
@@ -75,12 +75,12 @@ namespace momdp
 
 
 	// result = x
-	inline void copy(SparseVector& result, const SparseVector& x) 
+	inline void copy(SparseVector& result, const SparseVector& x)
 	{
 		result.copyFrom(x);
 	}
-	inline void copy(DenseVector& result, const DenseVector& x) 
-	{ 
+	inline void copy(DenseVector& result, const DenseVector& x)
+	{
 		// copy all the data
 		result.copyFrom(x);
 	}
@@ -244,13 +244,13 @@ namespace momdp
 
 	// b represents a discrete probability distribution Pr(outcome = i) = b(i).
 	// Chooses an outcome according to the distribution.
-	inline int chooseFromDistribution(const DenseVector& b) 
+	inline int chooseFromDistribution(const DenseVector& b)
 	{
 		double r = unit_rand();
 		FOR (i, b.size())
 		{
 			r -= b(i);
-			if (r <= 0) 
+			if (r <= 0)
 			{
 				return i;
 			}
@@ -261,7 +261,7 @@ namespace momdp
 	inline int chooseFromDistribution(const SparseVector& b) {
 		double r = unit_rand();
 		int lastIndex = 0;
-		FOR_CV(b) 
+		FOR_CV(b)
 		{
 			r -= CV_VAL(b);
 			lastIndex = CV_INDEX(b);
@@ -276,7 +276,7 @@ namespace momdp
 	inline int chooseFromDistribution(const SparseVector& b, double r)
 	{
 		int lastIndex = 0;
-		FOR_CV(b) 
+		FOR_CV(b)
 		{
 			r -= CV_VAL(b);
 			lastIndex = CV_INDEX(b);

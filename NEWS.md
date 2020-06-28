@@ -1,15 +1,21 @@
+## v0.6.3 
 
-# v0.6.1 
-### Released 2019-04-10
+* Additional CRAN patches for Solaris and additional warnings.
+
+## v0.6.2, Released 2020-06-26 to CRAN
+
+* Modernization and patches to C++ code to address warnings on gcc-10
+* Copyright and Credit information for known all APPL contributors and 
+  other included sources.
+
+## v0.6.1, Released 2019-04-10 (GitHub only)
 
 * patch memoization
 * resolve several compiler warnings
 * use BH package for boost headers instead of packaging with appl code
 
 
-# v0.6.0
-
-### Released 2018-11-29
+## v0.6.0, Released 2018-11-29 (GitHub Only)
 
 * Added a `NEWS.md` file to track changes to the package.
 * Uses a memoization strategy in caching sarsop results.  This deprecates
