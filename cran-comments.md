@@ -1,6 +1,7 @@
-This update should address all current issues in CRAN checks:
-Solaris ERROR, the clang WARNINGs on Fedora,
-and the NOTE regarding Matrix export.  
+This update should address the recent CRAN check issue regarding solaris.
+SystemRequirements now indicate that the package will build on the three
+major platforms, but not on Solaris.  CRAN's Solaris machine lacks `mallinfo`,
+which is avialable on other platforms. 
 
 
 

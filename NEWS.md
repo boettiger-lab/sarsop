@@ -1,4 +1,7 @@
-## v0.6.3 
+## v0.6.4
+Indicate no solaris support via SystemRequirements
+
+## v0.6.3
 
 * Additional CRAN patches for Solaris and additional warnings.
 
