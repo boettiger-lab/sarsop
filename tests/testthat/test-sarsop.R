@@ -70,6 +70,7 @@ test_that("test sarsop and logging", {
 
   testthat::test_that("we get the same f functions back", {
     skip_on_travis()
+    skip_on_cran()
     testthat::expect_equivalent(stored_fs[[1]], f)
   })
 

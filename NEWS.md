@@ -1,5 +1,10 @@
+## v0.6.5
+
+* Avoid architecture-sensitive caching checks on CRAN
+
 ## v0.6.4
-Indicate no solaris support via SystemRequirements
+
+* Indicate no solaris support via SystemRequirements
 
 ## v0.6.3
 
