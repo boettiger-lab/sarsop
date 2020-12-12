@@ -1,4 +1,4 @@
-## v0.6.5
+## v0.6.6
 
 * Avoid architecture-sensitive caching checks on CRAN
 
