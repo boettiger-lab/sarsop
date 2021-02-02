@@ -1,7 +1,7 @@
 Package: sarsop
 Type: Package
 Title: Approximate POMDP Planning Software
-Version: 0.6.7
+Version: 0.6.8
 Authors@R: c(
     person("Carl", "Boettiger", 
             email = "cboettig@gmail.com", 
@@ -37,7 +37,7 @@ Description: A toolkit for Partially Observed Markov Decision Processes (POMDP).
 License: GPL-2
 URL: https://github.com/boettiger-lab/sarsop
 BugReports: https://github.com/boettiger-lab/sarsop/issues
-RoxygenNote: 7.1.0.9000
+RoxygenNote: 7.1.1
 Imports: 
     xml2,
     parallel,

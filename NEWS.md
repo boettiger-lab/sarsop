@@ -1,3 +1,7 @@
+## v0.6.8
+
+*  Additional modifications attempted for Solaris compatibility.
+
 ## v0.6.6
 
 * Avoid architecture-sensitive caching checks on CRAN
