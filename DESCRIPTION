@@ -48,7 +48,6 @@ Suggests:
     testthat,
     roxygen2,
     knitr,
-    tidyverse,
     covr,
     spelling
 LinkingTo: BH
