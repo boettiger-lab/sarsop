@@ -1991,7 +1991,9 @@ int yywrap(void)
     return (1);
 }
 
-
+int yydummy(void){
+	return yyinput();
+}
 
 
 
