@@ -1,3 +1,7 @@
+## v0.6.9
+
+* Additional modifications for compatibility with new clang-12 warnings
+
 ## v0.6.8
 
 *  Additional modifications attempted for Solaris compatibility.
