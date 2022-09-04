@@ -14,7 +14,7 @@ using namespace std;
 
 BeliefForest::BeliefForest()
 {
-	//sampleEngine == NULL;
+	sampleEngine = NULL;
 }
 
 
