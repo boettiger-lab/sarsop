@@ -1,3 +1,7 @@
+## v0.6.10
+
+* Additional patch for compatibility with new warnings on clang-14
+
 ## v0.6.9
 
 * Additional modifications for compatibility with new clang-12 warnings

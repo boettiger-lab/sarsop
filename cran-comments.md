@@ -1,1 +1,1 @@
-This patch should make the package check successful when compiled on clang-12 platforms
+This patch attempts to address the warnings indicated on some CRAN test platforms, as described in NEWS.md

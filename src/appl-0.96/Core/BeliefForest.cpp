@@ -14,7 +14,7 @@ using namespace std;
 
 BeliefForest::BeliefForest()
 {
-	sampleEngine == NULL;
+	//sampleEngine == NULL;
 }
 
 
@@ -25,7 +25,7 @@ BeliefForest::~BeliefForest(void)
 	{
 		delete sampleEngine;
 	}
-	
+
 
 }
 void BeliefForest::print()
@@ -46,21 +46,21 @@ void BeliefForest::print()
 }
 
 //ADD SYLTAG - this function expands the global root
-void BeliefForest::globalRootPrepare(void) 
+void BeliefForest::globalRootPrepare(void)
 {
 	DEBUG_TRACE( cout << "Sample::globalRootPrepare" << endl; );
 	belief_vector rootpv;
 
 	rootpv = obsVar_bvec;
-		
+
 	sampleRootEdges.resize(rootpv.size());
 	DEBUG_TRACE( cout << "rootpv" << endl; );
 	DEBUG_TRACE( rootpv.write(cout) << endl; );
 
-	FOR(r, rootpv.size()) 
-	{ 
+	FOR(r, rootpv.size())
+	{
 		double rprob = rootpv(r);
-		if (rprob > OBS_IS_ZERO_EPS) 
+		if (rprob > OBS_IS_ZERO_EPS)
 		{
 			SharedPointer<BeliefWithState>  thisRootb_s (new BeliefWithState());
 			copy(*thisRootb_s->bvec, *problem->getInitialBeliefY(r));
@@ -77,8 +77,8 @@ void BeliefForest::globalRootPrepare(void)
 
 			rE->sampleRoot->count = 1;//for counting valid path
 			//rE->sampleRoot->targetUb.push_back(lb);
-		} 
-		else 
+		}
+		else
 		{
 			sampleRootEdges[r] = NULL;
 		}
@@ -89,13 +89,13 @@ void BeliefForest::globalRootPrepare(void)
 	// get bounds for the Global Root
 	double lbSum =0, ubSum = 0;
 
-	FOR(r, sampleRootEdges.size()) 
-	{ 
+	FOR(r, sampleRootEdges.size())
+	{
 		SampleRootEdge* eR = sampleRootEdges[r];
 
-		if (NULL != eR) 
+		if (NULL != eR)
 		{
-			BeliefTreeNode & sn = *eR->sampleRoot;				
+			BeliefTreeNode & sn = *eR->sampleRoot;
 			lbSum =+  (eR->sampleRootProb) * (*beliefCacheSet)[sn.cacheIndex.sval]->getRow(sn.cacheIndex.row)->LB;
 
 			ubSum =+  (eR->sampleRootProb) * (*beliefCacheSet)[sn.cacheIndex.sval]->getRow(sn.cacheIndex.row)->UB;
@@ -121,7 +121,7 @@ void BeliefForest::setup(SharedPointer<MOMDP> problem, Sample* _sampleEngine, ve
 	this->sampleEngine = _sampleEngine;
 	this->beliefCacheSet = _beliefCacheSet;
         this->problem = problem;
-        
+
 	// initialize beliefForest
 	copy(obsVar_bvec,  *(problem->initialBeliefX));
 	// copy(unobsVar_bvec, *(problem->initialBelief));
