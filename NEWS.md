@@ -1,3 +1,7 @@
+## v0.6.11
+
+* Additional patch for compatibility with new warnings on R-devel, clang-14
+
 ## v0.6.10
 
 * Additional patch for compatibility with new warnings on clang-14
