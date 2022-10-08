@@ -93,7 +93,7 @@ REAL_VALUE *gInitialBelief;
 int gInitialState = INVALID_STATE;
 
 /***************************************************************************/
-REAL_VALUE *newBeliefState(  ) {
+REAL_VALUE *newBeliefState( void ) {
 
 	return( (REAL_VALUE *) calloc( gNumStates, sizeof( REAL_VALUE )));
 }  /* *newBeliefState */
