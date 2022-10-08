@@ -95,7 +95,7 @@ extern int gInitialState;        /* For MDPs   */
 
 
 /* Exported functions */
-//extern REAL_VALUE *newBeliefState();
+extern REAL_VALUE *newBeliefState();
 extern int transformBeliefState( REAL_VALUE *pi,
                                 REAL_VALUE *pi_hat,
                                 int a,
@@ -103,12 +103,12 @@ extern int transformBeliefState( REAL_VALUE *pi,
 extern void copyBeliefState( REAL_VALUE *copy, REAL_VALUE *pi );
 extern void displayBeliefState( FILE *file, REAL_VALUE *pi );
 extern int readMDP( char *filename );
-//extern void convertMatrices();
-//extern void deallocateMDP();
-//extern void convertMatrices();
-//extern int verifyIntermediateMDP();
-//extern void deallocateIntermediateMDP();
-//extern void allocateIntermediateMDP();
+extern void convertMatrices();
+extern void deallocateMDP();
+extern void convertMatrices();
+extern int verifyIntermediateMDP();
+extern void deallocateIntermediateMDP();
+extern void allocateIntermediateMDP();
 extern int writeMDP( char *filename );
 extern void displayMDPSlice( int state );
 
@@ -119,9 +119,9 @@ extern void checkAllocatedPointer(void * ptr);
 /* from pomdp_spec.y */
 extern int readMDPFile( FILE *file );
 
-//extern unsigned long getPhysicalMemorySize();
-//extern unsigned long getCurrentProcessMemoryUsage();
-//extern unsigned long getPlatformMemoryLimit();
+extern unsigned long getPhysicalMemorySize();
+extern unsigned long getCurrentProcessMemoryUsage();
+extern unsigned long getPlatformMemoryLimit();
 
 #ifdef __cplusplus
 } /* extern "C" */
