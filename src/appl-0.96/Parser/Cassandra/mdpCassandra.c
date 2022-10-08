@@ -196,7 +196,7 @@ int readMDP( char *filename ) {
 	return( 1 );
 }  /* readMDP */
 /**********************************************************************/
-void allocateIntermediateMDP() {
+void allocateIntermediateMDP( void ) {
 	/*
 	Assumes that the gProblemType has been set and that the variables
 	gNumStates, gNumActions, and gNumObservation have the appropriate
@@ -250,7 +250,7 @@ void allocateIntermediateMDP() {
 
 } /* allocateIntermediateMDP */
 /************************************************************************/
-int verifyIntermediateMDP() {
+int verifyIntermediateMDP( void ) {
 	/*
 	This routine will make sure that the intermediate form for the MDP
 	is valid.  It will check to make sure that the transition and
@@ -284,7 +284,7 @@ int verifyIntermediateMDP() {
 				return( 1 );
 }  /* verifyIntermediateMDP */
 /************************************************************************/
-void deallocateIntermediateMDP() {
+void deallocateIntermediateMDP( void ) {
 	/*
 	This routine is made available in case something goes wrong
 	before converting the matrices from the intermediate form
@@ -316,7 +316,7 @@ void deallocateIntermediateMDP() {
 
 }  /* deallocateIntermediateMDP */
 /**********************************************************************/
-void computeRewards() {
+void computeRewards( void ) {
 	int a, i, j, z, next_state, obs;
 	REAL_VALUE sum, inner_sum;
 
@@ -363,7 +363,7 @@ void computeRewards() {
 
 }  /* computeRewards */
 /************************************************************************/
-void convertMatrices() {
+void convertMatrices( void ) {
 	/*
 	This routine is called after the parsing has been succesfully done.
 	It will assume that the intermediate representations for the transition
@@ -501,7 +501,7 @@ int writeMDP( char *filename ) {
 
 }  /* writeMDP */
 /**********************************************************************/
-void deallocateMDP() {
+void deallocateMDP( void ) {
 	int a;
 
 	for( a = 0; a < gNumActions; a++ )
@@ -579,7 +579,7 @@ void displayMDPSlice( int state ) {
 
 }  /* displayMDPSlice */
 
-void memoryExhaustedErrorHandler()
+void memoryExhaustedErrorHandler( void )
 {
 	deallocateMDP();
 	printf("Not enough memory for parsing the POMDP file, exiting.\n");

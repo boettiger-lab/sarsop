@@ -5,14 +5,14 @@
   Copyright 1998, 1999, Anthony R. Cassandra
 
                            All Rights Reserved
-                           
+
   Permission to use, copy, modify, and distribute this software and its
   documentation for any purpose other than its incorporation into a
   commercial product is hereby granted without fee, provided that the
   above copyright notice appear in all copies and that both that
   copyright notice and this permission notice appear in supporting
   documentation.
-  
+
   ANTHONY CASSANDRA DISCLAIMS ALL WARRANTIES WITH REGARD TO THIS SOFTWARE,
   INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR ANY
   PARTICULAR PURPOSE.  IN NO EVENT SHALL ANTHONY CASSANDRA BE LIABLE FOR
@@ -37,7 +37,7 @@ linked list, where each node of the list will correspond to a single
 R: * : ... entry.  The entry from the file could specify a single
 value, a row of values, or an entire matrix.  Thus we need three
 different representations depending on the situation.  Additionally,
-all of the components could have a wildcard character indicating 
+all of the components could have a wildcard character indicating
 that it is a specification for a family of values.  This is indicated
 with special characters.
 
@@ -86,14 +86,14 @@ struct Imm_Reward_Node_Struct {
 extern "C" {
 #endif
 
-extern void destroyImmRewards();
+extern void destroyImmRewards( void );
 extern void newImmReward( int action, int cur_state, int next_state, int obs );
-extern void enterImmReward( int cur_state, int next_state, int obs, 
+extern void enterImmReward( int cur_state, int next_state, int obs,
 			   REAL_VALUE value );
-extern void doneImmReward();
+extern void doneImmReward( void );
 extern REAL_VALUE getImmediateReward( int action, int cur_state, int
 				 next_state, int obs );
-				 
+
 #ifdef __cplusplus
 }  /* extern "C" */
 #endif

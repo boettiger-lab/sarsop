@@ -1,18 +1,18 @@
-/* parse_hash.c 
+/* parse_hash.c
 
   *****
   Copyright 1994-1997, Brown University
   Copyright 1998, 1999, Anthony R. Cassandra
 
                            All Rights Reserved
-                           
+
   Permission to use, copy, modify, and distribute this software and its
   documentation for any purpose other than its incorporation into a
   commercial product is hereby granted without fee, provided that the
   above copyright notice appear in all copies and that both that
   copyright notice and this permission notice appear in supporting
   documentation.
-  
+
   ANTHONY CASSANDRA DISCLAIMS ALL WARRANTIES WITH REGARD TO THIS SOFTWARE,
   INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR ANY
   PARTICULAR PURPOSE.  IN NO EVENT SHALL ANTHONY CASSANDRA BE LIABLE FOR
@@ -32,7 +32,7 @@
 Node *Hash_Table;
 
 /**********************************************************************/
-void H_create() {
+void H_create( void ) {
 
    Hash_Table = (Node *) calloc( HASH_TABLE_SIZE , sizeof( *Hash_Table ));
 
@@ -40,18 +40,18 @@ void H_create() {
    gNumStates = gNumActions = gNumObservations = 0;
 }  /* H_init */
 /**********************************************************************/
-void H_destroy() {
+void H_destroy( void ) {
    Node temp;
    int i;
 
-   for( i = 0; i < HASH_TABLE_SIZE; i++) 
+   for( i = 0; i < HASH_TABLE_SIZE; i++)
       while( Hash_Table[i] != NULL ) {
          temp = Hash_Table[i];
          Hash_Table[i] = temp->next;
          free( temp->str );
          free( temp );
       }  /* while */
-  
+
    free( Hash_Table );
 }  /* H_destroy */
 /**********************************************************************/
@@ -85,12 +85,12 @@ int H_match( char *str, Mnemonic_Type type, Node node ) {
       fprintf( stderr, "**ERR: Null node in H_match().\n");
       exit(-1);
    }
-      
+
    if( type != node->type )
       return 0;
    if( strcmp( str, node->str ) != 0 )
       return 0;
-   
+
    return 1;
 }  /* H_match */
 /**********************************************************************/
@@ -110,7 +110,7 @@ int H_enter( char *str, Mnemonic_Type type ) {
    while( temp != NULL ) {
       trail = temp;
       /* if already in the list then there's a duplicate */
-      if ( H_match( str, type, temp) == 1 ) 
+      if ( H_match( str, type, temp) == 1 )
          return 0;
       temp = temp->next;
    }  /* while */
@@ -131,7 +131,7 @@ int H_enter( char *str, Mnemonic_Type type ) {
    case nt_state:
       temp->number = gNumStates++;
       break;
-   case nt_action:      
+   case nt_action:
       temp->number = gNumActions++;
       break;
    case nt_observation:
@@ -143,7 +143,7 @@ int H_enter( char *str, Mnemonic_Type type ) {
    }
 
    /* Add to hash table */
-   if( trail == NULL ) 
+   if( trail == NULL )
       Hash_Table[hash] = temp;
    else
       trail->next = temp;
@@ -166,7 +166,7 @@ int H_lookup( char *str, Mnemonic_Type type ) {
    temp = Hash_Table[hash];
    while( temp != NULL ) {
       /* if already in the list then there's a duplicate */
-      if ( H_match( str, type, temp) == 1 ) 
+      if ( H_match( str, type, temp) == 1 )
          return temp->number;
       temp = temp->next;
    }  /* while */

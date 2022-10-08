@@ -75,7 +75,7 @@ Err_node	*Err_list;		/* GLOBAL error list */
 
 
 /**********************  ERR_initialize  ******************************/
-void ERR_initialize()
+void ERR_initialize( void )
 /*
 	Initializes the linked list of errors by creating the first
 node in that list as empty.  The list will actually start with the
@@ -189,7 +189,7 @@ number and, similiarly, on a first generated-first displayed basis.
 
 }  /* ERR_enter */
 /*****************************  ERR_dump  ***********************************/
-int ERR_dump()
+int ERR_dump( void )
 /*
 	   This function prints out the error messages found in the list
 	Err_list.  Each error
@@ -277,7 +277,7 @@ int ERR_dump()
 
 }  /* ERR_dump */
 /***************************************************************************/
-void ERR_cleanUp() {
+void ERR_cleanUp( void ) {
    Err_node *temp;
 
    while( Err_list != NULL ) {

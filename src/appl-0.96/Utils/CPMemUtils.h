@@ -33,17 +33,17 @@
 #ifdef __cplusplus
 extern "C"
 #endif
-unsigned long getPhysicalMemorySize();
+unsigned long getPhysicalMemorySize( void );
 
 #ifdef __cplusplus
 extern "C"
 #endif
-unsigned long getCurrentProcessMemoryUsage();
+unsigned long getCurrentProcessMemoryUsage( void );
 
 #ifdef __cplusplus
 extern "C"
 #endif
-unsigned long getPlatformMemoryLimit();
+unsigned long getPlatformMemoryLimit( void );
 
 
 
