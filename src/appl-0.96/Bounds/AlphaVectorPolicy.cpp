@@ -162,7 +162,7 @@ bool AlphaVectorPolicy::readFromFile(const std::string& inFileName)
 	if(string(tagname)=="Vector"){
 	    FOR(i, vectorLength){
 		char  dvalue[200];
-		if(fscanf(infile, "%s", &dvalue)==EOF){
+		if(fscanf(infile, "%.200s", &dvalue)==EOF){
 		    cerr << "ERROR:\n\tVector is too short, are you using the correct policy file?" << endl;
 		    exit(EXIT_FAILURE);
 		}
@@ -175,7 +175,7 @@ bool AlphaVectorPolicy::readFromFile(const std::string& inFileName)
 	    xml_grab_tag_name( tag, tagname, MaxStr);
 	    while(string(tagname)=="Entry"){
 		double value;int index;
-		sscanf(contents, "%d %f", &index, &value);
+		sscanf(contents, "%d %lf", &index, &value);
 		plane.alpha->data[index] = value;
 
 		xml_parse( infile, tag, contents, MaxStr, &linum );
