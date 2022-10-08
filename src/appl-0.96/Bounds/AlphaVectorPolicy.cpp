@@ -162,7 +162,7 @@ bool AlphaVectorPolicy::readFromFile(const std::string& inFileName)
 	if(string(tagname)=="Vector"){
 	    FOR(i, vectorLength){
 		char  dvalue[200];
-		if(fscanf(infile, "%200s", &dvalue)==EOF){
+		if(fscanf(infile, "%200s", dvalue)==EOF){
 		    cerr << "ERROR:\n\tVector is too short, are you using the correct policy file?" << endl;
 		    exit(EXIT_FAILURE);
 		}

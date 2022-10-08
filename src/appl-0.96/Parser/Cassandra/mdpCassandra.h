@@ -1,18 +1,18 @@
-/*   mdp.h  
+/*   mdp.h
 
   *****
   Copyright 1994-1997, Brown University
   Copyright 1998, 1999, Anthony R. Cassandra
 
                            All Rights Reserved
-                           
+
   Permission to use, copy, modify, and distribute this software and its
   documentation for any purpose other than its incorporation into a
   commercial product is hereby granted without fee, provided that the
   above copyright notice appear in all copies and that both that
   copyright notice and this permission notice appear in supporting
   documentation.
-  
+
   ANTHONY CASSANDRA DISCLAIMS ALL WARRANTIES WITH REGARD TO THIS SOFTWARE,
   INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR ANY
   PARTICULAR PURPOSE.  IN NO EVENT SHALL ANTHONY CASSANDRA BE LIABLE FOR
@@ -41,12 +41,12 @@ extern "C" {
    some more verbose output if zmdpDebugLevelG > 0. -Trey */
 extern int zmdpDebugLevelG;
 
-/* Use this type for a variable that indicated whether we have a 
+/* Use this type for a variable that indicated whether we have a
    POMDP or an MDP.
 */
-typedef enum {  UNKNOWN_problem_type, 
-		MDP_problem_type, 
-		POMDP_problem_type 
+typedef enum {  UNKNOWN_problem_type,
+		MDP_problem_type,
+		POMDP_problem_type
 	      } Problem_Type;
 
 /* Use this to determine if the problems values are rewards or costs.
@@ -95,7 +95,7 @@ extern int gInitialState;        /* For MDPs   */
 
 
 /* Exported functions */
-extern REAL_VALUE *newBeliefState();
+//extern REAL_VALUE *newBeliefState();
 extern int transformBeliefState( REAL_VALUE *pi,
                                 REAL_VALUE *pi_hat,
                                 int a,
@@ -103,25 +103,25 @@ extern int transformBeliefState( REAL_VALUE *pi,
 extern void copyBeliefState( REAL_VALUE *copy, REAL_VALUE *pi );
 extern void displayBeliefState( FILE *file, REAL_VALUE *pi );
 extern int readMDP( char *filename );
-extern void convertMatrices();
-extern void deallocateMDP();
-extern void convertMatrices();
-extern int verifyIntermediateMDP();
-extern void deallocateIntermediateMDP();
-extern void allocateIntermediateMDP();
+//extern void convertMatrices();
+//extern void deallocateMDP();
+//extern void convertMatrices();
+//extern int verifyIntermediateMDP();
+//extern void deallocateIntermediateMDP();
+//extern void allocateIntermediateMDP();
 extern int writeMDP( char *filename );
 extern void displayMDPSlice( int state );
 
-extern void memoryExhaustedErrorHandler();
+//extern void memoryExhaustedErrorHandler();
 extern void checkAllocatedPointer(void * ptr);
 
 
 /* from pomdp_spec.y */
 extern int readMDPFile( FILE *file );
 
-extern unsigned long getPhysicalMemorySize();
-extern unsigned long getCurrentProcessMemoryUsage();
-extern unsigned long getPlatformMemoryLimit();
+//extern unsigned long getPhysicalMemorySize();
+//extern unsigned long getCurrentProcessMemoryUsage();
+//extern unsigned long getPlatformMemoryLimit();
 
 #ifdef __cplusplus
 } /* extern "C" */
