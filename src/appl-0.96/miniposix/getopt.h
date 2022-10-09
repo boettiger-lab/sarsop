@@ -161,7 +161,7 @@ struct option
 extern int getopt (int ___argc, char *const *___argv, const char *__shortopts)
        __THROW;
 #else /* not __GNU_LIBRARY__ */
-extern int getopt ();
+extern int getopt ( void );
 #endif /* __GNU_LIBRARY__ */
 
 #ifndef __need_getopt
