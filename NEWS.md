@@ -1,3 +1,11 @@
+## v0.6.12
+
+* Patch for Apple M1's clang-15 derivative. 
+  Apple seems not to contain GNU_LIBRARY-flavored stdlib, triggering  alternate
+  definitions which did not match templates.  Not all platforms are consistent
+  with the signatures of getenv() / getopt(), let's hope Apple's clang is 
+  as least.  
+
 ## v0.6.11
 
 * Additional patch for compatibility with new warnings on clang-15 + R-devel
