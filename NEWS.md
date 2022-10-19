@@ -1,3 +1,8 @@
+## v0.6.13
+
+* Patch for Apple M1's clang-15 derivative. 
+ 
+
 ## v0.6.12
 
 * Patch for Apple M1's clang-15 derivative. 

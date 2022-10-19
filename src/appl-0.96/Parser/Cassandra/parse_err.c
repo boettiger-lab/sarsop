@@ -95,7 +95,10 @@ list might change).
 
 }  /* ERR_initialize */
 /**********************  ERR_enter  ***********************************/
-void ERR_enter(source, lineno, errorid, modificationString)
+void ERR_enter(const char *source,
+               int lineno,
+               int errorid,
+               const char	*modificationString)
 /*
 	The routine will create a new node for the linked list of errors and fill
 it with the proper data.  It will then insert this node into the existing linked
@@ -125,9 +128,6 @@ number and, similiarly, on a first generated-first displayed basis.
 		message is printed out. (if ERR_META is in error message)
 
 */
-	const char 	*source;
-	int	lineno,errorid;
-	const char	*modificationString;
 {
 	Err_node	*newNode;	/* node for new error */
 
