@@ -3326,7 +3326,7 @@ void checkProbs() {
       for( i = 0; i < gNumStates; i++ ) {
 	 sum = sumIMatrixRowValues( IP[a], i );
          if((sum < ( 1.0 - EPSILON)) || (sum > (1.0 + EPSILON))) {
-            sprintf( str, "action=%d, state=%d (%.5lf)", a, i, sum );
+            snprintf( str, sizeof(str), "action=%d, state=%d (%.5lf)", a, i, sum );
             ERR_enter("Parser<checkProbs>:", NO_LINE,
                       BAD_TRANS_PROB_SUM, str );
          }
@@ -3337,7 +3337,7 @@ void checkProbs() {
        for( j = 0; j < gNumStates; j++ ) {
 	 sum = sumIMatrixRowValues( IR[a], j );
          if((sum < ( 1.0 - EPSILON)) || (sum > (1.0 + EPSILON))) {
-	   sprintf( str, "action=%d, state=%d (%.5lf)", a, j, sum );
+	   snprintf( str, sizeof(str), "action=%d, state=%d (%.5lf)", a, j, sum );
 	   ERR_enter("Parser<checkProbs>:", NO_LINE,
 		     BAD_OBS_PROB_SUM, str );
          } /* if sum not == 1 */

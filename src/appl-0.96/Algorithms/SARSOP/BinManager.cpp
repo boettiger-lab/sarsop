@@ -1,5 +1,5 @@
-/** 
- * The code is released under GPL v2 
+/**
+ * The code is released under GPL v2
  */
 
 #include "BinManager.h"
@@ -27,7 +27,7 @@ namespace momdp
 			initializeNode(node);
 		}
 		else
-		{			
+		{
 			updateBin(node);
 		}
 	}
@@ -37,7 +37,7 @@ namespace momdp
 		double lbVal = beliefCache->getRow(node.cacheIndex.row)-> LB ;
 		double ubValue = initialUB->getValue(node.s->bvec);
 		double entropy = 0;
-		FOREACH_NOCONST (SparseVector_Entry, di, node.s->bvec->data) 
+		FOREACH_NOCONST (SparseVector_Entry, di, node.s->bvec->data)
 		{
 			entropy += di->value * ( log(di->value) / log(2.0) );
 		}
@@ -49,9 +49,9 @@ namespace momdp
 			//upper bound
 			binLevels_nodes[i][node.cacheIndex.row]["ub_index"] = (int) ((ubValue - lowest) / binLevels_intervals[i]["ub_interval"] );
 
-			if ( binLevels_nodes[i][node.cacheIndex.row]["ub_index"] > 
+			if ( binLevels_nodes[i][node.cacheIndex.row]["ub_index"] >
 				(initial_bin_size * pow((float)bin_growth_factor,(float)(i-1))) - 1 )
-				binLevels_nodes[i][node.cacheIndex.row]["ub_index"] = 
+				binLevels_nodes[i][node.cacheIndex.row]["ub_index"] =
 				(initial_bin_size * pow((float)bin_growth_factor,(float)(i-1))) - 1;
 			else
 			if ( binLevels_nodes[i][node.cacheIndex.row]["ub_index"] < 0 )
@@ -61,15 +61,16 @@ namespace momdp
 			binLevels_nodes[i][node.cacheIndex.row]["entropy_index"] = (int) (entropy / binLevels_intervals[i]["entropy_interval"]);
 			if ( binLevels_nodes[i][node.cacheIndex.row]["entropy_index"] >
 				(initial_bin_size * pow((float)bin_growth_factor,(float)(i-1))) - 1 )
-				binLevels_nodes[i][node.cacheIndex.row]["entropy_index"] = 
+				binLevels_nodes[i][node.cacheIndex.row]["entropy_index"] =
 				(initial_bin_size * pow((float)bin_growth_factor,(float)(i-1))) - 1;
 			else
 			if ( binLevels_nodes[i][node.cacheIndex.row]["entropy_index"] < 0 )
 				binLevels_nodes[i][node.cacheIndex.row]["entropy_index"] = 0;
-			
+
 			char access[100];//ub-entropy
-			sprintf( access, "%d-%d", (int)binLevels_nodes[i][node.cacheIndex.row]["ub_index"], (int)binLevels_nodes[i][node.cacheIndex.row]["entropy_index"]);
-		
+			int max_len = sizeof access;
+			snprintf( access, max_len, "%d-%d", (int)binLevels_nodes[i][node.cacheIndex.row]["ub_index"], (int)binLevels_nodes[i][node.cacheIndex.row]["entropy_index"]);
+
 			//prediction error
 			if ( binLevels[i]["binCount"][access] == 0 )
 			{
@@ -88,7 +89,7 @@ namespace momdp
 			binLevels[i]["bins"][access] = ((double)(binLevels[i]["bins"][access] * binLevels[i]["binCount"][access] + lbVal)) / ((double)(binLevels[i]["binCount"][access] + 1));
 
 			binLevels[i]["binCount"][access] ++;
-		}//end dynamic bins	
+		}//end dynamic bins
 		previous_lowerbound[node.cacheIndex.row] = lbVal;
 	}
 
@@ -99,7 +100,8 @@ namespace momdp
 		for (i=1;i<=bin_level_count;i++)
 		{
 			char access[100];//ub-entropy
-			sprintf( access, "%d-%d", (int)binLevels_nodes[i][node.cacheIndex.row]["ub_index"], (int)binLevels_nodes[i][node.cacheIndex.row]["entropy_index"]);
+		  int max_len = sizeof access;
+		  snprintf( access, max_len, "%d-%d", (int)binLevels_nodes[i][node.cacheIndex.row]["ub_index"], (int)binLevels_nodes[i][node.cacheIndex.row]["entropy_index"]);
 
 			//prediction error
 			if ( binLevels[i]["binCount"][access] == 1 )
@@ -134,9 +136,10 @@ namespace momdp
 				for(y=0;y<(initial_bin_size * pow((float)bin_growth_factor,(float)(i-1)));y++)
 				{
 					char access[100];//ub-entropy
-					sprintf( access, "%d-%d", x, y);
+				  int max_len = sizeof access;
+					snprintf( access, max_len, "%d-%d", x, y);
 					cout << ((int)binLevels[i]["binCount"][access]) << "\t";
-					
+
 				}
 				cout << endl;
 			}
@@ -150,7 +153,8 @@ namespace momdp
 		double lbVal = beliefCache->getRow(row)->LB;
 		double ubVal = beliefCache->getRow(row)->UB;
 		char access[100];//ub-entropy
-		sprintf( access, "%d-%d", (int)binLevels_nodes[1][row]["ub_index"], (int)binLevels_nodes[1][row]["entropy_index"]);
+		int max_len = sizeof access;
+		snprintf( access, max_len, "%d-%d", (int)binLevels_nodes[1][row]["ub_index"], (int)binLevels_nodes[1][row]["entropy_index"]);
 
 		if ( ((int)binLevels[1]["binCount"][access]) == 1 )//new node
 		{
@@ -163,8 +167,8 @@ namespace momdp
 			double smallest_error;
 			for (i=1;i<=bin_level_count;i++)//bin selection criteria
 			{
-				sprintf( access, "%d-%d", (int)binLevels_nodes[i][row]["ub_index"], (int)binLevels_nodes[i][row]["entropy_index"]);
-				if ( i == 1 ) 
+				snprintf( access, sizeof(access), "%d-%d", (int)binLevels_nodes[i][row]["ub_index"], (int)binLevels_nodes[i][row]["entropy_index"]);
+				if ( i == 1 )
 				{
 					best_level = i;
 					smallest_error = binLevels[i]["binError"][access];
@@ -177,7 +181,7 @@ namespace momdp
 				}
 			}
 
-			sprintf( access, "%d-%d", (int)binLevels_nodes[best_level][row]["ub_index"], (int)binLevels_nodes[best_level][row]["entropy_index"]);
+			snprintf( access, sizeof(access), "%d-%d", (int)binLevels_nodes[best_level][row]["ub_index"], (int)binLevels_nodes[best_level][row]["entropy_index"]);
 
 			binLevels_intervals[best_level]["counter"] ++;
 
@@ -207,7 +211,7 @@ namespace momdp
 		//entropy
 		double maxEntropy = 0;
 		maxEntropy = ((double)(1.0/numStates)) * ( log( ((double)(1.0/numStates)) ) / log(2.0) ) * (-1) * numStates;
-		
+
 		int i;
 		for (i=1;i<=bin_level_count;i++)
 		{
@@ -224,16 +228,16 @@ namespace momdp
 			map <int, //node #
 				map <string, //ub_index, entropy_index, prev_error
 					double//value
-				> 
+				>
 			> nodes;
 			binLevels_nodes[i] = nodes;
-			
-			
+
+
 			//binLevels;
 			map <string, //bins, binCount, binError
 				map <string,//ub-entropy (bin id)
 					double//value inside bin
-				> 
+				>
 			> level;
 
 			map <string,//ub-entropy (bin id)
@@ -252,6 +256,6 @@ namespace momdp
 			level["binCount"] = binCount;
 			level["binError"] = binError;
 			binLevels[i] = level;
-		}	
+		}
 	}
 };

@@ -93,7 +93,7 @@ void TiXmlBase::EncodeString(const TIXML_STRING& str, TIXML_STRING* outString) {
 #if defined(TIXML_SNPRINTF)
             TIXML_SNPRINTF(buf, sizeof(buf), "&#x%02X;", (unsigned) (c & 0xff));
 #else
-            sprintf( buf, "&#x%02X;", (unsigned) ( c & 0xff ) );
+            snprintf( buf, sizeof(buf), "&#x%02X;", (unsigned) ( c & 0xff ) );
 #endif
 
             //*ME:	warning C4267: convert 'size_t' to 'int'
@@ -565,7 +565,7 @@ void TiXmlElement::SetAttribute(const char * name, int val) {
 #if defined(TIXML_SNPRINTF)
     TIXML_SNPRINTF(buf, sizeof(buf), "%d", val);
 #else
-    sprintf( buf, "%d", val );
+    snprintf( buf, sizeof(buf), "%d", val );
 #endif
     SetAttribute(name, buf);
 }
@@ -584,7 +584,7 @@ void TiXmlElement::SetDoubleAttribute(const char * name, double val) {
 #if defined(TIXML_SNPRINTF)
     TIXML_SNPRINTF(buf, sizeof(buf), "%f", val);
 #else
-    sprintf( buf, "%f", val );
+    snprintf( buf, sizeof(buf), "%f", val );
 #endif
     SetAttribute(name, buf);
 }
