@@ -1,3 +1,7 @@
+## v0.6.14 
+
+* Patch for Apple's sprintf -> snprintf requirements
+
 ## v0.6.13
 
 * Patch for Apple M1's clang-15 derivative. 
