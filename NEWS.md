@@ -1,3 +1,8 @@
+## v0.6.15
+
+* Remove CXX=CXX11 from Makevars. This should also fix problems with CRAN
+  special check setups.
+
 ## v0.6.14 
 
 * Patch for Apple's sprintf -> snprintf requirements
