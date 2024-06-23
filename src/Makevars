@@ -1,4 +1,3 @@
-CXX_STD=CXX11
 INSTDIR=../inst/bin
 
 PKG_CPPFLAGS=-Iappl-0.96 \
