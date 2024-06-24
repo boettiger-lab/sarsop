@@ -11,8 +11,11 @@ namespace momdp
 template <typename T> class SymbolSet;
 
 template <typename T>
-class SymbolSetIterator: public iterator<input_iterator_tag, T>
+class SymbolSetIterator
 {
+public:
+	using iterator_category = std::input_iterator_tag;
+	using value_type = T;
 	SymbolSet<T> *parentSet;
 	int symbolID;
 
