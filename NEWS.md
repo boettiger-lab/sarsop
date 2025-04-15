@@ -1,3 +1,7 @@
+## v0.6.16
+
+* Another patch on Cassandra parser compatibility with modern clang checks. 
+
 ## v0.6.15
 
 * Remove CXX=CXX11 from Makevars. This should also fix problems with CRAN
